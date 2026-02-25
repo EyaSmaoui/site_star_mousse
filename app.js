@@ -7,7 +7,10 @@ const http = require('http');
 const { connectToMongoDB } = require('./config/mongo.connection');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var productRouter = require('./routes/product.routes');
+var categoryRouter = require('./routes/category.routes');
+var reviewRouter = require('./routes/review.routes');
+var panierRouter = require('./routes/panier.routes');
 require('dotenv').config();
 
 var app = express();
@@ -20,7 +23,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/index', indexRouter);
+var usersRouter = require('./routes/users.routes');
 app.use('/users', usersRouter);
+app.use('/Product', productRouter);
+app.use('/Category', categoryRouter);
+app.use('/Review', reviewRouter);
+app.use('/Panier', panierRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -35,11 +43,11 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json('error');
+  res.json({ error: err.message });
 });
-const server =http.createServer(app);
-server.listen(process.env.Port,() => {
-connectToMongoDB();
-  console.log(`server is running on port ${process.env.Port}`);
+const server = http.createServer(app);
+server.listen(process.env.Port || 5000, () => {
+  connectToMongoDB();
+  console.log(`server is running on port ${process.env.Port || 5000}`);
 });
 
