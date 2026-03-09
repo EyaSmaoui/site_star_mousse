@@ -5,6 +5,9 @@ const reviewSchema = new mongoose.Schema({
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' }, // référence au produit
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },       // référence à l'utilisateur
     reviewDate: { type: Date, default: Date.now }, // date de la revue
+
+    //one
+    owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 module.exports = mongoose.model('Review', reviewSchema, 'reviews_v2');

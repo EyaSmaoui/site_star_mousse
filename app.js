@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const http = require('http');
+const cors = require('cors');
+const session = require('express-session');
 const { connectToMongoDB } = require('./config/mongo.connection');
 
 var indexRouter = require('./routes/index');
@@ -16,19 +18,30 @@ require('dotenv').config();
 var app = express();
 
 
+
+// enable CORS for all routes (customize options as needed)
+app.use(cors());
+
+app.use(session({
+  secret: process.env.netsecret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 1 day
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/index', indexRouter);
+// mount routers (use lowercase and root index)
+app.use('/', indexRouter);
 var usersRouter = require('./routes/users.routes');
 app.use('/users', usersRouter);
-app.use('/Product', productRouter);
-app.use('/Category', categoryRouter);
-app.use('/Review', reviewRouter);
-app.use('/Panier', panierRouter);
+app.use('/products', productRouter);
+app.use('/categories', categoryRouter);
+app.use('/reviews', reviewRouter);
+app.use('/paniers', panierRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

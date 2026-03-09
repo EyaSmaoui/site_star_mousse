@@ -10,7 +10,9 @@ const cartSchema = new mongoose.Schema({
     }
   ],
   totalAmount: { type: Number, default: 0 },          // montant total
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  //one to many
+owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true }
 });
 
 module.exports = mongoose.model('Cart', cartSchema);
