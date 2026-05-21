@@ -1,0 +1,11 @@
+{
+  "customerName": "Test Client",
+  "customerEmail": "test@example.com",
+  "phone": "+21612345678",
+  "address": "Rue Test",
+  "total": 99.5,
+  "status": "en attente",
+  "products": [
+    { "name": "Produit X", "quantity": 2, "dimension": "80x190" }
+  ]
+}

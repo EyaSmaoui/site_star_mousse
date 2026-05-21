@@ -1,0 +1,60 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Dev",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true
+		},
+		{
+			"label": "Insert Admin",
+			"type": "shell",
+			"command": "node scripts/insertUser.js --username=Admin --email=admin@starmousse.tn --password=Admin1234 --phone=000000000 --role=admin",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test Login & Clients",
+			"type": "shell",
+			"command": "node -e \"(async()=>{try{const res=await fetch('http://localhost:3000/api/users/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:'admin@starmousse.tn',password:'Admin1234'})});const data=await res.json();console.log('LOGIN',res.status,data);const token=data.token; if(!token){process.exit(0)} const clients=await fetch('http://localhost:3000/api/clients/getAllClients',{headers:{Authorization:'Bearer '+token}});console.log('CLIENTS',clients.status,await clients.text());}catch(e){console.error(e)}})()\"",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run API Test",
+			"type": "shell",
+			"command": "node scripts/test_api.js",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run API Test PS",
+			"type": "shell",
+			"command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\test_api.ps1",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Insert Manager Yassine",
+			"type": "shell",
+			"command": "node scripts/insertUser.js --username=\"Yassine Bouazizi\" --email=yassine@starmousse.tn --password=Manager123 --phone=000000001 --role=manager",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Insert Manager Nadia",
+			"type": "shell",
+			"command": "node scripts/insertUser.js --username=\"Nadia Chaouachi\" --email=nadia@starmousse.tn --password=Manager123 --phone=000000002 --role=manager",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Test Manager Login",
+			"type": "shell",
+			"command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\test_login_manager.ps1 -email yassine@starmousse.tn -password Manager123",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

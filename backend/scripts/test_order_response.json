@@ -1,0 +1,1 @@
+{"userId":"6a08dcda05d8177dc1f3fbac","customerName":"Test Client","customerEmail":"test@example.com","phone":"+21612345678","address":"Rue Test","products":[{"name":"Produit X","quantity":2,"_id":"6a0b00b9e2e3421650c3c603"}],"total":99.5,"status":"Pending","_id":"6a0b00b9e2e3421650c3c602","createdAt":"2026-05-18T12:06:17.723Z","updatedAt":"2026-05-18T12:06:17.723Z","__v":0}

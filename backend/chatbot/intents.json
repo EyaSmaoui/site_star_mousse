@@ -1,0 +1,29 @@
+{
+  "intents": [
+    {
+      "tag": "salutation",
+      "patterns": ["Aslema", "Bonjour", "Salut", "Ahla", "Slt", "Marhba", "hi", "hey"],
+      "responses": ["Aslema, ena Dali mte3 Star Mousse. 9olli chnowa 7achtek w n3awnk direct."]
+    },
+    {
+      "tag": "gamme_orthopedique",
+      "patterns": ["orthopedique", "ortho", "soft plus", "venise plus", "mal de dos", "dhar"],
+      "responses": ["La gamme orthopédique contient Soft Plus et Venise Plus."]
+    },
+    {
+      "tag": "gamme_orthomedical",
+      "patterns": ["orthomedical", "orthomedicale", "medico plus", "medico"],
+      "responses": ["La gamme orthomédicale contient Medico Plus."]
+    },
+    {
+      "tag": "gamme_ergonomique",
+      "patterns": ["ergonomique", "relax plus", "tendresse plus", "relax", "tendresse", "haut gamme", "haut de gamme", "premium", "luxe"],
+      "responses": ["La gamme ergonomique haut de gamme contient Relax Plus et Tendresse Plus."]
+    },
+    {
+      "tag": "budget",
+      "patterns": ["nheb 7aja r5isa", "aswem", "soum", "b9addéch", "budget", "prix", "merhbe"],
+      "responses": ["9olli t7eb ta7ki 3la soum, livraison, paiement, garantie, dhar, m5adda wala commande ?"]
+    }
+  ]
+}

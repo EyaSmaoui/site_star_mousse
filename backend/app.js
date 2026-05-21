@@ -1,0 +1,105 @@
+require('dotenv').config();
+
+var express = require('express');
+var path = require('path');
+var logger = require('morgan');
+const http = require('http');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const { connectToMongoDB } = require('./config/mongo.connection');
+
+var app = express();
+
+const defaultOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5174',
+  'http://localhost:5175',
+  'http://127.0.0.1:5175',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+];
+const corsOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
+  : defaultOrigins;
+
+// MIDDLEWARES
+app.use(logger('dev'));
+app.use(cors({
+  origin: corsOrigins,
+  credentials: true,
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'star_mousse_backend_session_secret_2026',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax',
+  },
+}));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ROUTES
+app.use('/api/orders', require('./routes/order.routes'));
+app.use('/api/managers', require('./routes/manager.routes'));
+app.use('/api/clients', require('./routes/client.routes'));
+app.use('/api/products', require('./routes/product.routes'));
+app.use('/api/users', require('./routes/users.routes'));
+app.use('/api/categories', require('./routes/category.routes'));
+app.use('/api/paniers', require('./routes/panier.routes'));
+app.use('/api/reviews', require('./routes/review.routes'));
+app.use('/api/chatbot', require('./routes/chatbot.routes'));
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    message: 'API Star Mousse opérationnelle',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Frontend React en production
+if (process.env.NODE_ENV === 'production') {
+  const distPath = process.env.FRONTEND_BUILD_PATH
+    ? path.resolve(process.env.FRONTEND_BUILD_PATH)
+    : path.join(__dirname, '..', 'frontend', 'build');
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(distPath, 'index.html'), (err) => {
+      if (err) next(err);
+    });
+  });
+}
+
+// SERVEUR
+const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+
+const startServer = async () => {
+  await connectToMongoDB();
+  server.listen(PORT, () => {
+    console.log(`✅ Serveur prêt sur le port ${PORT} avec toutes les routes activées`);
+  });
+};
+
+startServer().catch((err) => {
+  console.error('Impossible de démarrer le serveur:', err.message);
+  process.exit(1);
+});
+
+// ─── Error handlers (debug) ───────────────────────────────────────────────────
+process.on('uncaughtException', (err) => {
+  console.error('[FATAL] Uncaught exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[FATAL] Unhandled rejection at:', promise, 'reason:', reason);
+});
