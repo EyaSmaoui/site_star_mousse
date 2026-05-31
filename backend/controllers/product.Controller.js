@@ -1,10 +1,11 @@
 const Product = require('../models/product.model');
 const Recommendation = require('../models/recommendation.model');
 const { PRODUCT_CATALOG } = require('../services/recommendationEngine');
+const { inferProductImage, withProductImage } = require('../services/productImages');
 module.exports.getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find();
-        res.status(200).json(products);
+        const products = await Product.find().lean();
+        res.status(200).json(products.map(withProductImage));
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -16,7 +17,7 @@ module.exports.getProductById = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
-        res.status(200).json(product);
+        res.status(200).json(withProductImage(product));
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -32,7 +33,7 @@ module.exports.getRecommendedProducts = async (req, res) => {
         const activeRecommendations = recommendations
             .filter((item) => item.product && item.product.isAvctive !== false)
             .map((item) => ({
-                ...item.product.toObject(),
+                ...withProductImage(item.product),
                 recommendation: {
                     averageRating: item.averageRating,
                     reviewCount: item.reviewCount,
@@ -51,7 +52,7 @@ module.exports.getRecommendedProducts = async (req, res) => {
             .sort({ recommendationRank: -1, averageRating: -1, reviewCount: -1, price: 1 })
             .limit(limit);
 
-        res.status(200).json(fallbackProducts.length ? fallbackProducts : PRODUCT_CATALOG.slice(0, limit));
+        res.status(200).json(fallbackProducts.length ? fallbackProducts.map(withProductImage) : PRODUCT_CATALOG.slice(0, limit));
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -67,7 +68,7 @@ module.exports.addProduct = async (req, res) => {
             category,
             stock,
             warranty,
-            image,
+            image: image || inferProductImage(name),
             color,
             size
         });
@@ -100,9 +101,20 @@ module.exports.deleteProduct = async (req, res) => {
 };
 module.exports.addProductWithImage = async (req, res) => {
     try {
-        const{ name,size} = req.body;
-        const image = req.file ? req.file.path : null;
-        const newProduct = new Product({name,size,image});
+        const { productId, name, description, price, category, stock, warranty, color, size } = req.body;
+        const image = req.file ? `/images/${req.file.filename}` : inferProductImage(name);
+        const newProduct = new Product({
+            productId,
+            name,
+            description,
+            price,
+            category,
+            stock,
+            warranty,
+            image,
+            color,
+            size
+        });
         await newProduct.save();
         res.status(201).json(newProduct);
     } catch (error) {
@@ -117,7 +129,7 @@ module.exports.searchProductByName = async (req, res) => {
         if(!product){
             return res.status(404).json({ message: 'Product not found' });
         }
-        res.status(200).json(product);
+        res.status(200).json(product.map(withProductImage));
     } catch (error) {
         res.status(500).json({ error: error.message });
     }           
@@ -130,7 +142,7 @@ module.exports.filterProducts = async (req, res) => {
         if (minPrice) filter.price = { $gte: minPrice };
         if (maxPrice) filter.price = { ...filter.price, $lte: maxPrice };
         const products = await Product.find(filter);
-        res.status(200).json(products);
+        res.status(200).json(products.map(withProductImage));
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -6,7 +6,20 @@ export const register = async (userData) => {
 };
 
 export const login = async (credentials) => {
-  const response = await httpClient.post('users/login', credentials);
+  const response = await httpClient.post('users/login', credentials, { timeout: 6000 });
+  return response.data;
+};
+
+export const forgotPassword = async (email) => {
+  const response = await httpClient.post('users/forgot-password', { email });
+  return response.data;
+};
+
+export const resetPassword = async ({ token, password, confirmPassword }) => {
+  const response = await httpClient.post(`users/reset-password/${token}`, {
+    password,
+    confirmPassword,
+  });
   return response.data;
 };
 

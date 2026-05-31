@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmployeeSidebar from "./EmployeeSidebar";
 import { hasAccess, ROLES } from "../../utils/authUtils";
-import { updateProfile } from "../../services/apiUser";
+import { changePassword, updateProfile } from "../../services/apiUser";
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();
@@ -65,9 +65,17 @@ export default function EmployeeProfile() {
       toast.error("Veuillez compléter tous les champs de sécurité");
       return;
     }
-    // Pour l'instant, simuler - il faudrait une route dédiée pour changer le mot de passe
-    toast.success("Mot de passe modifié avec succès");
-    setPasswords({ current: "", next: "", confirm: "" });
+    try {
+      await changePassword({
+        currentPassword: passwords.current,
+        newPassword: passwords.next,
+        confirmPassword: passwords.confirm,
+      });
+      toast.success("Mot de passe modifié avec succès");
+      setPasswords({ current: "", next: "", confirm: "" });
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Erreur lors du changement de mot de passe");
+    }
   };
 
   if (loading) {
@@ -117,7 +125,7 @@ export default function EmployeeProfile() {
 
 const styles = {
   wrapper: { display: "flex", minHeight: "100vh", background: "#f5f0e8", fontFamily: "'DM Sans', sans-serif" },
-  main: { marginLeft: 260, flex: 1, padding: "32px 34px 48px" },
+  main: { marginLeft: 220, flex: 1, padding: "32px 34px 48px" },
   header: { marginBottom: 24 },
   breadcrumb: { margin: 0, fontSize: 12, color: "#8f7a63", textTransform: "uppercase", letterSpacing: ".12em" },
   title: { margin: "8px 0 8px", fontSize: 32, fontWeight: 800, color: "#1a1714" },

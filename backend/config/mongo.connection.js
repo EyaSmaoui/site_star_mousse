@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+mongoose.set('bufferCommands', false);
+
 const getMongoUri = () =>
   process.env.url_Mongodb ||
   process.env.MONGODB_URI ||
@@ -8,6 +10,41 @@ const getMongoUri = () =>
 const getFallbackUri = () =>
   process.env.MONGODB_FALLBACK_URI ||
   (process.env.NODE_ENV !== 'production' ? 'mongodb://127.0.0.1:27017/site_star_mousse' : null);
+
+const connectWithHardTimeout = async (uri, timeoutMS = 7000) => {
+  let timeout;
+  try {
+    await Promise.race([
+      mongoose.connect(uri, {
+        serverSelectionTimeoutMS: 5000,
+        connectTimeoutMS: 5000,
+        socketTimeoutMS: 10000,
+        maxPoolSize: 10,
+      }),
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => {
+          reject(new Error(`MongoDB connection timed out after ${timeoutMS}ms`));
+        }, timeoutMS);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+const disconnectWithHardTimeout = async (timeoutMS = 1000) => {
+  let timeout;
+  try {
+    await Promise.race([
+      mongoose.disconnect(),
+      new Promise((resolve) => {
+        timeout = setTimeout(resolve, timeoutMS);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeout);
+  }
+};
 
 module.exports.connectToMongoDB = async () => {
   const primaryUri = getMongoUri().trim();
@@ -20,15 +57,19 @@ module.exports.connectToMongoDB = async () => {
   let lastError;
   for (const uri of uris) {
     try {
-      await mongoose.connect(uri, { serverSelectionTimeoutMS: 15000 });
+      await connectWithHardTimeout(uri);
       console.log(`connected to MongoDB (${uri.includes('127.0.0.1') || uri.includes('localhost') ? 'local' : 'remote'})`);
       return;
     } catch (err) {
       lastError = err;
-      if (mongoose.connection.readyState === 1) {
-        await mongoose.disconnect();
+      if (mongoose.connection.readyState !== 0) {
+        await disconnectWithHardTimeout();
       }
       console.error(`MongoDB connection failed (${uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')}):`, err.message);
+      if (mongoose.connection.readyState !== 0) {
+        console.error('MongoDB cleanup still pending; skipping remaining URIs for this attempt.');
+        break;
+      }
     }
   }
 

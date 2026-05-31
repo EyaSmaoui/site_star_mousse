@@ -1,0 +1,1527 @@
+{
+  "exportedAt": "2026-05-31T09:25:41.115Z",
+  "apiBase": "http://localhost:5000/api/",
+  "summary": [
+    {
+      "key": "health",
+      "route": "health",
+      "status": 200,
+      "ok": true,
+      "durationMs": 53,
+      "count": null
+    },
+    {
+      "key": "products",
+      "route": "products",
+      "status": 200,
+      "ok": true,
+      "durationMs": 183,
+      "count": 52
+    },
+    {
+      "key": "recommendedProducts",
+      "route": "products/recommended?limit=12",
+      "status": 200,
+      "ok": true,
+      "durationMs": 903,
+      "count": 2
+    },
+    {
+      "key": "categories",
+      "route": "categories/getAllCategories",
+      "status": 200,
+      "ok": true,
+      "durationMs": 630,
+      "count": 6
+    },
+    {
+      "key": "reviews",
+      "route": "reviews/getAllReviews",
+      "status": 200,
+      "ok": true,
+      "durationMs": 1383,
+      "count": 8
+    },
+    {
+      "key": "clients",
+      "route": "clients/getAllClients",
+      "status": 200,
+      "ok": true,
+      "durationMs": 1063,
+      "count": 0
+    },
+    {
+      "key": "managers",
+      "route": "managers/getAllManagers",
+      "status": 200,
+      "ok": true,
+      "durationMs": 1089,
+      "count": 1
+    },
+    {
+      "key": "orders",
+      "route": "orders/getAllOrders",
+      "status": 200,
+      "ok": true,
+      "durationMs": 1133,
+      "count": 7
+    },
+    {
+      "key": "users",
+      "route": "users/getAllUsers",
+      "status": 200,
+      "ok": true,
+      "durationMs": 1341,
+      "count": 12
+    }
+  ],
+  "data": {
+    "health": {
+      "ok": true,
+      "message": "API Star Mousse opérationnelle",
+      "timestamp": "2026-05-31T09:25:41.677Z"
+    },
+    "products": [
+      {
+        "_id": "6a08b36bb8780a82575cbe8e",
+        "name": "Confort Plus 90x190",
+        "price": 199,
+        "category": "6a08b36bb8780a82575cbe82",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0,
+        "averageRating": 0,
+        "lastRecommendationUpdate": "2026-05-20T23:18:40.594Z",
+        "recommendationRank": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36bb8780a82575cbe90",
+        "name": "Confort Plus 120x190",
+        "price": 250,
+        "category": "6a08b36bb8780a82575cbe82",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36bb8780a82575cbe92",
+        "name": "Confort Plus 140x190",
+        "price": 280,
+        "category": "6a08b36bb8780a82575cbe82",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36bb8780a82575cbe94",
+        "name": "Confort Plus 160x200",
+        "price": 300,
+        "category": "6a08b36bb8780a82575cbe82",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36bb8780a82575cbe96",
+        "name": "Confort Plus 180x200",
+        "price": 319,
+        "category": "6a08b36bb8780a82575cbe82",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36bb8780a82575cbe98",
+        "name": "Venise Plus 90x190",
+        "price": 300,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbe9a",
+        "name": "Venise Plus 120x190",
+        "price": 450,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbe9c",
+        "name": "Venise Plus 140x190",
+        "price": 600,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbe9e",
+        "name": "Venise Plus 160x200",
+        "price": 750,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbea0",
+        "name": "Venise Plus 180x200",
+        "price": 935,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbea2",
+        "name": "Soft Plus 90x190",
+        "price": 250,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbea4",
+        "name": "Soft Plus 120x190",
+        "price": 350,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbea6",
+        "name": "Soft Plus 140x190",
+        "price": 450,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbea8",
+        "name": "Soft Plus 160x200",
+        "price": 520,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeaa",
+        "name": "Soft Plus 180x200",
+        "price": 600,
+        "category": "6a08b36bb8780a82575cbe84",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeac",
+        "name": "Medico Plus 90x190",
+        "price": 420,
+        "category": "6a08b36bb8780a82575cbe86",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeae",
+        "name": "Medico Plus 120x190",
+        "price": 650,
+        "category": "6a08b36bb8780a82575cbe86",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeb0",
+        "name": "Medico Plus 140x190",
+        "price": 950,
+        "category": "6a08b36bb8780a82575cbe86",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeb2",
+        "name": "Medico Plus 160x200",
+        "price": 1200,
+        "category": "6a08b36bb8780a82575cbe86",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeb4",
+        "name": "Medico Plus 180x200",
+        "price": 1530,
+        "category": "6a08b36bb8780a82575cbe86",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeb6",
+        "name": "Relax Plus 90x190",
+        "price": 510,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeb8",
+        "name": "Relax Plus 120x190",
+        "price": 750,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbeba",
+        "name": "Relax Plus 140x190",
+        "price": 1100,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36cb8780a82575cbebc",
+        "name": "Relax Plus 160x200",
+        "price": 1500,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbebe",
+        "name": "Relax Plus 180x200",
+        "price": 1850,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "_id": "6a08b36db8780a82575cbec0",
+        "name": "Tendresse 90x190",
+        "price": 700,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0,
+        "averageRating": 0,
+        "lastRecommendationUpdate": "2026-05-20T22:06:33.868Z",
+        "recommendationRank": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbec2",
+        "name": "Tendresse 120x190",
+        "price": 1100,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbec4",
+        "name": "Tendresse 140x190",
+        "price": 1600,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbec6",
+        "name": "Tendresse 160x200",
+        "price": 2100,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbec8",
+        "name": "Tendresse 180x200",
+        "price": 2555,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbeca",
+        "name": "Pillow Top Tendresse 90x190",
+        "price": 1120,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbecc",
+        "name": "Pillow Top Tendresse 120x190",
+        "price": 1500,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbece",
+        "name": "Pillow Top Tendresse 140x190",
+        "price": 1900,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbed0",
+        "name": "Pillow Top Tendresse 160x200",
+        "price": 2200,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbed2",
+        "name": "Pillow Top Tendresse 180x200",
+        "price": 2550,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbed4",
+        "name": "Pillow Top Relax 90x190",
+        "price": 920,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbed6",
+        "name": "Pillow Top Relax 120x190",
+        "price": 1200,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbed8",
+        "name": "Pillow Top Relax 140x190",
+        "price": 1500,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbeda",
+        "name": "Pillow Top Relax 160x200",
+        "price": 1700,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbedc",
+        "name": "Pillow Top Relax 180x200",
+        "price": 1970,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbede",
+        "name": "Pillow Top Medico 90x190",
+        "price": 770,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbee0",
+        "name": "Pillow Top Medico 120x190",
+        "price": 1100,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36db8780a82575cbee2",
+        "name": "Pillow Top Medico 140x190",
+        "price": 1350,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbee4",
+        "name": "Pillow Top Medico 160x200",
+        "price": 1500,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbee6",
+        "name": "Pillow Top Medico 180x200",
+        "price": 1750,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbee8",
+        "name": "Pillow Top Venise 90x190",
+        "price": 630,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbeea",
+        "name": "Pillow Top Venise 120x190",
+        "price": 850,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbeec",
+        "name": "Pillow Top Venise 140x190",
+        "price": 1050,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbeee",
+        "name": "Pillow Top Venise 160x200",
+        "price": 1200,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbef0",
+        "name": "Pillow Top Venise 180x200",
+        "price": 1350,
+        "category": "6a08b36bb8780a82575cbe8a",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbef2",
+        "name": "Baby Venise 60x120",
+        "price": 230,
+        "category": "6a08b36bb8780a82575cbe8c",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      },
+      {
+        "averageRating": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendationRank": 0,
+        "_id": "6a08b36eb8780a82575cbef4",
+        "name": "Baby Venise 70x140",
+        "price": 287,
+        "category": "6a08b36bb8780a82575cbe8c",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0
+      }
+    ],
+    "recommendedProducts": [
+      {
+        "_id": "6a08b36db8780a82575cbec0",
+        "name": "Tendresse 90x190",
+        "price": 700,
+        "category": "6a08b36bb8780a82575cbe88",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0,
+        "averageRating": 0,
+        "lastRecommendationUpdate": "2026-05-20T22:06:33.868Z",
+        "recommendationRank": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendation": {
+          "averageRating": 0,
+          "reviewCount": 0,
+          "sentimentScore": 0,
+          "rank": 0,
+          "reason": "Produit en attente de nouveaux avis clients.",
+          "updatedAt": "2026-05-20T22:06:33.917Z"
+        }
+      },
+      {
+        "_id": "6a08b36bb8780a82575cbe8e",
+        "name": "Confort Plus 90x190",
+        "price": 199,
+        "category": "6a08b36bb8780a82575cbe82",
+        "stock": 100,
+        "isAvctive": true,
+        "__v": 0,
+        "averageRating": 0,
+        "lastRecommendationUpdate": "2026-05-20T23:18:40.594Z",
+        "recommendationRank": 0,
+        "reviewCount": 0,
+        "sentimentScore": 0,
+        "recommendation": {
+          "averageRating": 0,
+          "reviewCount": 0,
+          "sentimentScore": 0,
+          "rank": 0,
+          "reason": "Produit en attente de nouveaux avis clients.",
+          "updatedAt": "2026-05-20T23:18:40.657Z"
+        }
+      }
+    ],
+    "categories": [
+      {
+        "_id": "6a08b36bb8780a82575cbe82",
+        "name": "Basique",
+        "isActive": true,
+        "__v": 0
+      },
+      {
+        "_id": "6a08b36bb8780a82575cbe84",
+        "name": "Orthopédique",
+        "isActive": true,
+        "__v": 0
+      },
+      {
+        "_id": "6a08b36bb8780a82575cbe86",
+        "name": "Orthomédicale",
+        "isActive": true,
+        "__v": 0
+      },
+      {
+        "_id": "6a08b36bb8780a82575cbe88",
+        "name": "Ergonomique",
+        "isActive": true,
+        "__v": 0
+      },
+      {
+        "_id": "6a08b36bb8780a82575cbe8a",
+        "name": "Pillow Top",
+        "isActive": true,
+        "__v": 0
+      },
+      {
+        "_id": "6a08b36bb8780a82575cbe8c",
+        "name": "Bébés",
+        "isActive": true,
+        "__v": 0
+      }
+    ],
+    "reviews": [
+      {
+        "sentiment": {
+          "source": "none"
+        },
+        "_id": "6a1bfd4022dea77e66244c97",
+        "rating": 5,
+        "comment": "",
+        "product": {
+          "averageRating": 0,
+          "reviewCount": 0,
+          "sentimentScore": 0,
+          "recommendationRank": 0,
+          "_id": "6a08b36cb8780a82575cbeb6",
+          "name": "Relax Plus 90x190",
+          "price": 510,
+          "category": "6a08b36bb8780a82575cbe88",
+          "stock": 100,
+          "isAvctive": true,
+          "__v": 0
+        },
+        "productName": "Matelas Relax Plus (120*190)",
+        "order": {
+          "_id": "6a1bfd2922dea77e66244c92",
+          "userId": "6a08dcda05d8177dc1f3fbac",
+          "customerName": "eya",
+          "customerEmail": "eya@borjchakir.com",
+          "phone": "22546789",
+          "address": "borj chakir",
+          "products": [
+            {
+              "name": "Matelas Relax Plus (120*190)",
+              "quantity": 1,
+              "price": 750,
+              "_id": "6a1bfd2922dea77e66244c93"
+            }
+          ],
+          "total": 750,
+          "status": "en attente",
+          "createdAt": "2026-05-31T09:19:37.345Z",
+          "updatedAt": "2026-05-31T09:19:37.345Z",
+          "__v": 0
+        },
+        "user": {
+          "passwordResetToken": null,
+          "passwordResetExpires": null,
+          "_id": "6a08dcda05d8177dc1f3fbac",
+          "username": "Yassine",
+          "email": "yassine@starmousse.tn",
+          "password": "$2b$10$N3Lxv/Tp8q2S4nmTYTUVo.alrba6hJoTECOGmQp/aelB4OLulFhc.",
+          "phone": "000000001",
+          "address": "",
+          "role": "manager",
+          "createdAt": "2026-05-16T21:08:42.459Z",
+          "updatedAt": "2026-05-16T21:08:42.459Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "owner": "6a08dcda05d8177dc1f3fbac",
+        "reviewDate": "2026-05-31T09:20:00.939Z",
+        "__v": 0
+      },
+      {
+        "sentiment": {
+          "source": "none"
+        },
+        "_id": "6a0f76a9d8b3f97b04f74318",
+        "rating": 5,
+        "comment": "",
+        "product": {
+          "averageRating": 0,
+          "reviewCount": 0,
+          "sentimentScore": 0,
+          "recommendationRank": 0,
+          "_id": "6a08b36bb8780a82575cbe98",
+          "name": "Venise Plus 90x190",
+          "price": 300,
+          "category": "6a08b36bb8780a82575cbe84",
+          "stock": 100,
+          "isAvctive": true,
+          "__v": 0
+        },
+        "productName": "Matelas orthopédique Venise Plus (80×190)",
+        "order": {
+          "_id": "6a0f76a4d8b3f97b04f742f9",
+          "userId": "6a0f54d8d8b3f97b04f6a14a",
+          "customerName": "Produits Star Mousse",
+          "customerEmail": "eyasmaoui2@gmail.com",
+          "phone": "22990002",
+          "address": "Rte de beja km 4.5 1000 Borj Chakir, Tunisia",
+          "products": [
+            {
+              "name": "Matelas orthopédique Venise Plus (80×190)",
+              "quantity": 1,
+              "price": 300,
+              "_id": "6a0f76a4d8b3f97b04f742fa"
+            }
+          ],
+          "total": 300,
+          "status": "en attente",
+          "createdAt": "2026-05-21T21:18:28.888Z",
+          "updatedAt": "2026-05-21T21:18:28.888Z",
+          "__v": 0
+        },
+        "user": {
+          "passwordResetToken": null,
+          "passwordResetExpires": null,
+          "_id": "6a0f54d8d8b3f97b04f6a14a",
+          "username": "mostafa abdallah",
+          "email": "smaouieya13@gmail.com",
+          "password": "$2b$10$N38R2tH0BDeRafzeWJZpa.fS6W55BY1xVSs0WPwz4/.rCdYt9hbTG",
+          "phone": "22900131",
+          "address": "",
+          "role": "client",
+          "createdAt": "2026-05-21T18:54:16.508Z",
+          "updatedAt": "2026-05-21T18:54:16.508Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "owner": "6a0f54d8d8b3f97b04f6a14a",
+        "reviewDate": "2026-05-21T21:18:33.439Z",
+        "__v": 0
+      },
+      {
+        "sentiment": {
+          "source": "none"
+        },
+        "_id": "6a0f7688d8b3f97b04f7426c",
+        "rating": 5,
+        "comment": "",
+        "product": {
+          "averageRating": 0,
+          "reviewCount": 0,
+          "sentimentScore": 0,
+          "recommendationRank": 0,
+          "_id": "6a08b36bb8780a82575cbe98",
+          "name": "Venise Plus 90x190",
+          "price": 300,
+          "category": "6a08b36bb8780a82575cbe84",
+          "stock": 100,
+          "isAvctive": true,
+          "__v": 0
+        },
+        "productName": "Matelas orthopédique Venise Plus (80×190)",
+        "order": null,
+        "user": {
+          "passwordResetToken": null,
+          "passwordResetExpires": null,
+          "_id": "6a0f54d8d8b3f97b04f6a14a",
+          "username": "mostafa abdallah",
+          "email": "smaouieya13@gmail.com",
+          "password": "$2b$10$N38R2tH0BDeRafzeWJZpa.fS6W55BY1xVSs0WPwz4/.rCdYt9hbTG",
+          "phone": "22900131",
+          "address": "",
+          "role": "client",
+          "createdAt": "2026-05-21T18:54:16.508Z",
+          "updatedAt": "2026-05-21T18:54:16.508Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "owner": "6a0f54d8d8b3f97b04f6a14a",
+        "reviewDate": "2026-05-21T21:18:00.045Z",
+        "__v": 0
+      },
+      {
+        "sentiment": {
+          "source": "none"
+        },
+        "_id": "6a0f54e2d8b3f97b04f6a18a",
+        "rating": 5,
+        "comment": "",
+        "product": null,
+        "productName": "Matelas Relax Pillow (90*190)",
+        "order": null,
+        "user": {
+          "passwordResetToken": null,
+          "passwordResetExpires": null,
+          "_id": "6a0f54d8d8b3f97b04f6a14a",
+          "username": "mostafa abdallah",
+          "email": "smaouieya13@gmail.com",
+          "password": "$2b$10$N38R2tH0BDeRafzeWJZpa.fS6W55BY1xVSs0WPwz4/.rCdYt9hbTG",
+          "phone": "22900131",
+          "address": "",
+          "role": "client",
+          "createdAt": "2026-05-21T18:54:16.508Z",
+          "updatedAt": "2026-05-21T18:54:16.508Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "owner": "6a0f54d8d8b3f97b04f6a14a",
+        "reviewDate": "2026-05-21T18:54:26.112Z",
+        "__v": 0
+      },
+      {
+        "sentiment": {
+          "rating": 5,
+          "score": 0.8212769031524658,
+          "label": "5 stars",
+          "source": "bert",
+          "analyzedAt": "2026-05-21T00:04:26.251Z"
+        },
+        "_id": "6a0e4c095ac6246e7ef090cf",
+        "rating": 5,
+        "comment": "PARFAITE",
+        "product": null,
+        "productName": "Matelas Relax Pillow (90*190)",
+        "order": null,
+        "user": {
+          "passwordResetToken": null,
+          "passwordResetExpires": null,
+          "_id": "6a0e4ac35ac6246e7ef08f76",
+          "username": "NAIMA",
+          "email": "eya.smaoui@esen.tn",
+          "password": "$2b$10$ZBPXugFfTp87Xm0TtSLNIuaFEe6MZgibaEQgM6M/kSKbGysu4g1.a",
+          "phone": "22990009",
+          "address": "",
+          "role": "client",
+          "createdAt": "2026-05-20T23:58:59.768Z",
+          "updatedAt": "2026-05-20T23:58:59.768Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "owner": "6a0e4ac35ac6246e7ef08f76",
+        "reviewDate": "2026-05-21T00:04:25.971Z",
+        "__v": 0
+      },
+      {
+        "sentiment": {
+          "rating": 4,
+          "score": 1,
+          "label": "4 stars",
+          "source": "manual-rating",
+          "analyzedAt": "2026-05-20T23:59:52.198Z"
+        },
+        "_id": "6a0e4ada5ac6246e7ef08f86",
+        "rating": 4,
+        "comment": "PARFAIT",
+        "product": null,
+        "productName": "Matelas Relax Pillow (90*190)",
+        "order": null,
+        "user": {
+          "passwordResetToken": null,
+          "passwordResetExpires": null,
+          "_id": "6a0e4ac35ac6246e7ef08f76",
+          "username": "NAIMA",
+          "email": "eya.smaoui@esen.tn",
+          "password": "$2b$10$ZBPXugFfTp87Xm0TtSLNIuaFEe6MZgibaEQgM6M/kSKbGysu4g1.a",
+          "phone": "22990009",
+          "address": "",
+          "role": "client",
+          "createdAt": "2026-05-20T23:58:59.768Z",
+          "updatedAt": "2026-05-20T23:58:59.768Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "owner": "6a0e4ac35ac6246e7ef08f76",
+        "reviewDate": "2026-05-20T23:59:22.009Z",
+        "__v": 0
+      },
+      {
+        "sentiment": {
+          "rating": 5,
+          "score": 1,
+          "label": "5 stars",
+          "source": "manual-rating",
+          "analyzedAt": "2026-05-20T23:18:40.490Z"
+        },
+        "_id": "6a0e41501e178def77e0bc27",
+        "rating": 5,
+        "comment": "",
+        "product": {
+          "_id": "6a08b36bb8780a82575cbe8e",
+          "name": "Confort Plus 90x190",
+          "price": 199,
+          "category": "6a08b36bb8780a82575cbe82",
+          "stock": 100,
+          "isAvctive": true,
+          "__v": 0,
+          "averageRating": 0,
+          "lastRecommendationUpdate": "2026-05-20T23:18:40.594Z",
+          "recommendationRank": 0,
+          "reviewCount": 0,
+          "sentimentScore": 0
+        },
+        "productName": "Matelas ressort Confort Plus (80*190)",
+        "order": {
+          "_id": "6a0e41491e178def77e0bc23",
+          "userId": null,
+          "customerName": "mohmed",
+          "customerEmail": "mohmed@gmail.com",
+          "phone": "00000000",
+          "address": "benzart",
+          "products": [
+            {
+              "name": "Matelas ressort Confort Plus (80*190)",
+              "quantity": 1,
+              "_id": "6a10fdfc3820d372a4c6debd"
+            }
+          ],
+          "total": 219,
+          "status": "en attente",
+          "createdAt": "2026-05-20T23:18:33.815Z",
+          "updatedAt": "2026-05-20T23:18:33.815Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "reviewDate": "2026-05-20T23:18:40.393Z",
+        "__v": 0
+      },
+      {
+        "sentiment": {
+          "rating": 4,
+          "score": 1,
+          "label": "4 stars",
+          "source": "manual-rating",
+          "analyzedAt": "2026-05-20T22:06:33.775Z"
+        },
+        "_id": "6a0e3069ec76a14fe6007875",
+        "rating": 4,
+        "comment": "",
+        "product": {
+          "_id": "6a08b36db8780a82575cbec0",
+          "name": "Tendresse 90x190",
+          "price": 700,
+          "category": "6a08b36bb8780a82575cbe88",
+          "stock": 100,
+          "isAvctive": true,
+          "__v": 0,
+          "averageRating": 0,
+          "lastRecommendationUpdate": "2026-05-20T22:06:33.868Z",
+          "recommendationRank": 0,
+          "reviewCount": 0,
+          "sentimentScore": 0
+        },
+        "productName": "Matelas Tendresse (140*190)",
+        "order": {
+          "_id": "6a0e2fe504d91c886745f136",
+          "userId": null,
+          "customerName": "gadour",
+          "customerEmail": "gadour@gmzil.com",
+          "phone": "00000000",
+          "address": "tunis",
+          "products": [
+            {
+              "name": "Matelas Tendresse (140*190)",
+              "quantity": 1,
+              "_id": "6a10fe0b3820d372a4c6dee1"
+            }
+          ],
+          "total": 1370,
+          "status": "en attente",
+          "createdAt": "2026-05-20T22:04:21.276Z",
+          "updatedAt": "2026-05-20T22:04:21.276Z",
+          "__v": 0
+        },
+        "isDeleted": false,
+        "reviewDate": "2026-05-20T22:06:33.646Z",
+        "__v": 0
+      }
+    ],
+    "clients": [],
+    "managers": [
+      {
+        "_id": "6a0cd4a267a55f6ff14818aa",
+        "name": "mohmed masmoudi",
+        "email": "ssossm26@gmail.com",
+        "phone": "12345678",
+        "role": "Responsable Stock",
+        "status": "actif",
+        "since": "2026-05-19T21:22:42.642Z",
+        "createdAt": "2026-05-19T21:22:42.642Z",
+        "updatedAt": "2026-05-19T21:22:42.642Z",
+        "__v": 0
+      }
+    ],
+    "orders": [
+      {
+        "_id": "6a1bfd2922dea77e66244c92",
+        "userId": "6a08dcda05d8177dc1f3fbac",
+        "customerName": "eya",
+        "customerEmail": "eya@borjchakir.com",
+        "phone": "22546789",
+        "address": "borj chakir",
+        "products": [
+          {
+            "name": "Matelas Relax Plus (120*190)",
+            "quantity": 1,
+            "price": 750,
+            "_id": "6a1bfd2922dea77e66244c93"
+          }
+        ],
+        "total": 750,
+        "status": "en attente",
+        "createdAt": "2026-05-31T09:19:37.345Z",
+        "updatedAt": "2026-05-31T09:19:37.345Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0f76a4d8b3f97b04f742f9",
+        "userId": "6a0f54d8d8b3f97b04f6a14a",
+        "customerName": "Produits Star Mousse",
+        "customerEmail": "eyasmaoui2@gmail.com",
+        "phone": "22990002",
+        "address": "Rte de beja km 4.5 1000 Borj Chakir, Tunisia",
+        "products": [
+          {
+            "name": "Matelas orthopédique Venise Plus (80×190)",
+            "quantity": 1,
+            "price": 300,
+            "_id": "6a0f76a4d8b3f97b04f742fa"
+          }
+        ],
+        "total": 300,
+        "status": "en attente",
+        "createdAt": "2026-05-21T21:18:28.888Z",
+        "updatedAt": "2026-05-21T21:18:28.888Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0e46705ac6246e7ef08edd",
+        "userId": "6a08dbcd2be02b595dee0c1c",
+        "customerName": "Test User",
+        "customerEmail": "test@starmousse.tn",
+        "phone": "12345678",
+        "address": "Rue Test",
+        "products": [
+          {
+            "name": "Produit Test",
+            "quantity": 1,
+            "price": 100,
+            "_id": "6a0e46705ac6246e7ef08ede"
+          }
+        ],
+        "total": 100,
+        "status": "en attente",
+        "createdAt": "2026-05-20T23:40:32.688Z",
+        "updatedAt": "2026-05-20T23:40:32.688Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0e41491e178def77e0bc23",
+        "userId": null,
+        "customerName": "mohmed",
+        "customerEmail": "mohmed@gmail.com",
+        "phone": "00000000",
+        "address": "benzart",
+        "products": [
+          {
+            "name": "Matelas ressort Confort Plus (80*190)",
+            "quantity": 1,
+            "_id": "6a10fdfc3820d372a4c6debd"
+          }
+        ],
+        "total": 219,
+        "status": "en attente",
+        "createdAt": "2026-05-20T23:18:33.815Z",
+        "updatedAt": "2026-05-20T23:18:33.815Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0e2fe504d91c886745f136",
+        "userId": null,
+        "customerName": "gadour",
+        "customerEmail": "gadour@gmzil.com",
+        "phone": "00000000",
+        "address": "tunis",
+        "products": [
+          {
+            "name": "Matelas Tendresse (140*190)",
+            "quantity": 1,
+            "_id": "6a10fe0b3820d372a4c6dee1"
+          }
+        ],
+        "total": 1370,
+        "status": "en attente",
+        "createdAt": "2026-05-20T22:04:21.276Z",
+        "updatedAt": "2026-05-20T22:04:21.276Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0e08b4ecd25adab563b9a8",
+        "userId": "6a08dcda05d8177dc1f3fbac",
+        "customerName": "SMAOUI",
+        "customerEmail": "SMAOUI@GMAIL.COM",
+        "phone": "00000000",
+        "address": "MANAR2",
+        "products": [
+          {
+            "name": "Matelas Venise Pillow (90*190)",
+            "quantity": 1,
+            "_id": "6a10fe183820d372a4c6df05"
+          }
+        ],
+        "total": 650,
+        "status": "en attente",
+        "createdAt": "2026-05-20T19:17:08.888Z",
+        "updatedAt": "2026-05-20T19:17:08.888Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0db27b424f7f3219035ac4",
+        "userId": null,
+        "customerName": "Produits Star Mousse",
+        "customerEmail": "yousseftest320@gmail.com",
+        "phone": "12345678",
+        "address": "Rte de beja km 4.5 1000 Borj Chakir, Tunisia",
+        "products": [
+          {
+            "name": "Oreiller Médical Aroma Therapy Océan Puff",
+            "quantity": 1,
+            "_id": "6a10fe253820d372a4c6df21"
+          }
+        ],
+        "total": 175,
+        "status": "livré",
+        "createdAt": "2026-05-20T13:09:15.213Z",
+        "updatedAt": "2026-05-20T13:09:15.213Z",
+        "__v": 0
+      }
+    ],
+    "users": [
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a08b372fb0817083afa5e0e",
+        "username": "Administrateur",
+        "email": "admin@starmousse.com",
+        "phone": "00000000",
+        "address": "",
+        "role": "admin",
+        "createdAt": "2026-05-16T18:12:02.021Z",
+        "updatedAt": "2026-05-16T18:12:02.021Z",
+        "__v": 0
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a08dbcd2be02b595dee0c1c",
+        "username": "Admin",
+        "email": "admin@starmousse.tn",
+        "phone": "000000000",
+        "address": "",
+        "role": "admin",
+        "createdAt": "2026-05-16T21:04:13.890Z",
+        "updatedAt": "2026-05-16T21:04:13.890Z",
+        "__v": 0
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a08dcda05d8177dc1f3fbac",
+        "username": "Yassine",
+        "email": "yassine@starmousse.tn",
+        "phone": "000000001",
+        "address": "",
+        "role": "manager",
+        "createdAt": "2026-05-16T21:08:42.459Z",
+        "updatedAt": "2026-05-16T21:08:42.459Z",
+        "__v": 0
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a08dce0c78fdaac79bcefb0",
+        "username": "Nadia",
+        "email": "nadia@starmousse.tn",
+        "phone": "000000002",
+        "address": "",
+        "role": "manager",
+        "createdAt": "2026-05-16T21:08:48.779Z",
+        "updatedAt": "2026-05-16T21:08:48.779Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0cf63867a55f6ff1481b4f",
+        "username": "Eya Smaoui",
+        "email": "eyasmaoui2@gmail.com",
+        "phone": "000000000",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-19T23:46:00.551Z",
+        "updatedAt": "2026-05-21T23:51:23.266Z",
+        "__v": 0,
+        "passwordResetExpires": null,
+        "passwordResetToken": null
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a0e312fec76a14fe60078e1",
+        "username": "Eya Smaoui",
+        "email": "eyasmaoui3@gmail.com",
+        "phone": "000000000",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-20T22:09:51.625Z",
+        "updatedAt": "2026-05-20T22:09:51.625Z",
+        "__v": 0
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a0e329f1e178def77e0bb05",
+        "username": "EYA SMAOUI",
+        "email": "eyasmaoui4@gmail.com",
+        "phone": "22990002",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-20T22:15:59.676Z",
+        "updatedAt": "2026-05-20T22:15:59.676Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a0e48005ac6246e7ef08ee0",
+        "username": "EYA SMAOUI",
+        "email": "eyaasmaoui@gmail.com",
+        "phone": "22990002",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-20T23:47:12.877Z",
+        "updatedAt": "2026-05-21T23:28:44.352Z",
+        "__v": 0,
+        "passwordResetExpires": "2026-05-22T00:28:44.351Z",
+        "passwordResetToken": "f1a9577b60fece30e961c36cff47cf67c82661310125f92e3950d13770871f3f"
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a0e49765ac6246e7ef08f2e",
+        "username": "Produits Sta",
+        "email": "eyasmaoui7@gmail.com",
+        "phone": "22990006",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-20T23:53:26.962Z",
+        "updatedAt": "2026-05-20T23:53:26.962Z",
+        "__v": 0
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a0e4ac35ac6246e7ef08f76",
+        "username": "NAIMA",
+        "email": "eya.smaoui@esen.tn",
+        "phone": "22990009",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-20T23:58:59.768Z",
+        "updatedAt": "2026-05-20T23:58:59.768Z",
+        "__v": 0
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a0f53c1d8b3f97b04f69dba",
+        "username": "ahmed",
+        "email": "yousseftest320@gmail.com",
+        "phone": "22600123",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-21T18:49:37.794Z",
+        "updatedAt": "2026-05-21T18:49:37.794Z",
+        "__v": 0
+      },
+      {
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "_id": "6a0f54d8d8b3f97b04f6a14a",
+        "username": "mostafa abdallah",
+        "email": "smaouieya13@gmail.com",
+        "phone": "22900131",
+        "address": "",
+        "role": "client",
+        "createdAt": "2026-05-21T18:54:16.508Z",
+        "updatedAt": "2026-05-21T18:54:16.508Z",
+        "__v": 0
+      }
+    ]
+  }
+}

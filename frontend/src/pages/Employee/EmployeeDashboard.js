@@ -154,7 +154,7 @@ export default function EmployeeDashboard() {
     const loadData = async () => {
       setLoading(true);
       try {
-        const [ordersData, productsData] = await Promise.all([getAllOrders(), getAllProducts()]);
+        const [ordersData, productsData] = await Promise.all([getAllOrders({ limit: 50 }), getAllProducts()]);
         setOrders(Array.isArray(ordersData) ? ordersData : []);
         setProducts(Array.isArray(productsData) ? productsData : []);
       } catch (err) {

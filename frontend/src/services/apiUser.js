@@ -10,4 +10,9 @@ export const getAllUsers = async () => {
   return response.data;
 };
 
+export const changePassword = async (passwordData) => {
+  const response = await httpClient.put('users/change-password', passwordData);
+  return response.data;
+};
+
 export const updateUserProfile = updateProfile;

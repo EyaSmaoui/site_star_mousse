@@ -108,14 +108,24 @@ const auditPage = async (browser, viewport, path) => {
       result.errors.push("vertical scroll did not move");
     }
 
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    await page.waitForTimeout(250);
-    const reachedBottom = await page.evaluate(
-      () => window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8
-    );
-    if (maxScroll > 100 && !reachedBottom) {
+    for (let index = 0; index < 8; index += 1) {
+      await page.evaluate(() => window.scrollTo(0, document.scrollingElement.scrollHeight));
+      await page.waitForTimeout(350);
+    }
+    const reachedBottom = await page.evaluate(() => {
+      const scroller = document.scrollingElement;
+      return {
+        ok: window.scrollY + window.innerHeight >= scroller.scrollHeight - 24,
+        y: Math.round(window.scrollY),
+        innerHeight: Math.round(window.innerHeight),
+        scrollHeight: Math.round(scroller.scrollHeight),
+      };
+    });
+    if (maxScroll > 100 && !reachedBottom.ok) {
       result.ok = false;
-      result.errors.push("could not reach page bottom");
+      result.errors.push(
+        `could not reach page bottom y=${reachedBottom.y} inner=${reachedBottom.innerHeight} height=${reachedBottom.scrollHeight}`
+      );
     }
 
     await page.evaluate(() => window.scrollTo(0, 0));

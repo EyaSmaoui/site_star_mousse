@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
-import httpClient from "../../services/httpClient";
 import EmployeeSidebar from "./EmployeeSidebar";
+import { addOrder, deleteOrder as removeOrder, getAllOrders, getCachedOrders, updateOrder } from "../../services/apiOrder";
 
 // ─── Config ────────────────────────────────────────────────────────────────────
 
@@ -783,10 +783,17 @@ export default function ManageOrders({
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
     try {
-      const res = await httpClient.get("orders/getAllOrders");
-      setOrders(Array.isArray(res.data) ? res.data : []);
+      const data = await getAllOrders({ force: isRefresh, limit: 100 });
+      setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Erreur récupération commandes :", err);
+      const cachedOrders = getCachedOrders();
+      if (cachedOrders.length) {
+        setOrders(cachedOrders);
+        toast.warning("Serveur lent: affichage des dernières commandes en cache.");
+      } else {
+        toast.error("Le serveur met trop de temps à récupérer les commandes.");
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -795,13 +802,13 @@ export default function ManageOrders({
 
   useEffect(() => {
     fetchOrders();
-    const interval = setInterval(() => fetchOrders(true), 5000);
+    const interval = setInterval(() => fetchOrders(true), 30000);
     return () => clearInterval(interval);
   }, [fetchOrders]);
 
   const createOrder = async (data) => {
     try {
-      await httpClient.post("orders/addOrder", data);
+      await addOrder(data);
       await fetchOrders(true);
       setShowAdd(false);
       toast.success("Commande créée avec succès.");
@@ -812,7 +819,7 @@ export default function ManageOrders({
 
   const editOrder = async (data, orderId) => {
     try {
-      await httpClient.put(`orders/updateOrder/${orderId}`, data);
+      await updateOrder(orderId, data);
       await fetchOrders(true);
       setShowEdit(false);
       setSelectedOrder(null);
@@ -824,7 +831,7 @@ export default function ManageOrders({
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      await httpClient.put(`orders/updateOrder/${orderId}`, { status });
+      await updateOrder(orderId, { status });
       await fetchOrders(true);
       setShowStatus(false);
       setSelectedOrder(null);
@@ -836,7 +843,7 @@ export default function ManageOrders({
 
   const deleteOrder = async (orderId) => {
     try {
-      await httpClient.delete(`orders/deleteOrder/${orderId}`);
+      await removeOrder(orderId);
       await fetchOrders(true);
       setShowDelete(false);
       setSelectedOrder(null);

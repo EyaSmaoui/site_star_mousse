@@ -1,13 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { CART_UPDATED_EVENT, getCartCount } from "../utils/cartUtils";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollYRef = useRef(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [search, setSearch] = useState("");
+  const [cartCount, setCartCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -24,9 +28,21 @@ function NavBar() {
   );
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 16);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScroll = window.scrollY;
+          setScrolled(currentScroll > 16);
+          setShowHeader(currentScroll <= 80 || currentScroll < lastScrollYRef.current);
+          lastScrollYRef.current = currentScroll;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     handleScroll();
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -45,6 +61,17 @@ function NavBar() {
     } catch {
       setUserRole(null);
     }
+  }, []);
+
+  useEffect(() => {
+    const syncCartCount = () => setCartCount(getCartCount());
+    syncCartCount();
+    window.addEventListener(CART_UPDATED_EVENT, syncCartCount);
+    window.addEventListener("storage", syncCartCount);
+    return () => {
+      window.removeEventListener(CART_UPDATED_EVENT, syncCartCount);
+      window.removeEventListener("storage", syncCartCount);
+    };
   }, []);
 
   useEffect(() => {
@@ -86,15 +113,20 @@ function NavBar() {
           top: 0;
           z-index: 5000;
           font-family: 'DM Sans', sans-serif;
-          background: rgba(251,250,248,0.86);
+          background: rgba(251,250,248,0.78);
           border-bottom: 1px solid rgba(26,26,46,0.08);
-          backdrop-filter: blur(18px);
-          transition: background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+          backdrop-filter: blur(24px);
+          transition: transform 0.28s ease, background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+          transform: translateY(0);
+          will-change: transform, background;
+        }
+        .ssn-header.hidden {
+          transform: translateY(-110%);
         }
         .ssn-header.scrolled {
-          background: rgba(255,255,255,0.94);
-          border-color: rgba(26,26,46,0.1);
-          box-shadow: 0 18px 55px rgba(21,21,34,0.1);
+          background: rgba(255,255,255,0.92);
+          border-color: rgba(26,26,46,0.12);
+          box-shadow: 0 24px 70px rgba(21,21,34,0.12);
         }
 
         .ssn-promo {
@@ -538,7 +570,7 @@ function NavBar() {
         }
       `}</style>
 
-      <header className={`ssn-header ${scrolled ? "scrolled" : ""}`}>
+      <header className={`ssn-header ${scrolled ? "scrolled" : ""} ${showHeader ? "" : "hidden"}`}>
         <div className="ssn-promo">
           <span><i className="ssn-promo-dot"></i> Promos sommeil: <strong>jusqu'à -50%</strong></span>
           <span><i className="ssn-promo-dot"></i> Paiement à la livraison</span>
@@ -614,7 +646,7 @@ function NavBar() {
 
             <Link to="/cart" className="ssn-cart" onClick={closeMenu} title="Panier" aria-label="Panier">
               <span className="ssn-cart-icon"></span>
-              <span className="ssn-cart-badge">0</span>
+              <span className="ssn-cart-badge">{cartCount}</span>
             </Link>
           </div>
 

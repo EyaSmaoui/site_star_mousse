@@ -1,6 +1,75 @@
 const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT_SECRET_KEY || 'your-secret-key';
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT_SECRET_KEY;
+
+const getResetTokenHash = (token) =>
+    crypto.createHash('sha256').update(token).digest('hex');
+
+const getFrontendUrl = () =>
+    (process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:3000').replace(/\/$/, '');
+
+const createMailTransporter = () => {
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    let smtpHost = process.env.SMTP_HOST;
+    let smtpPort = Number(process.env.SMTP_PORT || 587);
+    let smtpSecure = process.env.SMTP_SECURE === 'true';
+
+    const isPlaceholderConfig =
+        !smtpUser ||
+        !smtpPass ||
+        smtpUser === 'votre.email@gmail.com' ||
+        smtpPass === 'votre_mot_de_passe_d_application';
+
+    if (isPlaceholderConfig) {
+        return null;
+    }
+
+    if (!smtpHost && smtpUser.toLowerCase().endsWith('@gmail.com')) {
+        smtpHost = 'smtp.gmail.com';
+        smtpPort = Number(process.env.SMTP_PORT || 465);
+        smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === 465;
+    }
+
+    if (!smtpHost) {
+        return null;
+    }
+
+    return nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpSecure,
+        auth: {
+            user: smtpUser,
+            pass: smtpPass
+        }
+    });
+};
+
+const sendPasswordResetEmail = async ({ email, username, resetLink }) => {
+    const transporter = createMailTransporter();
+    if (!transporter) return false;
+
+    await transporter.sendMail({
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        to: email,
+        subject: 'Reinitialisation de votre mot de passe Star Mousse',
+        html: `
+            <div style="font-family: Arial, sans-serif; color: #151522; line-height: 1.6;">
+                <h2>Bonjour ${username || ''}</h2>
+                <p>Vous avez demande la reinitialisation de votre mot de passe Star Mousse.</p>
+                <p><a href="${resetLink}" style="display:inline-block;background:#b52f2f;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;">Changer mon mot de passe</a></p>
+                <p>Ce lien expire dans 1 heure. Si vous n'etes pas a l'origine de cette demande, ignorez cet email.</p>
+            </div>
+        `
+    });
+
+    return true;
+};
 
 // Ajouter un utilisateur (Inscription)
 exports.addUser = async (req, res) => {
@@ -102,6 +171,7 @@ exports.createEmployerByAdmin = async (req, res) => {
 
 // Connexion
 exports.login = async (req, res) => {
+    const startedAt = Date.now();
     try {
         const { email, password } = req.body;
 
@@ -112,7 +182,14 @@ exports.login = async (req, res) => {
             return res.status(400).json({ error: "Le mot de passe est requis." });
         }
 
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({ error: "Base de données non connectée. Vérifiez MongoDB puis réessayez." });
+        }
+
         const user = await User.Login(email.trim().toLowerCase(), password);
+        if (Date.now() - startedAt > 1000) {
+            console.warn(`[auth-login] Connexion lente: ${Date.now() - startedAt}ms ${email.trim().toLowerCase()}`);
+        }
 
         // Générer un token JWT
         const token = jwt.sign(
@@ -132,7 +209,97 @@ exports.login = async (req, res) => {
             token
         });
     } catch (error) {
+        console.error("Erreur login:", error.message);
+        if (error?.message?.includes('operation exceeded time limit')) {
+            return res.status(503).json({ error: "Base utilisateurs lente ou indisponible. Réessayez dans quelques secondes." });
+        }
+        if (error?.message?.includes('buffering timed out') || error?.message?.includes('Cannot call') || error?.name === 'MongooseError') {
+            return res.status(503).json({ error: "Base de données indisponible. Vérifiez la connexion MongoDB." });
+        }
         res.status(401).json({ error: error.message });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email || !email.trim()) {
+            return res.status(400).json({ error: "L'email est requis." });
+        }
+
+        const user = await User.findOne({ email: email.trim().toLowerCase() });
+        const message = "Si cet email existe, un lien de reinitialisation a ete envoye.";
+
+        if (!user) {
+            return res.status(200).json({ message });
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const resetLink = `${getFrontendUrl()}/reset-password/${token}`;
+
+        user.passwordResetToken = getResetTokenHash(token);
+        user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000);
+        await user.save();
+
+        let emailSent = false;
+        try {
+            emailSent = await sendPasswordResetEmail({
+                email: user.email,
+                username: user.username,
+                resetLink
+            });
+        } catch (mailError) {
+            console.error('Erreur envoi email resetPassword:', mailError.message);
+            if (process.env.NODE_ENV === 'production') {
+                throw mailError;
+            }
+        }
+
+        const payload = { message, emailSent };
+        if (process.env.NODE_ENV !== 'production') {
+            payload.resetLink = resetLink;
+        }
+
+        res.status(200).json(payload);
+    } catch (error) {
+        console.error('Erreur forgotPassword:', error);
+        res.status(500).json({ error: "Impossible de creer le lien de reinitialisation." });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password, confirmPassword } = req.body;
+
+        if (!token) {
+            return res.status(400).json({ error: "Token manquant." });
+        }
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: "Le mot de passe doit contenir au moins 6 caracteres." });
+        }
+        if (confirmPassword !== undefined && password !== confirmPassword) {
+            return res.status(400).json({ error: "Les mots de passe ne correspondent pas." });
+        }
+
+        const user = await User.findOne({
+            passwordResetToken: getResetTokenHash(token),
+            passwordResetExpires: { $gt: new Date() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ error: "Lien invalide ou expire." });
+        }
+
+        user.password = password;
+        user.passwordResetToken = null;
+        user.passwordResetExpires = null;
+        await user.save();
+
+        res.status(200).json({ message: "Mot de passe mis a jour avec succes." });
+    } catch (error) {
+        console.error('Erreur resetPassword:', error);
+        res.status(500).json({ error: "Impossible de reinitialiser le mot de passe." });
     }
 };
 
@@ -219,6 +386,39 @@ exports.updateProfile = async (req, res) => {
                 role: user.role
             }
         });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ error: 'Mot de passe actuel et nouveau mot de passe requis.' });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: 'Le nouveau mot de passe doit contenir au moins 6 caracteres.' });
+        }
+        if (confirmPassword !== undefined && newPassword !== confirmPassword) {
+            return res.status(400).json({ error: 'Les mots de passe ne correspondent pas.' });
+        }
+
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ error: 'Utilisateur non trouve' });
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: 'Mot de passe actuel incorrect.' });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Mot de passe mis a jour avec succes.' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

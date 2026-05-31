@@ -89,8 +89,23 @@ export default function ChatbotAssistant() {
 
   useEffect(() => {
     if (open) {
-      window.setTimeout(() => inputRef.current?.focus(), 50);
+      const isDesktop = window.matchMedia("(min-width: 641px)").matches;
+      if (isDesktop) {
+        window.setTimeout(() => inputRef.current?.focus(), 50);
+      }
     }
+  }, [open]);
+
+  useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    if (!open || !isMobile) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
   }, [open]);
 
   const submitMessage = useCallback(

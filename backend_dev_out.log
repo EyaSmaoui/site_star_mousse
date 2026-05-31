@@ -1,0 +1,175 @@
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node --max-http-header-size=16384 C:\site_star_mousse\backend\app.js`[39m
+◇ injected env (6) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+connected to MongoDB (remote)
+✅ Serveur prêt sur le port 5000 avec toutes les routes activées
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node --max-http-header-size=16384 C:\site_star_mousse\backend\app.js`[39m
+◇ injected env (6) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+connected to MongoDB (remote)
+✅ Serveur prêt sur le port 5000 avec toutes les routes activées
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node --max-http-header-size=16384 C:\site_star_mousse\backend\app.js`[39m
+◇ injected env (6) from .env // tip: ⌘ override existing { override: true }
+connected to MongoDB (remote)
+✅ Serveur prêt sur le port 5000 avec toutes les routes activées
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node --max-http-header-size=16384 C:\site_star_mousse\backend\app.js`[39m
+◇ injected env (6) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+connected to MongoDB (remote)
+✅ Serveur prêt sur le port 5000 avec toutes les routes activées
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node --max-http-header-size=16384 C:\site_star_mousse\backend\app.js`[39m
+◇ injected env (6) from .env // tip: ⌘ enable debugging { debug: true }
+connected to MongoDB (remote)
+✅ Serveur prêt sur le port 5000 avec toutes les routes activées
+[0mGET /api/health [32m200 [0m13.900 ms - 94[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m160.026 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m114.111 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m7.064 ms - 176[0m
+[0mPOST /api/users/forgot-password [32m200 [0m213.179 ms - 210[0m
+[0mPOST /api/users/forgot-password [32m200 [0m92.229 ms - 210[0m
+[0mPOST /api/users/forgot-password [32m200 [0m96.932 ms - 210[0m
+[0mPOST /api/users/forgot-password [32m200 [0m89.563 ms - 210[0m
+[0mPOST /api/users/forgot-password [32m200 [0m50.806 ms - 76[0m
+[0mPOST /api/users/forgot-password [32m200 [0m61.846 ms - 76[0m
+[0mPOST /api/users/forgot-password [32m200 [0m84.407 ms - 76[0m
+[0mPOST /api/users/forgot-password [32m200 [0m50.113 ms - 76[0m
+[0mPOST /api/users/forgot-password [32m200 [0m45.127 ms - 76[0m
+[0mPOST /api/users/forgot-password [32m200 [0m94.450 ms - 210[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m1.500 ms - 176[0m
+[0mPOST /api/users/reset-password/f6655e8f6973738242a905ffbe8d712ead1c9e6418271696f9942adfc4d3f977 [32m200 [0m209.059 ms - 50[0m
+[0mPOST /api/users/login [32m200 [0m169.699 ms - 394[0m
+[0mGET /api/orders/my-orders [32m200 [0m114.454 ms - 2[0m
+[0mGET /api/users/profile [32m200 [0m99.437 ms - 137[0m
+[0mGET /api/reviews/my-reviews [32m200 [0m102.504 ms - 2[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m128.887 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m90.140 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m109.001 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m111.717 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m108.621 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m156.039 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m109.030 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m111.484 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m100.627 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m113.373 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m117.008 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m102.488 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m99.422 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m115.735 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m107.149 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m101.241 ms - -[0m
+[0mPOST /api/users/login [32m200 [0m157.443 ms - 394[0m
+[0mGET /api/orders/my-orders [36m304 [0m110.878 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m83.733 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m103.344 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m120.237 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m116.019 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m100.670 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m94.365 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m96.453 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m1.995 ms - 176[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m113.270 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m100.569 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m95.173 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m114.725 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m88.041 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m98.738 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m106.285 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m97.664 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m99.252 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m112.051 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m128.691 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m91.606 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m115.829 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m99.199 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m116.403 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m1.836 ms - 176[0m
+[0mGET /api/users/profile [36m304 [0m123.558 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m124.399 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m121.946 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m134.363 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m1.177 ms - 176[0m
+[0mGET /api/users/profile [36m304 [0m131.791 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m97.949 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m95.070 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m114.782 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m0.794 ms - 176[0m
+[0mGET /api/users/profile [36m304 [0m105.691 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m100.506 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m98.125 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m99.619 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m89.022 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m99.041 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m99.002 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m111.114 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m115.161 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m117.391 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m94.880 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m100.505 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m129.894 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m208.064 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m211.654 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m211.459 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m94.962 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m102.782 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m106.316 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m2.282 ms - 176[0m
+[0mGET /api/users/profile [36m304 [0m91.732 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m101.711 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m1.741 ms - 176[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m98.920 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m99.149 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m105.394 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m102.527 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m1.699 ms - 176[0m
+[0mGET /api/users/profile [36m304 [0m106.574 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m107.959 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m92.504 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m95.132 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m101.703 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m96.909 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m106.969 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m111.822 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m116.244 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m1.226 ms - 176[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m83.075 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m101.522 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m94.482 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m97.955 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m98.389 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m99.801 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m0.959 ms - 176[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m114.548 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m110.598 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m99.760 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m95.269 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m126.149 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m82.985 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m89.513 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m111.225 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m100.210 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m89.515 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [36m304 [0m105.660 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m106.195 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m110.070 ms - -[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m95.020 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m109.942 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m114.388 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m103.545 ms - -[0m
+[0mGET /api/orders/my-orders [36m304 [0m92.736 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m12.894 ms - 176[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m1065.291 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m121.299 ms - -[0m
+[0mGET /api/health [32m200 [0m6.813 ms - 94[0m
+[0mGET /api/health [32m200 [0m0.957 ms - 94[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m203.632 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m118.943 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m5.219 ms - 176[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m122.874 ms - -[0m
+[0mGET /api/products/recommended?limit=3 [36m304 [0m125.067 ms - -[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m7.462 ms - 176[0m

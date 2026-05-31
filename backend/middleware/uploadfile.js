@@ -1,29 +1,45 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
+const uploadPath = path.join(__dirname, '..', 'public', 'images');
+
+if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+}
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/images')
+        cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
-        const uploadPath = 'public/images';
-        const originalName = file.originalname;
-        console.log(file.originalname); 
-        const fileExtension = path.extname(originalName);
-        let fileName = originalName;
+        const fileExtension = path.extname(file.originalname).toLowerCase();
+        const safeBaseName = path
+            .basename(file.originalname, fileExtension)
+            .replace(/[^a-zA-Z0-9_-]/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '') || 'product';
+        let fileName = `${safeBaseName}${fileExtension}`;
 
-        //verifier si le fichier existe déjà
         let fileIndex = 1;
         while (fs.existsSync(path.join(uploadPath, fileName))) {
-            const baseName = path.basename(originalName, fileExtension);
-            fileName = `${baseName}_${fileIndex}${fileExtension}`;
+            fileName = `${safeBaseName}_${fileIndex}${fileExtension}`;
             fileIndex++;
         }
+
         cb(null, fileName);
     }
-})
+});
 
-var uploadfile = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+        return cb(new Error('Seuls les fichiers image sont acceptes.'));
+    }
+    cb(null, true);
+};
 
-
-module.exports = uploadfile;
+module.exports = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 },
+});

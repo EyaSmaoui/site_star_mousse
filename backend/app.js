@@ -7,6 +7,7 @@ const http = require('http');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const mongoose = require('mongoose');
 const { connectToMongoDB } = require('./config/mongo.connection');
 
 var app = express();
@@ -24,15 +25,21 @@ const defaultOrigins = [
 const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
   : defaultOrigins;
+const deploymentOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CLIENT_URL,
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, '')}` : null,
+].filter(Boolean).map((origin) => origin.replace(/\/$/, ''));
+const allowedOrigins = [...new Set([...corsOrigins, ...deploymentOrigins])];
 
 // MIDDLEWARES
 app.use(logger('dev'));
 app.use(cors({
-  origin: corsOrigins,
+  origin: allowedOrigins,
   credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'star_mousse_backend_session_secret_2026',
@@ -58,9 +65,11 @@ app.use('/api/reviews', require('./routes/review.routes'));
 app.use('/api/chatbot', require('./routes/chatbot.routes'));
 
 app.get('/api/health', (req, res) => {
+  const dbStates = ['disconnected', 'connected', 'connecting', 'disconnecting'];
   res.json({
     ok: true,
     message: 'API Star Mousse opérationnelle',
+    db: dbStates[mongoose.connection.readyState] || 'unknown',
     timestamp: new Date().toISOString(),
   });
 });
@@ -81,10 +90,38 @@ if (process.env.NODE_ENV === 'production') {
 
 // SERVEUR
 const PORT = process.env.PORT || 3000;
-const server = http.createServer(app);
+const server = http.createServer({
+  maxHeaderSize: 32768,
+}, app);
+
+let mongoRetryTimer = null;
+let mongoConnecting = false;
+
+const ensureMongoConnection = async () => {
+  if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2 || mongoConnecting) {
+    return;
+  }
+
+  mongoConnecting = true;
+  try {
+    await connectToMongoDB();
+    if (mongoRetryTimer) {
+      clearInterval(mongoRetryTimer);
+      mongoRetryTimer = null;
+    }
+  } catch (err) {
+    console.error('MongoDB indisponible, API demarree en mode degrade:', err.message);
+  } finally {
+    mongoConnecting = false;
+  }
+};
 
 const startServer = async () => {
-  await connectToMongoDB();
+  await ensureMongoConnection();
+  if (mongoose.connection.readyState !== 1 && !mongoRetryTimer) {
+    mongoRetryTimer = setInterval(ensureMongoConnection, 30000);
+  }
+
   server.listen(PORT, () => {
     console.log(`✅ Serveur prêt sur le port ${PORT} avec toutes les routes activées`);
   });

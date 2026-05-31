@@ -1,0 +1,40 @@
+
+> site-star-mousse@0.0.0 start
+> node --max-http-header-size=16384 app.js
+
+◇ injected env (13) from .env // tip: ⌘ suppress logs { quiet: true }
+connected to MongoDB (remote)
+✅ Serveur prêt sur le port 5000 avec toutes les routes activées
+[0mGET /api/health [32m200 [0m16.051 ms - 111[0m
+[0mPOST /api/users/login [32m200 [0m142.980 ms - 395[0m
+[0mPOST /api/users/login [32m200 [0m106.473 ms - 384[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m139.023 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m484.655 ms - 960[0m
+[0mPOST /api/users/login [32m200 [0m105.865 ms - 395[0m
+[0mPOST /api/products/addWithImage [32m201 [0m151.916 ms - 329[0m
+[0mPOST /api/users/login [32m200 [0m114.398 ms - 395[0m
+[0mDELETE /api/products/delete/6a1c26827a9b1da6f5579fd1 [32m200 [0m111.628 ms - 42[0m
+[0mPOST /api/users/register [33m400 [0m3.775 ms - 65[0m
+[0mPOST /api/users/register [32m201 [0m119.257 ms - 411[0m
+✅ Commande enregistrée ! ID: new ObjectId("6a1c26c17a9b1da6f5579fd9")
+[0mPOST /api/orders/addOrder [32m201 [0m115.119 ms - 417[0m
+[0mGET /api/orders/my-orders [32m200 [0m108.387 ms - 375[0m
+[0mGET /api/users/profile [32m200 [0m112.409 ms - 128[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m581.176 ms - -[0m
+[0mPOST /api/users/login [32m200 [0m124.288 ms - 395[0m
+[0mPOST /api/users/register [32m201 [0m116.165 ms - 474[0m
+[0mPOST /api/users/create-employer [32m201 [0m213.348 ms - 190[0m
+[0mPOST /api/reviews/addReview [32m201 [0m246.034 ms - 382[0m
+[0mGET /api/reviews/my-reviews [32m200 [0m140.703 ms - 966[0m
+[0mGET /api/orders/my-orders [32m200 [0m104.455 ms - 375[0m
+[0mGET /api/users/profile [36m304 [0m122.192 ms - -[0m
+[0mGET /api/users/profile [32m200 [0m130.978 ms - 128[0m
+[0mGET /api/orders/my-orders [36m304 [0m392.019 ms - -[0m
+[0mGET /api/users/profile [32m200 [0m99.458 ms - 128[0m
+[0mGET /api/users/profile [36m304 [0m103.296 ms - -[0m
+[0mGET /api/reviews/my-reviews [32m200 [0m149.072 ms - 966[0m
+[0mGET /api/reviews/my-reviews [36m304 [0m450.056 ms - -[0m
+[0mGET /api/products/recommended?limit=6 [32m200 [0m117.358 ms - 960[0m
+[0mGET /api/products/recommended?limit=6 [32m200 [0m115.511 ms - 960[0m
+[0mGET /api/users/profile [36m304 [0m118.981 ms - -[0m
+[0mGET /api/users/profile [36m304 [0m104.478 ms - -[0m

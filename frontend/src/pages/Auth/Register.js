@@ -44,11 +44,11 @@ const Register = () => {
         localStorage.setItem('user', JSON.stringify(response.user));
       }
       toast.success("Compte Star Mousse créé ! Bienvenue 🌙");
-      const pendingOrderPromise = submitPendingOrder().catch((err) => {
+      submitPendingOrder().catch((err) => {
         console.error('Erreur commande en attente :', err);
+        toast.warning("Compte créé, mais la commande en attente n'a pas pu être envoyée.");
       });
-      setTimeout(async () => {
-        await pendingOrderPromise;
+      setTimeout(() => {
         navigate("/client-dashboard");
       }, 2000);
     } catch (err) {

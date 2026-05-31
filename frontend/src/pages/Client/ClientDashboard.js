@@ -36,7 +36,22 @@ const ClientDashboard = () => {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
+  const [orderSearch, setOrderSearch] = useState('');
+  const [orderStatusFilter, setOrderStatusFilter] = useState('all');
   const [isAuthorized, setIsAuthorized] = useState(false);
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 900 : false);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 900);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const dateStr = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
@@ -115,8 +130,9 @@ const ClientDashboard = () => {
 
   useEffect(() => {
     const tab = new URLSearchParams(location.search).get('tab');
-    if (tab === 'reviews' || tab === 'orders') {
+    if (tab === 'reviews' || tab === 'orders' || tab === 'profile') {
       setActiveTab(tab);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [location.search]);
 
@@ -140,6 +156,23 @@ const ClientDashboard = () => {
     const matchesRating = ratingFilter === 'all' || String(review.rating) === ratingFilter;
     return matchesSearch && matchesRating;
   });
+
+  const filteredOrders = orders.filter((order) => {
+    const normalizedText = `${order._id || ''} ${order.customerName || ''} ${order.customerEmail || ''}`.toLowerCase();
+    const matchesSearch = normalizedText.includes(orderSearch.toLowerCase());
+    const statusValue = (order.status || '').toLowerCase();
+    const matchesStatus = orderStatusFilter === 'all' || statusValue === orderStatusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const totalOrders = orders.length;
+  const activeOrdersCount = orders.filter((order) => {
+    const status = (order.status || '').toLowerCase();
+    return ['pending', 'en attente', 'en cours', 'expédié'].includes(status);
+  }).length;
+  const averageRating = reviews.length
+    ? (reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.length).toFixed(1)
+    : '0.0';
 
   useEffect(() => {
     if (loading || isReviewModalOpen || !orderProductOptions.length) return;
@@ -237,6 +270,7 @@ const ClientDashboard = () => {
       rating: 0
     });
     setIsReviewModalOpen(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleReviewSubmit = async (event) => {
@@ -286,9 +320,9 @@ const ClientDashboard = () => {
   return (
     <div style={S.root}>
       <ClientSidebar />
-      <main style={S.main}>
+      <main style={{ ...S.main, marginLeft: isMobile ? 0 : 240, padding: isMobile ? '18px 16px 80px' : S.main.padding }}>
         <div className="dashboard-container">
-          <div style={S.topbar}>
+          <div style={S.topbar} className="dashboard-topbar">
             <div>
               <h1 style={S.title}>Bienvenue, {profile.username} !</h1>
               <div style={S.subtitle}>Tableau de bord client</div>
@@ -301,25 +335,43 @@ const ClientDashboard = () => {
             </div>
           </div>
 
-          <div style={S.tabsRow}>
+          <div className="dashboard-stats">
+            <div className="stat-card">
+              <span className="stat-label">Commandes totales</span>
+              <strong>{totalOrders}</strong>
+              <p>Nombre de commandes reçues</p>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Commandes en cours</span>
+              <strong>{activeOrdersCount}</strong>
+              <p>Suivez vos livraisons et préparations</p>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Note moyenne</span>
+              <strong>{averageRating} ★</strong>
+              <p>Basée sur vos avis reçus</p>
+            </div>
+          </div>
+
+          <div style={S.tabsRow} className="dashboard-tabs">
             <button
               type="button"
               style={{ ...S.tabBtn, ...(activeTab === 'orders' ? S.tabBtnActive : S.tabBtnInactive) }}
-              onClick={() => setActiveTab('orders')}
+              onClick={() => handleTabClick('orders')}
             >
               Mes commandes
             </button>
             <button
               type="button"
               style={{ ...S.tabBtn, ...(activeTab === 'reviews' ? S.tabBtnActive : S.tabBtnInactive) }}
-              onClick={() => setActiveTab('reviews')}
+              onClick={() => handleTabClick('reviews')}
             >
               Mes avis
             </button>
             <button
               type="button"
               style={{ ...S.tabBtn, ...(activeTab === 'profile' ? S.tabBtnActive : S.tabBtnInactive) }}
-              onClick={() => setActiveTab('profile')}
+              onClick={() => handleTabClick('profile')}
             >
               Mon profil
             </button>
@@ -337,13 +389,36 @@ const ClientDashboard = () => {
             </button>
           </div>
 
-          {orders.length === 0 ? (
+          <div className="dashboard-filters">
+            <input
+              type="text"
+              className="filter-input"
+              placeholder="Rechercher une commande par numéro, nom ou email..."
+              value={orderSearch}
+              onChange={(event) => setOrderSearch(event.target.value)}
+            />
+            <select
+              className="filter-select"
+              value={orderStatusFilter}
+              onChange={(event) => setOrderStatusFilter(event.target.value)}
+            >
+              <option value="all">Tous les statuts</option>
+              <option value="pending">En attente</option>
+              <option value="en attente">En attente</option>
+              <option value="en cours">En cours</option>
+              <option value="expédié">Expédié</option>
+              <option value="livré">Livré</option>
+              <option value="annulé">Annulé</option>
+            </select>
+          </div>
+
+          {filteredOrders.length === 0 ? (
             <div className="empty-state">
-              <p>Vous n'avez pas encore de commandes.</p>
+              <p>Vous n'avez pas encore de commandes correspondant aux filtres.</p>
             </div>
           ) : (
             <div className="orders-grid">
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <div key={order._id} className="order-card">
                   <div className="order-header">
                     <h3>Commande #{order._id.slice(-6).toUpperCase()}</h3>
@@ -353,7 +428,7 @@ const ClientDashboard = () => {
                   <div className="order-details">
                     <div className="detail-row">
                       <span className="label">Statut:</span>
-                      <span className="status" style={{ color: getStatusColor(order.status) }}>
+                      <span className="status order-badge" style={{ color: getStatusColor(order.status), borderColor: getStatusColor(order.status), backgroundColor: `${getStatusColor(order.status)}22` }}>
                         {order.status}
                       </span>
                     </div>
@@ -590,7 +665,7 @@ const S = {
   },
   main: {
     flex: 1,
-    marginLeft: 220,
+    marginLeft: 240,
     padding: '28px 32px',
   },
   topbar: {

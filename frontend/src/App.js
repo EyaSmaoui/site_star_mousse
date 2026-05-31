@@ -8,8 +8,11 @@ import { hasAccess, ROLES } from "./utils/authUtils";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth/Auth";
 import Register from "./pages/Auth/Register";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
+import ResetPassword from "./pages/Auth/ResetPassword";
 import Products from "./pages/Store/Articles";
 import Promos from "./pages/Store/Promos";
+import Cart from "./pages/Store/Cart";
 import About from "./pages/Info/About";
 import Help from "./pages/Info/Help";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -26,6 +29,8 @@ import EmployeeDashboard from "./pages/Employee/EmployeeDashboard";
 import EmployeeOrders from "./pages/Employee/EmployeeOrders";
 import EmployeeStock from "./pages/Employee/EmployeeStock";
 import EmployeeProfile from "./pages/Employee/EmployeeProfile";
+import EmployeeClients from "./pages/Employee/EmployeeClients";
+import EmployeeSettings from "./pages/Employee/EmployeeSettings";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import ChatbotAssistant from "./components/ChatbotAssistant";
 
@@ -477,9 +482,12 @@ function AppContent() {
         <Route path="/login/employee" element={<Auth role="employee" />} />
         <Route path="/login/client" element={<Auth role="client" />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route path="/products" element={<Products />} />
         <Route path="/promos" element={<Promos />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<About />} />
         <Route path="/help" element={<Help />} />
 
@@ -494,7 +502,9 @@ function AppContent() {
         <Route path="/employer/orders" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeOrders />} />} />
         <Route path="/admin/orders" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminOrders />} />} />
         <Route path="/employer/inventory" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeStock />} />} />
+        <Route path="/employer/clients" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeClients />} />} />
         <Route path="/employer/profile" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeProfile />} />} />
+        <Route path="/employer/settings" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeSettings />} />} />
         <Route path="/profile" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<Profile />} />} />
         <Route path="/manage-clients" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<ManageClients />} />} />
         <Route path="/manage-managers" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<ManageManagers />} />} />

@@ -1,0 +1,48 @@
+use('site_star_mousse');
+
+db.products.bulkWrite([
+  // Relax Plus
+  { updateOne: { filter: { "name": "Relax Plus 190x80" }, update: { $set: { "price": 515 } } } },
+  { updateOne: { filter: { "name": "Relax Plus 190x90" }, update: { $set: { "price": 575 } } } },
+  { updateOne: { filter: { "name": "Relax Plus 190x120" }, update: { $set: { "price": 810 } } } },
+  { updateOne: { filter: { "name": "Relax Plus 190x140" }, update: { $set: { "price": 835 } } } },
+  { updateOne: { filter: { "name": "Relax Plus 190x160" }, update: { $set: { "price": 965 } } } },
+  { updateOne: { filter: { "name": "Relax Plus 200x160" }, update: { $set: { "price": 1105 } } } },
+  { updateOne: { filter: { "name": "Relax Plus 200x180" }, update: { $set: { "price": 1305 } } } },
+
+  // Soft Plus
+  { updateOne: { filter: { "name": "Soft Plus 190x80" }, update: { $set: { "price": 255 } } } },
+  { updateOne: { filter: { "name": "Soft Plus 190x90" }, update: { $set: { "price": 285 } } } },
+  { updateOne: { filter: { "name": "Soft Plus 190x120" }, update: { $set: { "price": 385 } } } },
+  { updateOne: { filter: { "name": "Soft Plus 190x140" }, update: { $set: { "price": 395 } } } },
+  { updateOne: { filter: { "name": "Soft Plus 190x160" }, update: { $set: { "price": 445 } } } },
+  { updateOne: { filter: { "name": "Soft Plus 200x160" }, update: { $set: { "price": 505 } } } },
+  { updateOne: { filter: { "name": "Soft Plus 200x180" }, update: { $set: { "price": 605 } } } },
+
+  // Tendresse Plus
+  { updateOne: { filter: { "name": "Tendresse Plus 190x80" }, update: { $set: { "price": 705 } } } },
+  { updateOne: { filter: { "name": "Tendresse Plus 190x90" }, update: { $set: { "price": 775 } } } },
+  { updateOne: { filter: { "name": "Tendresse Plus 190x120" }, update: { $set: { "price": 1105 } } } },
+  { updateOne: { filter: { "name": "Tendresse Plus 190x140" }, update: { $set: { "price": 1155 } } } },
+  { updateOne: { filter: { "name": "Tendresse Plus 190x160" }, update: { $set: { "price": 1335 } } } },
+  { updateOne: { filter: { "name": "Tendresse Plus 200x160" }, update: { $set: { "price": 1475 } } } },
+  { updateOne: { filter: { "name": "Tendresse Plus 200x180" }, update: { $set: { "price": 1755 } } } },
+
+  // Venise Plus
+  { updateOne: { filter: { "name": "Venise Plus 190x80" }, update: { $set: { "price": 305 } } } },
+  { updateOne: { filter: { "name": "Venise Plus 190x90" }, update: { $set: { "price": 335 } } } },
+  { updateOne: { filter: { "name": "Venise Plus 190x120" }, update: { $set: { "price": 445 } } } },
+  { updateOne: { filter: { "name": "Venise Plus 190x140" }, update: { $set: { "price": 465 } } } },
+  { updateOne: { filter: { "name": "Venise Plus 190x160" }, update: { $set: { "price": 525 } } } },
+  { updateOne: { filter: { "name": "Venise Plus 200x160" }, update: { $set: { "price": 595 } } } },
+  { updateOne: { filter: { "name": "Venise Plus 200x180" }, update: { $set: { "price": 705 } } } },
+
+  // Medico Plus
+  { updateOne: { filter: { "name": "Medico Plus 190x80" }, update: { $set: { "price": 425 } } } },
+  { updateOne: { filter: { "name": "Medico Plus 190x90" }, update: { $set: { "price": 475 } } } },
+  { updateOne: { filter: { "name": "Medico Plus 190x120" }, update: { $set: { "price": 675 } } } },
+  { updateOne: { filter: { "name": "Medico Plus 190x140" }, update: { $set: { "price": 695 } } } },
+  { updateOne: { filter: { "name": "Medico Plus 190x160" }, update: { $set: { "price": 805 } } } },
+  { updateOne: { filter: { "name": "Medico Plus 200x160" }, update: { $set: { "price": 880 } } } },
+  { updateOne: { filter: { "name": "Medico Plus 200x180" }, update: { $set: { "price": 1055 } } } }
+]);

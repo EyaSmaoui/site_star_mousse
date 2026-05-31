@@ -17,6 +17,7 @@ const getTokenFromRequest = (req) => {
 };
 
 const requireAuthUser = async (req, res, next) => {
+  const startedAt = Date.now();
   const token = getTokenFromRequest(req);
   if (!token) {
     return res.status(401).json({ error: 'Token not found' });
@@ -24,13 +25,23 @@ const requireAuthUser = async (req, res, next) => {
 
   try {
     const decodedToken = jwt.verify(token, JWT_SECRET);
-    const user = await userModel.findById(decodedToken.userId || decodedToken.id);
+    const user = await userModel
+      .findById(decodedToken.userId || decodedToken.id)
+      .select('role username email')
+      .maxTimeMS(3000)
+      .lean();
     if (!user) {
       return res.status(401).json({ error: 'Utilisateur non trouvé' });
     }
     req.user = user;
+    if (Date.now() - startedAt > 1000) {
+      console.warn(`[auth] Vérification lente: ${Date.now() - startedAt}ms ${req.method} ${req.originalUrl}`);
+    }
     next();
   } catch (error) {
+    if (error?.message?.includes('operation exceeded time limit')) {
+      return res.status(503).json({ error: 'Base utilisateurs lente ou indisponible' });
+    }
     return res.status(401).json({ error: 'Token invalide' });
   }
 };
@@ -41,7 +52,11 @@ const optionalAuthUser = async (req, res, next) => {
 
   try {
     const decodedToken = jwt.verify(token, JWT_SECRET);
-    const user = await userModel.findById(decodedToken.userId || decodedToken.id);
+    const user = await userModel
+      .findById(decodedToken.userId || decodedToken.id)
+      .select('role username email')
+      .maxTimeMS(3000)
+      .lean();
     if (user) req.user = user;
   } catch {
     req.user = null;
@@ -71,4 +86,3 @@ const requireEmployeeOrAdmin = (req, res, next) => {
 };
 
 module.exports = { requireAuthUser, optionalAuthUser, requireAdmin, requireEmployeeOrAdmin };
-

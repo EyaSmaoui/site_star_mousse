@@ -10,6 +10,14 @@
   --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overscroll-behavior-y: contain;
+}
+
 /* --- Reset & Base --- */
 * {
   margin: 0;
@@ -1334,7 +1342,7 @@ html[data-theme="dark"] svg:not([stroke="#fff"]) {
 
 .sm-order-actions {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 100px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .85fr) 100px;
   gap: 12px;
   align-items: stretch;
   margin-top: 29px;
@@ -1357,6 +1365,15 @@ html[data-theme="dark"] svg:not([stroke="#fff"]) {
   background: #08276f;
   box-shadow: 0 12px 28px rgba(0, 29, 91, 0.2);
   transform: translateY(-1px);
+}
+
+.sm-order-cart {
+  background: #ffffff;
+  color: #001d5b;
+}
+
+.sm-order-cart:hover:not(:disabled) {
+  background: #eef4ff;
 }
 
 .sm-order-submit:disabled {

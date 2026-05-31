@@ -9,7 +9,7 @@ const httpClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000,
+  timeout: 10000,
 });
 
 // Intercepteur de requête : Ajout propre du Token

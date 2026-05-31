@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema({
       message: 'Le rôle doit être client, user, admin, manager, employee ou employeur'
     },
     default: "client" 
+  },
+  passwordResetToken: {
+    type: String,
+    default: null
+  },
+  passwordResetExpires: {
+    type: Date,
+    default: null
   }
 }, { timestamps: true });
 
@@ -51,11 +59,13 @@ userSchema.pre('save', async function(next) {
 
 // Méthode Statique pour le Login
 userSchema.statics.Login = async function(email, password) {
-    const user = await this.findOne({ email });
+    const user = await this.findOne({ email }).maxTimeMS(3000);
     if (!user) throw new Error('Utilisateur non trouvé');
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error('Mot de passe incorrect');
     return user;
 };
+
+userSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model('User', userSchema);

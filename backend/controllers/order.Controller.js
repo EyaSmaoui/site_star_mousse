@@ -23,8 +23,18 @@ exports.addOrder = async (req, res) => {
 };
 
 exports.getAllOrders = async (req, res) => {
+  const startedAt = Date.now();
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 300);
+    const orders = await Order.find()
+      .select('customerName customerEmail phone address products total status createdAt updatedAt')
+      .sort({ _id: -1 })
+      .limit(limit)
+      .maxTimeMS(8000)
+      .lean();
+    if (Date.now() - startedAt > 1000) {
+      console.warn(`[orders] Liste lente: ${Date.now() - startedAt}ms limit=${limit}`);
+    }
     res.status(200).json(orders);
   } catch (error) {
     console.error("❌ Erreur récupération :", error.message);
@@ -32,10 +42,26 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
+exports.getOrdersPing = async (req, res) => {
+  try {
+    const count = await Order.estimatedDocumentCount().maxTimeMS(3000);
+    res.status(200).json({ ok: true, count });
+  } catch (error) {
+    console.error("❌ Erreur diagnostic commandes :", error.message);
+    res.status(503).json({ ok: false, message: "Base commandes lente ou indisponible", error: error.message });
+  }
+};
+
 exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.user._id;
-    const orders = await Order.find({ userId: userId }).sort({ createdAt: -1 });
+    const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 500);
+    const orders = await Order.find({ userId: userId })
+      .select('customerName customerEmail phone address products total status createdAt updatedAt')
+      .sort({ _id: -1 })
+      .limit(limit)
+      .maxTimeMS(8000)
+      .lean();
     res.status(200).json(orders);
   } catch (error) {
     console.error("❌ Erreur récupération des commandes :", error.message);

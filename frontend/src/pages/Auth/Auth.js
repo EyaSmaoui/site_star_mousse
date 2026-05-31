@@ -153,11 +153,11 @@ const Auth = ({ role: requiredRole } = {}) => {
         localStorage.setItem('user', JSON.stringify(user));
       }
       toast.success(tab === 0 ? "Heureux de vous revoir !" : "Compte créé avec succès !");
-      const pendingOrderPromise = submitPendingOrder().catch((err) => {
+      submitPendingOrder().catch((err) => {
         console.error('Erreur commande en attente :', err);
+        toast.warning("Connexion réussie, mais la commande en attente n'a pas pu être envoyée.");
       });
-      setTimeout(async () => {
-        await pendingOrderPromise;
+      setTimeout(() => {
         if (tab === 0) {
           redirectByRole(user, navigate);
         } else {
@@ -165,7 +165,10 @@ const Auth = ({ role: requiredRole } = {}) => {
         }
       }, 1400);
     } catch (err) {
-      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || "Une erreur est survenue.";
+      const errorMessage =
+        err.code === "ECONNABORTED"
+          ? "Connexion impossible: le serveur d'authentification ne répond pas. Vérifiez MongoDB/backend."
+          : err.response?.data?.error || err.response?.data?.message || err.message || "Une erreur est survenue.";
       toast.error(errorMessage);
     } finally {
       setLoading(false);

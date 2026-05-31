@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { addReview } from "../services/apiReview";
+import { addCartItem } from "../utils/cartUtils";
 
 const defaultFields = {
   name: "nom",
@@ -44,6 +45,25 @@ export default function OrderCheckout({
     if (typeof onSubmit === "function") {
       onSubmit(event);
     }
+  };
+
+  const handleAddToCart = () => {
+    const title = document.querySelector("h1")?.textContent?.trim() || "Produit Star Mousse";
+    const selectedSize =
+      document.querySelector('input[name="size"]:checked')?.closest("label")?.textContent?.trim() ||
+      document.querySelector(".ssn-size.active, .ssn-size-btn.active, .ssn-size-item input:checked")?.textContent?.trim() ||
+      "";
+    const image = document.querySelector(".ssn-main-frame img, .ssn-gallery img, img[alt]")?.getAttribute("src") || "";
+    const quantity = Math.max(1, Number(qty || 1));
+    const unitPrice = quantity ? Number(subtotal || orderTotal || 0) / quantity : Number(subtotal || orderTotal || 0);
+
+    addCartItem({
+      name: title,
+      size: selectedSize,
+      image,
+      price: unitPrice,
+      quantity,
+    });
   };
 
   useEffect(() => {
@@ -162,6 +182,9 @@ export default function OrderCheckout({
         <div className="sm-order-actions">
           <button type="button" className="sm-order-submit" onClick={handleButtonClick} disabled={loading}>
             {loading ? "Envoi en cours..." : buttonLabel}
+          </button>
+          <button type="button" className="sm-order-submit sm-order-cart" onClick={handleAddToCart} disabled={loading}>
+            Ajouter au panier
           </button>
           <div className="sm-order-qty" aria-label="Quantite">
             <button type="button" onClick={() => setQty(Math.max(1, Number(qty || 1) - 1))}>
