@@ -1,0 +1,47 @@
+config:
+  target: "http://localhost:5000"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 50
+      name: "Ramp up"
+    - duration: 60
+      arrivalRate: 100
+      name: "Sustained load"
+  processor: "./artillery-processor.js"
+  variables:
+    token: ""
+
+scenarios:
+  - name: "API Health & Data Endpoints"
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+      
+      - think: 5
+      
+      - get:
+          url: "/api/data"
+          expect:
+            - statusCode: 200
+      
+      - think: 3
+      
+      - post:
+          url: "/api/data"
+          json:
+            name: "Load Test Item {{ $randomNumber(1, 10000) }}"
+            value: "{{ $randomNumber(100, 1000) }}"
+          expect:
+            - statusCode: 201
+      
+      - think: 2
+      
+      - get:
+          url: "/api/data"
+          expect:
+            - statusCode: 200
