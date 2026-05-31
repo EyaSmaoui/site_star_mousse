@@ -2,6 +2,137 @@ const Product = require('../models/product.model');
 const Recommendation = require('../models/recommendation.model');
 const { PRODUCT_CATALOG } = require('../services/recommendationEngine');
 const { inferProductImage, withProductImage } = require('../services/productImages');
+const { extractBudget, extractDimension } = require('../services/chatbot.utils');
+
+const normalizeQuery = (query) =>
+    String(query || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9\s]/g, ' ')
+        .trim()
+        .toLowerCase();
+
+const buildSearchCriteria = (query) => {
+    const normalized = normalizeQuery(query);
+    const dimension = extractDimension(query);
+    const maxPrice = dimension ? null : extractBudget(query);
+
+    const budgetStopWords = new Set(['budget', 'soum', 'prix', 'b', 'dt', 'dinar', 'dinars']);
+    const tokens = normalized
+        .split(/\s+/)
+        .filter(Boolean)
+        .filter((token) => !budgetStopWords.has(token) && !/^\d+(dt)?$/.test(token));
+    const criteria = { isAvctive: { $ne: false } };
+    const or = [];
+    const hasBabyIntent = /bebe|baby/i.test(normalized);
+    const hasPillowIntent = /oreiller|pillow|cervical|cou/i.test(normalized);
+    const hasBackIntent = /dos|dhar|orthop|orthoped|lombaire/i.test(normalized);
+    const hasErgonomicIntent = /ergonomi|relax|premium|luxe|tendresse|haut gamme|haut de gamme/i.test(normalized);
+
+    if (tokens.length && !hasBabyIntent && !hasPillowIntent && !hasBackIntent && !hasErgonomicIntent) {
+        const escaped = tokens.map((token) => token.replace(/[-\\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|');
+        const regex = new RegExp(escaped, 'i');
+        or.push({ name: { $regex: regex } });
+        or.push({ description: { $regex: regex } });
+        or.push({ category: { $regex: regex } });
+    }
+
+    if (hasPillowIntent) {
+        or.push({ name: { $regex: /oreiller|pillow|cervical|cou/i } });
+        or.push({ description: { $regex: /oreiller|pillow|cervical|cou/i } });
+    }
+
+    if (/dos|dhar|orthop|orthoped|orthop[eé]d|orthopedique/i.test(normalized)) {
+        or.push({ category: { $regex: /orn?th?o|dhar|dos/i } });
+        or.push({ name: { $regex: /confort|soft|venise|medico|orthop|dos|lombaire/i } });
+        or.push({ description: { $regex: /confort|soft|venise|medico|orthop|dos|lombaire/i } });
+    }
+
+    if (hasErgonomicIntent) {
+        or.push({ category: { $regex: /ergonomi|relax|premium|luxe|tendresse/i } });
+        or.push({ name: { $regex: /ergonomi|relax|premium|luxe|tendresse/i } });
+    }
+
+    if (/bebe|bébé|baby/i.test(normalized)) {
+        or.push({ category: { $regex: /bebe|bébé|baby/i } });
+        or.push({ name: { $regex: /bebe|bébé|baby/i } });
+    }
+
+    if (or.length) {
+        criteria.$or = or;
+    }
+
+    if (dimension) {
+        const [width, height] = dimension.split('x');
+        const dimensionRegex = new RegExp(`(^|\\D)(${width}\\s*[x*×/_-]\\s*${height}|${height}\\s*[x*×/_-]\\s*${width})(\\D|$)`, 'i');
+        criteria.$and = [
+            ...(criteria.$and || []),
+            {
+                $or: [
+                    { size: { $regex: dimensionRegex } },
+                    { name: { $regex: dimensionRegex } },
+                    { description: { $regex: dimensionRegex } },
+                ],
+            },
+        ];
+    }
+
+    if (maxPrice) {
+        criteria.price = { $lte: maxPrice };
+    }
+
+    return criteria;
+};
+
+const fetchRecommendedProducts = async ({ q = '', limit = 6 }) => {
+    const cleanQuery = String(q || '').trim();
+    if (cleanQuery) {
+        const criteria = buildSearchCriteria(cleanQuery);
+        if (criteria.$or) {
+            const matchedProducts = await Product.find(criteria)
+                .sort({ recommendationRank: -1, averageRating: -1, reviewCount: -1, price: 1 })
+                .limit(limit)
+                .lean();
+            if (matchedProducts.length) {
+                return matchedProducts.map(withProductImage);
+            }
+            if (extractDimension(cleanQuery)) {
+                return [];
+            }
+        }
+    }
+
+    const recommendations = await Recommendation.find()
+        .populate('product')
+        .sort({ rank: -1, averageRating: -1, reviewCount: -1 })
+        .limit(limit);
+
+    const activeRecommendations = recommendations
+        .filter((item) => item.product && item.product.isAvctive !== false)
+        .map((item) => ({
+            ...withProductImage(item.product),
+            recommendation: {
+                averageRating: item.averageRating,
+                reviewCount: item.reviewCount,
+                sentimentScore: item.sentimentScore,
+                rank: item.rank,
+                reason: item.reason,
+                updatedAt: item.updatedAt,
+            },
+        }));
+
+    if (activeRecommendations.length) {
+        return activeRecommendations;
+    }
+
+    const fallbackProducts = await Product.find({ isAvctive: { $ne: false } })
+        .sort({ recommendationRank: -1, averageRating: -1, reviewCount: -1, price: 1 })
+        .limit(limit)
+        .lean();
+
+    return fallbackProducts.length ? fallbackProducts.map(withProductImage) : PRODUCT_CATALOG.slice(0, limit);
+};
+
 module.exports.getAllProducts = async (req, res) => {
     try {
         const products = await Product.find().lean();
@@ -25,34 +156,9 @@ module.exports.getProductById = async (req, res) => {
 module.exports.getRecommendedProducts = async (req, res) => {
     try {
         const limit = Math.min(Number(req.query.limit) || 6, 12);
-        const recommendations = await Recommendation.find()
-            .populate('product')
-            .sort({ rank: -1, averageRating: -1, reviewCount: -1 })
-            .limit(limit);
-
-        const activeRecommendations = recommendations
-            .filter((item) => item.product && item.product.isAvctive !== false)
-            .map((item) => ({
-                ...withProductImage(item.product),
-                recommendation: {
-                    averageRating: item.averageRating,
-                    reviewCount: item.reviewCount,
-                    sentimentScore: item.sentimentScore,
-                    rank: item.rank,
-                    reason: item.reason,
-                    updatedAt: item.updatedAt
-                }
-            }));
-
-        if (activeRecommendations.length) {
-            return res.status(200).json(activeRecommendations);
-        }
-
-        const fallbackProducts = await Product.find({ isAvctive: { $ne: false } })
-            .sort({ recommendationRank: -1, averageRating: -1, reviewCount: -1, price: 1 })
-            .limit(limit);
-
-        res.status(200).json(fallbackProducts.length ? fallbackProducts.map(withProductImage) : PRODUCT_CATALOG.slice(0, limit));
+        const q = String(req.query.q || '').trim();
+        const products = await fetchRecommendedProducts({ q, limit });
+        res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -70,14 +176,16 @@ module.exports.addProduct = async (req, res) => {
             warranty,
             image: image || inferProductImage(name),
             color,
-            size
+            size,
         });
         await newProduct.save();
         res.status(201).json(newProduct);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-};  
+};
+module.exports.fetchRecommendedProducts = fetchRecommendedProducts;
+  
 module.exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;

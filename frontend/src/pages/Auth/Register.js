@@ -46,7 +46,7 @@ const Register = () => {
       toast.success("Compte Star Mousse créé ! Bienvenue 🌙");
       submitPendingOrder().catch((err) => {
         console.error('Erreur commande en attente :', err);
-        toast.warning("Compte créé, mais la commande en attente n'a pas pu être envoyée.");
+        toast.warning("Compte cree. Votre ancienne commande en attente n'a pas pu etre envoyee, merci de la refaire.");
       });
       setTimeout(() => {
         navigate("/client-dashboard");

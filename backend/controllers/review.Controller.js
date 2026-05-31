@@ -1,5 +1,6 @@
 const Review = require('../models/review.model');
 const Product = require('../models/product.model');
+const Order = require('../models/order.model');
 const mongoose = require('mongoose');
 const {
     processReviewSentiment,
@@ -116,15 +117,34 @@ module.exports.addReview = async (req, res) => {
             return res.status(400).json({ message: 'La note doit etre comprise entre 1 et 5.' });
         }
 
+        if (!req.body.order || !mongoose.isValidObjectId(req.body.order)) {
+            return res.status(400).json({ message: 'Commande invalide pour cet avis.' });
+        }
+
+        const order = await Order.findOne({
+            _id: req.body.order,
+            userId: req.user._id
+        }).lean();
+
+        if (!order) {
+            return res.status(403).json({ message: 'Vous pouvez laisser un avis uniquement sur vos commandes.' });
+        }
+
+        const orderProduct = (order.products || []).find((product) => (
+            !req.body.productName ||
+            String(product.name || '').toLowerCase() === String(req.body.productName || '').toLowerCase()
+        )) || (order.products || [])[0];
+
         const resolvedProduct = await resolveProduct(req.body);
         const newReview = new Review({
             rating,
             comment: String(req.body.comment || '').trim(),
             product: resolvedProduct?._id || req.body.product,
-            productName: req.body.productName || resolvedProduct?.name,
-            order: req.body.order,
-            user: req.user?._id || req.body.user,
-            owner: req.user?._id || req.body.owner
+            productName: req.body.productName || resolvedProduct?.name || orderProduct?.name || 'Produit Star Mousse',
+            order: order._id,
+            user: req.user._id,
+            sentimentStatus: 'pending',
+            owner: req.user._id
         });
 
         await newReview.save();
@@ -152,6 +172,9 @@ module.exports.updateReview = async (req, res) => {
             ...(req.body.comment != null ? { comment: String(req.body.comment).trim() } : {}),
             ...(resolvedProduct ? { product: resolvedProduct._id, productName: req.body.productName || resolvedProduct.name } : {})
         };
+        if (req.body.comment != null || rating !== undefined) {
+            updates.sentimentStatus = 'pending';
+        }
         const updatedReview = await Review.findByIdAndUpdate(req.params.id, updates, { new: true });
         if (!updatedReview) {
             return res.status(404).json({ message: 'Review not found' });

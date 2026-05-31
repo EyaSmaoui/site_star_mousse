@@ -79,8 +79,8 @@ export default function ClientReviews() {
   return (
     <div style={S.root}>
       <ClientSidebar />
-      <main style={S.main}>
-        <div style={S.topbar}>
+      <main className="client-main sm-internal-main" style={S.main}>
+        <div className="sm-page-topbar" style={S.topbar}>
           <div>
             <h1 style={S.title}>Mes avis</h1>
             <div style={S.subtitle}>Vos retours aident à améliorer votre expérience.</div>

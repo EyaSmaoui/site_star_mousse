@@ -2,39 +2,212 @@
 > site-star-mousse@0.0.0 start
 > node --max-http-header-size=16384 app.js
 
-◇ injected env (13) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (13) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
 connected to MongoDB (remote)
 ✅ Serveur prêt sur le port 5000 avec toutes les routes activées
-[0mGET /api/health [32m200 [0m16.051 ms - 111[0m
-[0mPOST /api/users/login [32m200 [0m142.980 ms - 395[0m
-[0mPOST /api/users/login [32m200 [0m106.473 ms - 384[0m
-[0mGET /api/products/recommended?limit=3 [32m200 [0m139.023 ms - 960[0m
-[0mGET /api/products/recommended?limit=3 [32m200 [0m484.655 ms - 960[0m
-[0mPOST /api/users/login [32m200 [0m105.865 ms - 395[0m
-[0mPOST /api/products/addWithImage [32m201 [0m151.916 ms - 329[0m
-[0mPOST /api/users/login [32m200 [0m114.398 ms - 395[0m
-[0mDELETE /api/products/delete/6a1c26827a9b1da6f5579fd1 [32m200 [0m111.628 ms - 42[0m
-[0mPOST /api/users/register [33m400 [0m3.775 ms - 65[0m
-[0mPOST /api/users/register [32m201 [0m119.257 ms - 411[0m
-✅ Commande enregistrée ! ID: new ObjectId("6a1c26c17a9b1da6f5579fd9")
-[0mPOST /api/orders/addOrder [32m201 [0m115.119 ms - 417[0m
-[0mGET /api/orders/my-orders [32m200 [0m108.387 ms - 375[0m
-[0mGET /api/users/profile [32m200 [0m112.409 ms - 128[0m
-[0mGET /api/reviews/my-reviews [36m304 [0m581.176 ms - -[0m
-[0mPOST /api/users/login [32m200 [0m124.288 ms - 395[0m
-[0mPOST /api/users/register [32m201 [0m116.165 ms - 474[0m
-[0mPOST /api/users/create-employer [32m201 [0m213.348 ms - 190[0m
-[0mPOST /api/reviews/addReview [32m201 [0m246.034 ms - 382[0m
-[0mGET /api/reviews/my-reviews [32m200 [0m140.703 ms - 966[0m
-[0mGET /api/orders/my-orders [32m200 [0m104.455 ms - 375[0m
-[0mGET /api/users/profile [36m304 [0m122.192 ms - -[0m
-[0mGET /api/users/profile [32m200 [0m130.978 ms - 128[0m
-[0mGET /api/orders/my-orders [36m304 [0m392.019 ms - -[0m
-[0mGET /api/users/profile [32m200 [0m99.458 ms - 128[0m
-[0mGET /api/users/profile [36m304 [0m103.296 ms - -[0m
-[0mGET /api/reviews/my-reviews [32m200 [0m149.072 ms - 966[0m
-[0mGET /api/reviews/my-reviews [36m304 [0m450.056 ms - -[0m
-[0mGET /api/products/recommended?limit=6 [32m200 [0m117.358 ms - 960[0m
-[0mGET /api/products/recommended?limit=6 [32m200 [0m115.511 ms - 960[0m
-[0mGET /api/users/profile [36m304 [0m118.981 ms - -[0m
-[0mGET /api/users/profile [36m304 [0m104.478 ms - -[0m
+[0mGET /api/health [32m200 [0m9.260 ms - 111[0m
+[0mPOST /api/users/login [32m200 [0m154.045 ms - 384[0m
+[0mGET /api/products [32m200 [0m49.438 ms - 13350[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m116.376 ms - 960[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m59.581 ms - 477[0m
+[0mGET /api/reviews/getAllReviews [32m200 [0m395.560 ms - 8811[0m
+[0mGET /api/clients/getAllClients [32m200 [0m92.941 ms - 2[0m
+[0mGET /api/managers/getAllManagers [32m200 [0m94.321 ms - 274[0m
+[0mGET /api/orders/getAllOrders [32m200 [0m100.477 ms - 2960[0m
+[0mGET /api/users/getAllUsers [32m200 [0m113.258 ms - 3771[0m
+[0mPOST /api/categories/addCategory [32m201 [0m135.907 ms - 118[0m
+[0mPUT /api/categories/updateCategory/6a1c2ca2fd9c259b66c19d74 [32m200 [0m124.882 ms - 126[0m
+[0mDELETE /api/categories/deleteCategory/6a1c2ca2fd9c259b66c19d74 [32m200 [0m99.104 ms - 43[0m
+[0mPOST /api/products/add [32m201 [0m97.829 ms - 313[0m
+[0mPUT /api/products/update/6a1c2ca2fd9c259b66c19d7b [32m200 [0m116.096 ms - 314[0m
+[0mDELETE /api/products/delete/6a1c2ca2fd9c259b66c19d7b [32m200 [0m105.476 ms - 42[0m
+✅ Client enregistré ! ID: new ObjectId("6a1c2ca3fd9c259b66c19d82")
+[0mPOST /api/clients/addClient [32m201 [0m96.792 ms - 267[0m
+✅ Client mis à jour ! ID: new ObjectId("6a1c2ca3fd9c259b66c19d82")
+[0mPUT /api/clients/updateClient/6a1c2ca3fd9c259b66c19d82 [32m200 [0m117.913 ms - 267[0m
+✅ Client supprimé ! ID: 6a1c2ca3fd9c259b66c19d82
+[0mDELETE /api/clients/deleteClient/6a1c2ca3fd9c259b66c19d82 [32m200 [0m97.097 ms - 43[0m
+✅ Gestionnaire enregistré ! ID: new ObjectId("6a1c2ca3fd9c259b66c19d89")
+[0mPOST /api/managers/addManager [32m201 [0m104.366 ms - 295[0m
+✅ Gestionnaire mis à jour ! ID: new ObjectId("6a1c2ca3fd9c259b66c19d89")
+[0mPUT /api/managers/updateManager/6a1c2ca3fd9c259b66c19d89 [32m200 [0m125.767 ms - 295[0m
+✅ Gestionnaire supprimé ! ID: 6a1c2ca3fd9c259b66c19d89
+[0mDELETE /api/managers/deleteManager/6a1c2ca3fd9c259b66c19d89 [32m200 [0m96.004 ms - 49[0m
+[0mPOST /api/users/login [32m200 [0m110.210 ms - 384[0m
+[0mGET /api/products [32m200 [0m58.867 ms - 13350[0m
+[0mGET /api/orders/getAllOrders?limit=50 [32m200 [0m109.979 ms - 2960[0m
+[0mGET /api/orders/getAllOrders?limit=100 [32m200 [0m117.029 ms - 2960[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m61.735 ms - 477[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m59.295 ms - 477[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m163.684 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m114.501 ms - 960[0m
+[0mGET /api/health [32m200 [0m0.801 ms - 111[0m
+[0mGET /api/orders/getAllOrders?limit=50 [32m200 [0m105.698 ms - 2960[0m
+[0mGET /api/products [32m200 [0m71.143 ms - 13350[0m
+[0mGET /api/orders/getAllOrders?limit=50 [32m200 [0m122.795 ms - 2960[0m
+[0mGET /api/health [32m200 [0m1.023 ms - 111[0m
+[0mPOST /api/users/login [32m200 [0m116.591 ms - 384[0m
+[0mGET /api/products [32m200 [0m72.048 ms - 13350[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m101.952 ms - 960[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m44.258 ms - 477[0m
+[0mGET /api/reviews/getAllReviews [32m200 [0m125.789 ms - 8811[0m
+[0mGET /api/clients/getAllClients [32m200 [0m105.466 ms - 2[0m
+[0mGET /api/managers/getAllManagers [32m200 [0m106.557 ms - 274[0m
+[0mGET /api/orders/getAllOrders [32m200 [0m105.626 ms - 2960[0m
+[0mGET /api/users/getAllUsers [32m200 [0m107.463 ms - 3771[0m
+[0mPOST /api/categories/addCategory [32m201 [0m111.090 ms - 118[0m
+[0mPUT /api/categories/updateCategory/6a1c2e11fd9c259b66c19db7 [32m200 [0m132.947 ms - 126[0m
+[0mDELETE /api/categories/deleteCategory/6a1c2e11fd9c259b66c19db7 [32m200 [0m93.426 ms - 43[0m
+[0mPOST /api/products/add [32m201 [0m106.154 ms - 313[0m
+[0mPUT /api/products/update/6a1c2e11fd9c259b66c19dbe [32m200 [0m106.047 ms - 314[0m
+[0mDELETE /api/products/delete/6a1c2e11fd9c259b66c19dbe [32m200 [0m97.250 ms - 42[0m
+✅ Client enregistré ! ID: new ObjectId("6a1c2e12fd9c259b66c19dc5")
+[0mPOST /api/clients/addClient [32m201 [0m114.168 ms - 267[0m
+✅ Client mis à jour ! ID: new ObjectId("6a1c2e12fd9c259b66c19dc5")
+[0mPUT /api/clients/updateClient/6a1c2e12fd9c259b66c19dc5 [32m200 [0m92.679 ms - 267[0m
+✅ Client supprimé ! ID: 6a1c2e12fd9c259b66c19dc5
+[0mDELETE /api/clients/deleteClient/6a1c2e12fd9c259b66c19dc5 [32m200 [0m115.347 ms - 43[0m
+✅ Gestionnaire enregistré ! ID: new ObjectId("6a1c2e12fd9c259b66c19dcc")
+[0mPOST /api/managers/addManager [32m201 [0m98.490 ms - 295[0m
+✅ Gestionnaire mis à jour ! ID: new ObjectId("6a1c2e12fd9c259b66c19dcc")
+[0mPUT /api/managers/updateManager/6a1c2e12fd9c259b66c19dcc [32m200 [0m117.403 ms - 295[0m
+✅ Gestionnaire supprimé ! ID: 6a1c2e12fd9c259b66c19dcc
+[0mDELETE /api/managers/deleteManager/6a1c2e12fd9c259b66c19dcc [32m200 [0m154.893 ms - 49[0m
+[0mGET /api/orders/getAllOrders?limit=100 [32m200 [0m125.820 ms - 2960[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m51.840 ms - 477[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m56.186 ms - 477[0m
+[0mGET / [33m404 [0m5.459 ms - 139[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m152.605 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m193.896 ms - 960[0m
+[Proxy] Message reçu : "BONJOUR" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m96.757 ms - 121[0m
+[Proxy] Message reçu : "1908160" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m8.315 ms - 121[0m
+[Proxy] Message reçu : "190/160" | Dimension détectée localement : 160x190
+[0mPOST /api/chatbot/chat [32m200 [0m11.106 ms - 177[0m
+[Proxy] Message reçu : "ORTHOPEDIQUE" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m6.155 ms - 121[0m
+[Proxy] Message reçu : "orthopedique" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m8.138 ms - 121[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m273.980 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m242.789 ms - 960[0m
+[Proxy] Message reçu : "Budgeti 300 DT" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m47.383 ms - 121[0m
+[Proxy] Message reçu : "Jraya 160x200" | Dimension détectée localement : 160x200
+[0mPOST /api/chatbot/chat [32m200 [0m4.585 ms - 177[0m
+[0mGET /favicon.ico [33m404 [0m13.180 ms - 150[0m
+[0mGET /%PUBLIC_URL%/logo-star-mousse.png [33m404 [0m17.918 ms - 176[0m
+[0mGET /favicon.ico [33m404 [0m47.602 ms - 150[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m209.098 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m227.677 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m112.978 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m123.521 ms - 960[0m
+[Proxy] Message reçu : "Nheb nechri jraya" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m48.803 ms - 121[0m
+[0mGET / [33m404 [0m83.358 ms - 139[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m200.870 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m191.267 ms - 960[0m
+[Proxy] Message reçu : "bonjour" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m27.476 ms - 121[0m
+[Proxy] Message reçu : "Nheb nechri jraya" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m46.037 ms - 121[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m249.562 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m226.274 ms - 960[0m
+[0mPOST /api/users/login [32m200 [0m163.749 ms - 395[0m
+[0mGET /api/health [32m200 [0m5.203 ms - 111[0m
+[0mGET /api/health [32m200 [0m2.641 ms - 111[0m
+[0mGET /api/products [32m200 [0m89.518 ms - 13350[0m
+[0mGET /api/users/getAllUsers [32m200 [0m114.742 ms - 3771[0m
+[0mGET /api/reviews/getAllReviews [32m200 [0m190.824 ms - 8811[0m
+[0mGET /api/users/getAllUsers [32m200 [0m138.066 ms - 3771[0m
+[0mGET /api/orders/getAllOrders?limit=300 [32m200 [0m538.654 ms - 2960[0m
+[0mGET /api/reviews/getAllReviews [32m200 [0m507.103 ms - 8811[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m117.035 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m119.604 ms - 960[0m
+[0mGET /api/health [32m200 [0m4.358 ms - 111[0m
+[0mGET /api/health [32m200 [0m11.041 ms - 111[0m
+[0mGET /api/products [32m200 [0m84.629 ms - 13350[0m
+[0mGET /api/orders/getAllOrders?limit=300 [32m200 [0m125.593 ms - 2960[0m
+[0mGET /api/users/getAllUsers [32m200 [0m143.237 ms - 3771[0m
+[0mGET /api/users/getAllUsers [32m200 [0m133.125 ms - 3771[0m
+[0mGET /api/reviews/getAllReviews [32m200 [0m546.667 ms - 8811[0m
+[0mGET /api/reviews/getAllReviews [32m200 [0m641.452 ms - 8811[0m
+[0mGET /api/orders/getAllOrders?limit=100 [32m200 [0m124.897 ms - 2960[0m
+[0mGET /api/orders/getAllOrders?limit=300 [32m200 [0m101.869 ms - 2960[0m
+[0mGET /api/clients/getAllClients [32m200 [0m116.319 ms - 2[0m
+[0mGET /api/clients/getAllClients [32m200 [0m119.107 ms - 2[0m
+[0mGET /api/managers/getAllManagers [32m200 [0m177.116 ms - 274[0m
+[0mGET /api/managers/getAllManagers [32m200 [0m150.303 ms - 274[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m115.208 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m119.982 ms - 960[0m
+[0mPOST /api/users/login [32m200 [0m144.222 ms - 395[0m
+[0mGET /api/orders/getAllOrders?limit=50 [32m200 [0m126.128 ms - 2960[0m
+[0mGET /api/orders/getAllOrders?limit=100 [32m200 [0m105.021 ms - 2960[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m67.293 ms - 477[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m73.989 ms - 477[0m
+[0mGET /api/orders/getAllOrders?limit=50 [32m200 [0m92.682 ms - 2960[0m
+[0mGET /api/orders/getAllOrders?limit=100 [32m200 [0m95.626 ms - 2960[0m
+[0mGET /api/products [32m200 [0m56.702 ms - 13350[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m58.524 ms - 477[0m
+[0mGET /api/categories/getAllCategories [32m200 [0m60.428 ms - 477[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m95.905 ms - 960[0m
+[0mGET /api/products/recommended?limit=3 [32m200 [0m101.861 ms - 960[0m
+[Proxy] Message reçu : "bonjour" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m39.231 ms - 121[0m
+[Proxy] Message reçu : "Je cherche un matelas pour le dos" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m5.550 ms - 121[0m
+[Proxy] Message reçu : "Je cherche un matelas pour le dos" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m6.243 ms - 121[0m
+[0mGET /api/chatbot/recommendations?q=Je+cherche+un+matelas+pour+le+dos&limit=3 [33m404 [0m2.371 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=Je+cherche+un+matelas+pour+le+dos&limit=3 [33m404 [0m1.490 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=Je+cherche+un+matelas+pour+le+dos&limit=3 [33m404 [0m4.436 ms - 166[0m
+[Proxy] Message reçu : "300" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m8.210 ms - 121[0m
+[Proxy] Message reçu : "300DT" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m6.031 ms - 121[0m
+[Proxy] Message reçu : "190/160" | Dimension détectée localement : 160x190
+[0mPOST /api/chatbot/chat [32m200 [0m9.342 ms - 177[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m3.790 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m1.751 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m2.746 ms - 166[0m
+[Proxy] Message reçu : "ORTHOPEDIQUE" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m6.236 ms - 121[0m
+[Proxy] Message reçu : "LIVRAISON" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m5.424 ms - 121[0m
+[Proxy] Message reçu : "paiement" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m5.892 ms - 121[0m
+[Proxy] Message reçu : "190/90" | Dimension détectée localement : 90x190
+[0mPOST /api/chatbot/chat [32m200 [0m7.348 ms - 176[0m
+[0mGET /api/chatbot/recommendations?q=190%2F90&limit=3 [33m404 [0m1.779 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F90&limit=3 [33m404 [0m0.893 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F90&limit=3 [33m404 [0m1.568 ms - 166[0m
+[Proxy] Message reçu : "190/160" | Dimension détectée localement : 160x190
+[0mPOST /api/chatbot/chat [32m200 [0m3.955 ms - 177[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m0.882 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m0.884 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m1.423 ms - 166[0m
+[Proxy] Message reçu : "orthopedique" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m10.609 ms - 121[0m
+[Proxy] Message reçu : "prix 190/160" | Dimension détectée localement : 160x190
+[0mPOST /api/chatbot/chat [32m200 [0m6.993 ms - 177[0m
+[0mGET /api/chatbot/recommendations?q=prix+190%2F160&limit=3 [33m404 [0m0.747 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=prix+190%2F160&limit=3 [33m404 [0m1.351 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=prix+190%2F160&limit=3 [33m404 [0m0.780 ms - 166[0m
+[Proxy] Message reçu : "Budget 300 DT pour un matelas" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m4.360 ms - 121[0m
+[Proxy] Message reçu : "prix 190/160" | Dimension détectée localement : 160x190
+[0mPOST /api/chatbot/chat [32m200 [0m60.922 ms - 177[0m
+[Proxy] Message reçu : "orthopedique" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m9.151 ms - 121[0m
+[Proxy] Message reçu : "bonjour" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m41.604 ms - 121[0m
+[Proxy] Message reçu : "matelas" | Dimension détectée localement : null
+[0mPOST /api/chatbot/chat [32m200 [0m13.560 ms - 121[0m
+[0mGET /api/chatbot/recommendations?q=matelas&limit=3 [33m404 [0m13.502 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=matelas&limit=3 [33m404 [0m5.762 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=matelas&limit=3 [33m404 [0m12.340 ms - 166[0m
+[Proxy] Message reçu : "190/160" | Dimension détectée localement : 160x190
+[0mPOST /api/chatbot/chat [32m200 [0m8.059 ms - 177[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m5.030 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m1.468 ms - 166[0m
+[0mGET /api/chatbot/recommendations?q=190%2F160&limit=3 [33m404 [0m6.928 ms - 166[0m

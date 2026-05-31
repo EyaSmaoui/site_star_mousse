@@ -20,6 +20,13 @@ const processReviewSentiment = async (reviewId) => {
 
         // 2. Met à jour l'avis avec la note générée automatiquement par l'IA
         review.rating = noteCalculeeIA;
+        review.sentiment = {
+            rating: noteCalculeeIA,
+            score: response.data.score || 0,
+            label: response.data.label || `${noteCalculeeIA} stars`,
+            source: 'bert',
+            analyzedAt: new Date()
+        };
         // Optionnel : si tu as un champ pour suivre le statut de l'IA dans ton schéma Mongoose
         review.sentimentStatus = 'completed'; 
         await review.save();

@@ -2,7 +2,12 @@ require('dotenv').config();
 
 var express = require('express');
 var path = require('path');
-var logger = require('morgan');
+var morgan = require('morgan');
+const helmet = require('helmet');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
+const logger = require('./logger');
+const Sentry = require('@sentry/node');
 const http = require('http');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -33,11 +38,27 @@ const deploymentOrigins = [
 const allowedOrigins = [...new Set([...corsOrigins, ...deploymentOrigins])];
 
 // MIDDLEWARES
-app.use(logger('dev'));
+// Sentry (optional)
+if (process.env.SENTRY_DSN) {
+  Sentry.init({ dsn: process.env.SENTRY_DSN });
+  app.use(Sentry.Handlers.requestHandler());
+}
+
+// Security & performance middlewares
+app.use(helmet());
+app.use(compression());
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
+// Rate limiting
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
+// Logging: use morgan stream -> winston in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined', { stream: logger.stream }));
+} else {
+  app.use(morgan('dev', { stream: logger.stream }));
+}
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use(cookieParser());

@@ -1,0 +1,52 @@
+﻿const INTENTS = [
+  {
+    tag: "salutation",
+    patterns: ["bonjour", "salut", "aslema", "ahla"],
+    response: "Aslema, ena Dali mte3 Star Mousse. 9olli chniya l 9yes (dimension) lli 7achtek biha ?"
+  },
+  {
+    tag: "gamme_orthomedical",
+    patterns: ["orthomedical", "orthomedicale", "medico plus", "medico"],
+    response: "La gamme orthomÃ©dicale contient Medico Plus."
+  },
+  {
+    tag: "gamme_orthopedique",
+    patterns: ["orthopedique", "ortho", "venise plus", "soft plus", "dos", "dos"],
+    response: "La gamme orthopÃ©dique contient Soft Plus et Venise Plus."
+  },
+  {
+    tag: "gamme_ergonomique",
+    patterns: ["ergonomique", "haut gamme", "haut de gamme", "relax plus", "tendresse plus", "relax", "tendresse", "premium", "luxe"],
+    response: "La gamme ergonomique haut de gamme contient Relax Plus et Tendresse Plus."
+  }
+];
+
+function predictIntent(message) {
+  const text = utils.normalizeText(message);
+  const dim = utils.extractDimension(text);
+
+  if (dim) return { tag: "dimension_captured", value: dim };
+  for (let intent of INTENTS) {
+    if (intent.patterns.some(p => text.includes(p))) return { tag: intent.tag };
+  }
+  return { tag: "fallback" };
+}
+
+function buildChatReply(message) {
+  const intent = predictIntent(message);
+
+  if (intent.tag === "dimension_captured") {
+    return {
+      response: `9yes ${intent.value} mrigel ! Chnowa t7eb l gamme : OrthopÃ©dique, OrthomÃ©dicale, wala Ergonomique haut de gamme ?`
+    };
+  }
+
+  const found = INTENTS.find(i => i.tag === intent.tag);
+  return {
+    response: found
+      ? found.response
+      : "Sam7ni, ma fhimtech. 9olli t7eb gamme OrthopÃ©dique, OrthomÃ©dicale wela Ergonomique haut de gamme ?"
+  };
+}
+
+module.exports = { buildChatReply, PRODUCT_CATALOG };

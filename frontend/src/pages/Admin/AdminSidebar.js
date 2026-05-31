@@ -1,5 +1,5 @@
 ﻿import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const NAV_ITEMS = [
   {
@@ -61,6 +61,14 @@ const NAV_ITEMS = [
 export default function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 900 : false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -68,18 +76,20 @@ export default function AdminSidebar() {
     navigate("/");
   };
 
-  return (
-    <aside style={S.sidebar}>
+  const closeMenu = () => setMenuOpen(false);
+  const openMenu = () => setMenuOpen(true);
+
+  const sidebarContent = (
+    <>
       {/* Logo */}
       <div
         style={S.logoArea}
-        onClick={() => navigate('/')}
+        onClick={() => { navigate('/'); closeMenu(); }}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') navigate('/'); }}
+        onKeyDown={(e) => { if (e.key === 'Enter') { navigate('/'); closeMenu(); } }}
       >
         <div style={S.logoIconWrap}>
-          {/* Layered lines icon like the screenshot */}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round">
             <line x1="4" y1="6" x2="20" y2="6"/>
             <line x1="4" y1="12" x2="20" y2="12"/>
@@ -89,14 +99,14 @@ export default function AdminSidebar() {
         <span style={S.logoText}>Star Mousse</span>
       </div>
 
-      {/* Nav */}
-      <nav style={S.nav}>
-        {NAV_ITEMS.map((item) => {
+{/* Nav */}
+          <nav className="sidebar-nav" style={S.nav}>
+            {NAV_ITEMS.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <button
               key={item.id}
-              onClick={() => navigate(item.path)}
+              onClick={() => { navigate(item.path); closeMenu(); }}
               style={{
                 ...S.navItem,
                 ...(isActive ? S.navItemActive : {}),
@@ -123,21 +133,45 @@ export default function AdminSidebar() {
 
       {/* Logout */}
       <button
-        onClick={handleLogout}
+        onClick={() => { handleLogout(); closeMenu(); }}
         style={S.logoutBtn}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = "#f97316";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = "#f97316";
-        }}
       >
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
         </svg>
         <span>Déconnexion</span>
       </button>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {!isMobile && <aside className="admin-sidebar" style={S.sidebar}>
+        {sidebarContent}
+      </aside>}
+      {isMobile && (
+        <div className="admin-mobile-bar" style={S.mobileTopBar}>
+          <button style={S.hamburgerBtn} onClick={openMenu} aria-label="Ouvrir le menu">
+            <span style={S.hamburgerLine} />
+            <span style={S.hamburgerLine} />
+            <span style={S.hamburgerLine} />
+          </button>
+          <div style={S.mobileBrand}>Star Mousse</div>
+          <div style={{ width: 32 }} />
+          {menuOpen && (
+            <div style={S.mobileOverlay} onClick={closeMenu}>
+              <div style={S.mobileMenu} onClick={(e) => e.stopPropagation()}>
+                <div style={S.mobileMenuHeader}>
+                  <span style={S.mobileBrand}>Menu</span>
+                  <button style={S.closeBtn} onClick={closeMenu} aria-label="Fermer le menu">✕</button>
+                </div>
+                {sidebarContent}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -229,5 +263,78 @@ const S = {
     fontFamily: "inherit",
     marginTop: 8,
     width: "100%",
+  },
+  mobileTopBar: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    width: "100%",
+    zIndex: 2600,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    padding: "14px 16px",
+    background: "#ffffff",
+    borderBottom: "1px solid #e5e7eb",
+    boxShadow: "0 2px 10px rgba(15, 23, 42, 0.08)",
+    boxSizing: "border-box",
+  },
+  hamburgerBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 42,
+    height: 42,
+    border: "1px solid #e5e7eb",
+    borderRadius: 12,
+    background: "#fff",
+    cursor: "pointer",
+    padding: 0,
+  },
+  hamburgerLine: {
+    width: 18,
+    height: 2,
+    background: "#1f2937",
+    borderRadius: 999,
+    margin: "3px 0",
+  },
+  mobileBrand: {
+    fontSize: 16,
+    fontWeight: 700,
+    color: "#1f2937",
+  },
+  mobileOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(15, 23, 42, 0.35)",
+    zIndex: 2700,
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  mobileMenu: {
+    width: "280px",
+    maxWidth: "100%",
+    height: "100%",
+    background: "#ffffff",
+    padding: 20,
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+    overflowY: "auto",
+  },
+  mobileMenuHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  closeBtn: {
+    border: "none",
+    background: "transparent",
+    fontSize: 20,
+    cursor: "pointer",
+    color: "#1f2937",
   },
 };

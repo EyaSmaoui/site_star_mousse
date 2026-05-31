@@ -83,7 +83,7 @@ export default function ClientSidebar() {
 	return (
 		<>
 			{!isMobile && (
-				<aside style={S.sidebar}>
+				<aside className="client-sidebar" style={S.sidebar}>
 					<div
 						style={S.logoArea}
 						onClick={() => navigate('/')}
@@ -101,7 +101,7 @@ export default function ClientSidebar() {
 						<span style={S.logoText}>Star Mousse</span>
 					</div>
 
-					<nav style={S.nav}>
+					<nav className="sidebar-nav" style={S.nav}>
 						{NAV_ITEMS.map((item) => {
 							const isActive = fullPath === item.path;
 							return (
@@ -129,7 +129,7 @@ export default function ClientSidebar() {
 			)}
 
 			{isMobile && (
-				<div style={SM.mobileTopBar}>
+				<div className="client-mobile-bar" style={SM.mobileTopBar}>
 					<button style={SM.hamburger} onClick={() => setMenuOpen((s) => !s)} aria-label="Ouvrir le menu">☰</button>
 					<div style={SM.mobileLogo} onClick={() => navigate('/')}>Star Mousse</div>
 					<div style={{ width: 36 }} />

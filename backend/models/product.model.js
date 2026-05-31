@@ -12,6 +12,8 @@ const productschema = new mongoose.Schema({
     size:String,
     averageRating: { type: Number, default: 0 },
     reviewCount: { type: Number, default: 0 },
+    isRecommended: { type: Boolean, default: false },
+    note_coeur: { type: Number, default: 0 },
     sentimentScore: { type: Number, default: 0 },
     recommendationRank: { type: Number, default: 0 },
     lastRecommendationUpdate: Date,

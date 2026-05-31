@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const Order = require('../models/order.model');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -111,6 +112,7 @@ exports.addUser = async (req, res) => {
                 username: newUser.username,
                 email: newUser.email,
                 phone: newUser.phone,
+                address: newUser.address || "",
                 role: newUser.role
             },
             token
@@ -191,6 +193,16 @@ exports.login = async (req, res) => {
             console.warn(`[auth-login] Connexion lente: ${Date.now() - startedAt}ms ${email.trim().toLowerCase()}`);
         }
 
+        // Rattacher les commandes précédentes faites avec cet email au compte utilisateur
+        try {
+            await Order.updateMany(
+                { customerEmail: user.email, $or: [{ userId: null }, { userId: { $exists: false } }] },
+                { $set: { userId: user._id } }
+            );
+        } catch (linkErr) {
+            console.warn('Impossible de rattacher les anciennes commandes:', linkErr.message);
+        }
+
         // Générer un token JWT
         const token = jwt.sign(
             { userId: user._id, email: user.email, role: user.role },
@@ -204,6 +216,8 @@ exports.login = async (req, res) => {
                 id: user._id,
                 username: user.username,
                 email: user.email,
+                phone: user.phone,
+                address: user.address || "",
                 role: user.role
             },
             token

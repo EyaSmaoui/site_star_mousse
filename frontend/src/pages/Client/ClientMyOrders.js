@@ -69,8 +69,8 @@ export default function ClientMyOrders() {
   return (
     <div style={S.root}>
       <ClientSidebar />
-      <main style={S.main}>
-        <div style={S.topbar}>
+      <main className="client-main sm-internal-main" style={S.main}>
+        <div className="sm-page-topbar" style={S.topbar}>
           <div>
             <h1 style={S.title}>Mes commandes</h1>
             <div style={S.subtitle}>Retrouvez l'historique complet de vos achats.</div>
@@ -88,7 +88,7 @@ export default function ClientMyOrders() {
             <p>Vous n'avez pas encore de commandes.</p>
           </div>
         ) : (
-          <div style={S.ordersGrid}>
+          <div className="sm-card-grid" style={S.ordersGrid}>
             {orders.map((order) => (
               <div key={order._id} style={S.orderCard}>
                 <div style={S.orderHeader}>

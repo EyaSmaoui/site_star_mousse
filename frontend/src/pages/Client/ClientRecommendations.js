@@ -60,8 +60,8 @@ export default function ClientRecommendations() {
   return (
     <div style={S.root}>
       <ClientSidebar />
-      <main style={S.main}>
-        <div style={S.topbar}>
+      <main className="client-main sm-internal-main" style={S.main}>
+        <div className="sm-page-topbar" style={S.topbar}>
           <div>
             <h1 style={S.title}>Recommandations personnalisées</h1>
             <div style={S.subtitle}>Produits recommandés pour vous d'après les avis de nos clients.</div>
@@ -79,7 +79,7 @@ export default function ClientRecommendations() {
             <p>Aucune recommandation disponible pour le moment.</p>
           </div>
         ) : (
-          <div style={S.grid}>
+          <div className="sm-card-grid" style={S.grid}>
             {recommendations.map((product) => (
               <article key={product._id || product.id || product.name} style={S.card}>
                 <img

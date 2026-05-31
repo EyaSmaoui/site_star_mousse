@@ -246,6 +246,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Aperçu");
   const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [time, setTime] = useState(new Date());
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 900 : false);
   const [statsSummary, setStatsSummary] = useState({
     totalRevenue: 0,
     totalOrders: 0,
@@ -367,6 +368,12 @@ export default function AdminDashboard() {
 
     loadData();
   }, [navigate]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   /* ── Horloge ── */
   useEffect(() => {
@@ -490,7 +497,7 @@ export default function AdminDashboard() {
     <div style={S.root}>
       <AdminSidebar />
 
-      <main style={S.main}>
+      <main className="admin-main" style={S.main}>
         {/* ── Topbar ── */}
         <div style={S.topbar}>
           <div>
@@ -1236,9 +1243,7 @@ const S = {
     color: "#111827",
   },
   main: {
-    marginLeft: 260,
     flex: 1,
-    padding: "28px 32px",
   },
   topbar: {
     display: "flex",

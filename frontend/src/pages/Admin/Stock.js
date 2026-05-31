@@ -189,7 +189,7 @@ export default function Stock({
     <div style={S.root}>
       <Sidebar {...sidebarProps} />
 
-      <main style={{ ...S.main, marginLeft: sidebarWidth }}>
+      <main className="admin-main sm-internal-main" style={{ ...S.main, marginLeft: sidebarWidth }}>
         <div style={S.topbar}>
           <div>
             <h1 style={S.title}>Gestion du stock</h1>

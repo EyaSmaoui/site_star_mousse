@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
 import EmployeeSidebar from "./EmployeeSidebar";
+import AdvancedFilters from "../../components/AdvancedFilters";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { getAllOrders } from "../../services/apiOrder";
 import { getAll as getAllProducts } from "../../services/apiProduct";
@@ -120,11 +121,16 @@ export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Aperçu");
   const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [time, setTime] = useState(new Date());
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 900 : false);
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filterConfig, setFilterConfig] = useState({
+    search: '',
+    status: [],
+    sort: ''
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -168,6 +174,12 @@ export default function EmployeeDashboard() {
   }, [navigate]);
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -188,21 +200,57 @@ export default function EmployeeDashboard() {
     return acc;
   }, {}), [orders]);
 
-  const q = searchTerm.trim().toLowerCase();
-  const filteredOrders = orders.filter((order) =>
-    !q || [order._id, order.id, order.customerName, order.name, order.address, order.phone]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase()
-      .includes(q)
-  );
-  const filteredProducts = products.filter((product) =>
-    !q || [product.name, product.productId, product._id, product.category]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase()
-      .includes(q)
-  );
+  const q = filterConfig.search?.trim().toLowerCase() || '';
+  const filteredOrders = useMemo(() => {
+    let result = orders;
+
+    if (q) {
+      result = result.filter((order) =>
+        [order._id, order.id, order.customerName, order.name, order.address, order.phone]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
+      );
+    }
+
+    if (filterConfig.status && filterConfig.status.length > 0) {
+      result = result.filter(order =>
+        filterConfig.status.includes(order.status?.toLowerCase())
+      );
+    }
+
+    if (filterConfig.sort) {
+      switch (filterConfig.sort) {
+        case 'recent':
+          result = [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break;
+        case 'older':
+          result = [...result].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+          break;
+        case 'amount_high':
+          result = [...result].sort((a, b) => (b.total || 0) - (a.total || 0));
+          break;
+        case 'amount_low':
+          result = [...result].sort((a, b) => (a.total || 0) - (b.total || 0));
+          break;
+        default:
+          break;
+      }
+    }
+
+    return result;
+  }, [orders, filterConfig]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) =>
+      !q || [product.name, product.productId, product._id, product.category]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    );
+  }, [products, q]);
 
   const dateStr = time.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
   const timeStr = `${pad(time.getHours())}:${pad(time.getMinutes())}:${pad(time.getSeconds())}`;
@@ -241,7 +289,7 @@ export default function EmployeeDashboard() {
     <div style={S.root}>
       <EmployeeSidebar />
 
-      <main style={S.main}>
+      <main className="employee-main" style={S.main}>
         <div style={S.topbar}>
           <div>
             <h1 style={S.title}>Bienvenue{employeeName ? `, ${employeeName}` : ""}</h1>
@@ -274,25 +322,6 @@ export default function EmployeeDashboard() {
               {period}
             </button>
           ))}
-
-          <div className="dashboard-search" style={S.searchWrap}>
-            <div className="fancy-bg" />
-            <label>
-              <svg className="search" viewBox="0 0 24 24" fill="none" stroke="#949faa" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-              </svg>
-              <input
-                type="search"
-                required
-                className="input"
-                placeholder="Rechercher..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <button type="button" className="close-btn" onClick={() => setSearchTerm("")}>×</button>
-            </label>
-          </div>
 
           <button onClick={() => navigate("/employer/orders")} style={S.allOrdersBtn}>
             Voir toutes les commandes →
@@ -406,8 +435,26 @@ export default function EmployeeDashboard() {
         {activeTab === "Commandes" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>Gestion des commandes</h2>
+              <h2 style={S.cardTitle}>🔍 Gestion des commandes</h2>
             </div>
+            <AdvancedFilters
+              searchPlaceholder="Rechercher par numéro, client, email..."
+              filters={[
+                {
+                  key: 'status',
+                  label: 'Statut',
+                  type: 'checkbox',
+                  options: ['en attente', 'en cours', 'expédié', 'livré', 'annulé', 'confirmé']
+                }
+              ]}
+              sortOptions={[
+                { value: 'recent', label: 'Plus récentes' },
+                { value: 'older', label: 'Plus anciennes' },
+                { value: 'amount_high', label: 'Montant décroissant' },
+                { value: 'amount_low', label: 'Montant croissant' }
+              ]}
+              onFilterChange={(filters) => setFilterConfig(filters)}
+            />
             <OrdersTable orders={filteredOrders} />
           </div>
         )}
@@ -415,8 +462,26 @@ export default function EmployeeDashboard() {
         {activeTab === "Stock" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>Catalogue stock</h2>
+              <h2 style={S.cardTitle}>📦 Catalogue stock</h2>
             </div>
+            <AdvancedFilters
+              searchPlaceholder="Rechercher par SKU, nom, catégorie..."
+              filters={[
+                {
+                  key: 'category',
+                  label: 'Catégorie',
+                  type: 'select',
+                  options: [...new Set(products.map(p => p.category).filter(Boolean))]
+                }
+              ]}
+              sortOptions={[
+                { value: 'name_asc', label: 'Nom (A-Z)' },
+                { value: 'name_desc', label: 'Nom (Z-A)' },
+                { value: 'price_high', label: 'Prix décroissant' },
+                { value: 'price_low', label: 'Prix croissant' }
+              ]}
+              onFilterChange={(filters) => setFilterConfig(filters)}
+            />
             <StockTable products={filteredProducts} />
           </div>
         )}
@@ -502,7 +567,7 @@ function StockTable({ products }) {
 
 const S = {
   root: { display: "flex", minHeight: "100vh", background: "#fdf6ef", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#111827" },
-  main: { marginLeft: 260, flex: 1, padding: "28px 32px" },
+  main: { flex: 1 },
   topbar: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 36 },
   title: { fontSize: 38, fontWeight: 700, color: "#1f2937", margin: "0 0 6px", whiteSpace: "nowrap" },
   subtitle: { fontSize: 13, color: "#6b7280", fontWeight: 600 },

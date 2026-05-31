@@ -248,7 +248,7 @@ export default function ManageClients() {
     <div style={S.root}>
       <AdminSidebar />
 
-      <main style={S.main}>
+      <main className="admin-main sm-internal-main" style={S.main}>
         <div style={S.topbar}>
           <div>
             <p style={S.eyebrow}>Star Mousse · Administration</p>

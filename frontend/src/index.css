@@ -3,6 +3,21 @@
 @tailwind utilities;
 
 :root {
+  /* Design tokens / CSS variables */
+  --color-primary: #f97316;
+  --color-primary-600: #ea580c;
+  --color-bg: #fdf6ef;
+  --color-surface: #ffffff;
+  --color-card-border: #f0e8df;
+  --color-muted: #6b7280;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+
+  /* Breakpoints */
+  --bp-sm: 640px;   /* phone */
+  --bp-md: 768px;   /* tablet */
+  --bp-lg: 1024px;  /* small laptop */
+
   color-scheme: dark;
   font-family: 'Inter', system-ui, sans-serif;
   background-color: #070b14;
@@ -27,4 +42,56 @@ body {
 ::selection {
   background-color: rgba(56, 189, 248, 0.35);
   color: #ffffff;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Force light mode for form fields (text inputs, search, textareas, selects) */
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+textarea,
+select,
+.filter-input,
+.filter-select,
+.form-input,
+.form-textarea,
+.search-input {
+  background: var(--color-surface) !important;
+  color: #111827 !important;
+  border: 1px solid var(--color-card-border) !important;
+  caret-color: var(--color-primary) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.filter-input:focus,
+.filter-select:focus,
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12) !important;
 }

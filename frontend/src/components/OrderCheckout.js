@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { addReview } from "../services/apiReview";
 import { addCartItem } from "../utils/cartUtils";
+import { login, register } from "../services/apiAuth";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const defaultFields = {
-  name: "nom",
-  phone: "tel",
-  address: "adresse",
+  name: "name",
+  phone: "phone",
+  address: "address",
   email: "email",
 };
 
@@ -36,9 +39,99 @@ export default function OrderCheckout({
   const [reviewSaving, setReviewSaving] = useState(false);
   const [reviewError, setReviewError] = useState("");
 
+  const [authMode, setAuthMode] = useState(null);
+  const [authData, setAuthData] = useState({ email: "", password: "", name: "", phone: "", confirm: "" });
+  const [authLoading, setAuthLoading] = useState(false);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
+
+  useEffect(() => {
+    if (user && form.name === "") {
+      setForm(current => ({
+        ...current,
+        name: user.username || user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        address: user.address || "",
+      }));
+    }
+  }, [user]);
+
   const updateField = (key, value) => {
     const field = formFields[key];
     setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const handleAuthChange = (e) => {
+    const { name, value } = e.target;
+    setAuthData((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleAuthSubmit = async (e) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    try {
+      if (authMode === "login") {
+        const response = await login({ email: authData.email, password: authData.password });
+        const { token, user } = response.data || response;
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+          setUser(user);
+          setForm(current => ({
+            ...current,
+            name: user.username || user.name || "",
+            email: user.email || "",
+            phone: user.phone || "",
+            address: user.address || "",
+          }));
+          window.dispatchEvent(new CustomEvent('user-logged-in', { detail: user }));
+          setAuthMode(null);
+          toast.success("Connecté avec succès !");
+        }
+      } else if (authMode === "register") {
+        if (authData.password !== authData.confirm) {
+          toast.error("Les mots de passe ne correspondent pas.");
+          setAuthLoading(false);
+          return;
+        }
+        const response = await register({
+          username: authData.name,
+          email: authData.email,
+          phone: authData.phone,
+          password: authData.password,
+          role: "client"
+        });
+        const { token, user } = response.data || response;
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+          setUser(user);
+          setForm(current => ({
+            ...current,
+            name: user.username || user.name || "",
+            email: user.email || "",
+            phone: user.phone || "",
+            address: user.address || "",
+          }));
+          window.dispatchEvent(new CustomEvent('user-logged-in', { detail: user }));
+          setAuthMode(null);
+          toast.success("Compte créé avec succès !");
+        }
+      }
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || err.message || "Erreur d'authentification";
+      toast.error(errorMessage);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setAuthMode(null);
+    setForm(current => ({ ...current, name: "", email: "", phone: "" }));
   };
 
   const handleButtonClick = (event) => {
@@ -121,7 +214,136 @@ export default function OrderCheckout({
 
   return (
     <>
+      <ToastContainer position="top-right" theme="light" />
+
       <div className="sm-order-checkout">
+        {/* Auth Section - shown if not logged in and user chooses to auth */}
+        {!user && authMode && (
+          <div style={styles.authSection}>
+            <div style={styles.authHeader}>
+              <h3 style={styles.authTitle}>
+                {authMode === "login" ? "Se connecter" : "Créer un compte"}
+              </h3>
+              <button type="button" style={styles.authClose} onClick={() => setAuthMode(null)}>
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAuthSubmit} style={styles.authForm}>
+              {authMode === "register" && (
+                <div style={styles.sm_field}>
+                  <label style={styles.sm_label}>Nom complet</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Prénom Nom"
+                    value={authData.name}
+                    onChange={handleAuthChange}
+                    required
+                    style={styles.sm_input}
+                  />
+                </div>
+              )}
+
+              {authMode === "register" && (
+                <div style={styles.sm_field}>
+                  <label style={styles.sm_label}>Téléphone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Votre numéro"
+                    value={authData.phone}
+                    onChange={handleAuthChange}
+                    required
+                    style={styles.sm_input}
+                  />
+                </div>
+              )}
+
+              <div style={styles.sm_field}>
+                <label style={styles.sm_label}>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="vous@email.com"
+                  value={authData.email}
+                  onChange={handleAuthChange}
+                  required
+                  style={styles.sm_input}
+                />
+              </div>
+
+              <div style={styles.sm_field}>
+                <label style={styles.sm_label}>Mot de passe</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="••••••••"
+                  value={authData.password}
+                  onChange={handleAuthChange}
+                  required
+                  style={styles.sm_input}
+                />
+              </div>
+
+              {authMode === "register" && (
+                <div style={styles.sm_field}>
+                  <label style={styles.sm_label}>Confirmer le mot de passe</label>
+                  <input
+                    type="password"
+                    name="confirm"
+                    placeholder="••••••••"
+                    value={authData.confirm}
+                    onChange={handleAuthChange}
+                    required
+                    style={styles.sm_input}
+                  />
+                </div>
+              )}
+
+              <button type="submit" style={styles.authSubmit} disabled={authLoading}>
+                {authLoading ? "Envoi..." : (authMode === "login" ? "Se connecter" : "Créer un compte")}
+              </button>
+
+              <button
+                type="button"
+                style={styles.authToggle}
+                onClick={() => {
+                  setAuthMode(authMode === "login" ? "register" : "login");
+                  setAuthData({ email: "", password: "", name: "", phone: "", confirm: "" });
+                }}
+              >
+                {authMode === "login" ? "Créer un compte" : "J'ai un compte"}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Auth buttons - shown if not logged in and not in auth mode */}
+        {!user && !authMode && (
+          <div style={styles.authPrompt}>
+            <p style={styles.authPromptText}>Vous avez déjà un compte Star Mousse ?</p>
+            <div style={styles.authButtons}>
+              <button type="button" style={styles.loginBtn} onClick={() => setAuthMode("login")}>
+                Se connecter
+              </button>
+              <button type="button" style={styles.registerBtn} onClick={() => setAuthMode("register")}>
+                Créer un compte
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* User info - shown if logged in */}
+        {user && (
+          <div style={styles.userInfo}>
+            <div style={styles.userGreeting}>Bienvenue, <strong>{user.username || user.name || "Client"}</strong></div>
+            <button type="button" style={styles.logoutBtn} onClick={handleLogout}>
+              Changer de compte
+            </button>
+          </div>
+        )}
+
         <div className="sm-order-title">Informations personnelles</div>
 
         <div className="sm-order-field">
@@ -253,6 +475,150 @@ export default function OrderCheckout({
 }
 
 const styles = {
+  authPrompt: {
+    marginBottom: 24,
+    padding: 18,
+    background: "linear-gradient(135deg, #f0f0f8 0%, #f5f0ff 100%)",
+    borderRadius: 12,
+    textAlign: "center",
+  },
+  authPromptText: {
+    margin: "0 0 12px 0",
+    fontSize: 14,
+    color: "#4b5563",
+    fontWeight: 500,
+  },
+  authButtons: {
+    display: "flex",
+    gap: 10,
+    justifyContent: "center",
+  },
+  loginBtn: {
+    padding: "10px 16px",
+    border: "1.5px solid #7c2fbf",
+    borderRadius: 8,
+    background: "#fff",
+    color: "#7c2fbf",
+    fontWeight: 600,
+    cursor: "pointer",
+    fontSize: 13,
+    transition: "all 0.2s",
+  },
+  registerBtn: {
+    padding: "10px 16px",
+    border: "none",
+    borderRadius: 8,
+    background: "#7c2fbf",
+    color: "#fff",
+    fontWeight: 600,
+    cursor: "pointer",
+    fontSize: 13,
+    transition: "all 0.2s",
+  },
+  authSection: {
+    marginBottom: 24,
+    padding: 20,
+    background: "#f9f7ff",
+    borderRadius: 12,
+    border: "1px solid #ebe4ff",
+  },
+  authHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  authTitle: {
+    margin: 0,
+    fontSize: 16,
+    fontWeight: 600,
+    color: "#1a1a2e",
+  },
+  authClose: {
+    background: "none",
+    border: "none",
+    fontSize: 18,
+    color: "#9090b0",
+    cursor: "pointer",
+    padding: 0,
+  },
+  authForm: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  sm_field: {
+    marginBottom: 12,
+  },
+  sm_label: {
+    display: "block",
+    fontSize: 12,
+    fontWeight: 600,
+    color: "#60607a",
+    marginBottom: 6,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+  },
+  sm_input: {
+    width: "100%",
+    padding: "11px 12px",
+    border: "1.5px solid #e8e8f0",
+    borderRadius: 8,
+    fontSize: 14,
+    fontFamily: "inherit",
+    outline: "none",
+    boxSizing: "border-box",
+    transition: "border-color 0.2s",
+  },
+  authSubmit: {
+    padding: 12,
+    background: "#7c2fbf",
+    color: "#fff",
+    border: "none",
+    borderRadius: 8,
+    fontWeight: 600,
+    cursor: "pointer",
+    fontSize: 14,
+    marginTop: 4,
+    transition: "background 0.2s",
+  },
+  authToggle: {
+    padding: 10,
+    background: "transparent",
+    color: "#7c2fbf",
+    border: "none",
+    borderRadius: 8,
+    fontWeight: 600,
+    cursor: "pointer",
+    fontSize: 13,
+    textDecoration: "underline",
+  },
+  userInfo: {
+    marginBottom: 24,
+    padding: 16,
+    background: "#e8f5e9",
+    borderRadius: 12,
+    border: "1px solid #81c784",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  userGreeting: {
+    fontSize: 14,
+    color: "#2e7d32",
+    fontWeight: 500,
+  },
+  logoutBtn: {
+    padding: "8px 14px",
+    background: "#2e7d32",
+    color: "#fff",
+    border: "none",
+    borderRadius: 6,
+    fontSize: 12,
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "background 0.2s",
+  },
   backdrop: {
     position: "fixed",
     inset: 0,

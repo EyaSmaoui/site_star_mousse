@@ -60,11 +60,11 @@ export default function EmployeeSettings() {
   return (
     <div style={S.root}>
       <EmployeeSidebar />
-      <main style={S.main}>
+      <main className="employee-main sm-internal-main" style={S.main}>
         <p style={S.eyebrow}>Employé / Paramètres</p>
         <h1 style={S.title}>Paramètres</h1>
-        <div style={S.grid}>
-          <section style={S.card}>
+        <div className="sm-settings-grid" style={S.grid}>
+          <section className="sm-settings-card" style={S.card}>
             <h2 style={S.cardTitle}>Apparence</h2>
             <p style={S.text}>Choisissez le thème utilisé dans les espaces internes.</p>
             <div style={S.segment}>
@@ -81,7 +81,7 @@ export default function EmployeeSettings() {
             </div>
           </section>
 
-          <form style={S.card} onSubmit={submitPassword}>
+          <form className="sm-settings-card" style={S.card} onSubmit={submitPassword}>
             <h2 style={S.cardTitle}>Sécurité</h2>
             <p style={S.text}>Changez votre mot de passe sans passer par l'administrateur.</p>
             <PasswordField label="Mot de passe actuel" value={passwords.currentPassword} onChange={(value) => setPasswords((p) => ({ ...p, currentPassword: value }))} />
@@ -109,7 +109,7 @@ const S = {
   main: { marginLeft: 220, flex: 1, padding: "30px 34px" },
   eyebrow: { margin: 0, color: "#9ca3af", fontSize: 12, textTransform: "uppercase", letterSpacing: ".12em" },
   title: { margin: "8px 0 24px", fontSize: 32 },
-  grid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 },
+  grid: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 18 },
   card: { background: "#fff", border: "1px solid #f0e8df", borderRadius: 12, padding: 22, boxShadow: "0 18px 46px rgba(21,21,34,.06)" },
   cardTitle: { margin: "0 0 8px", fontSize: 18 },
   text: { margin: "0 0 18px", color: "#6b7280", fontSize: 14 },

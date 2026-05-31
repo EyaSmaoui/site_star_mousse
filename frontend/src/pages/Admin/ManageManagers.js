@@ -128,7 +128,7 @@ export default function ManageManagers() {
     <div style={S.root}>
       <AdminSidebar />
 
-      <main style={S.main}>
+      <main className="admin-main sm-internal-main" style={S.main}>
 
         {/* ── Topbar ── */}
         <div style={S.topbar}>

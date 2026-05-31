@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 import EmployeeSidebar from "./EmployeeSidebar";
+import AdvancedFilters from "../../components/AdvancedFilters";
 import { addOrder, deleteOrder as removeOrder, getAllOrders, getCachedOrders, updateOrder } from "../../services/apiOrder";
 
 // ─── Config ────────────────────────────────────────────────────────────────────
@@ -876,10 +877,10 @@ export default function ManageOrders({
     <div style={S.root}>
       <Sidebar {...sidebarProps} />
 
-      <main style={S.main}>
+      <main className="employee-main sm-internal-main sm-orders-main" style={S.main}>
 
         {/* ── Topbar ── */}
-        <div style={S.topbar}>
+        <div className="sm-page-topbar" style={S.topbar}>
           <div>
             <p style={S.topbarSub}>Star Mousse · Employé</p>
             <h1 style={S.topbarTitle}>Gestion des commandes</h1>
@@ -896,7 +897,7 @@ export default function ManageOrders({
         </div>
 
         {/* ── KPI strip ── */}
-        <div style={S.kpiStrip}>
+        <div className="sm-kpi-strip" style={S.kpiStrip}>
           {[
             { label: "Total commandes", value: stats.total,     color: "#f97316" },
             { label: "En attente",      value: stats.enAttente, color: "#b45309" },
@@ -905,7 +906,7 @@ export default function ManageOrders({
             { label: "Livrées",         value: stats.livré,     color: "#15803d" },
           ].map((k, i, arr) => (
             <React.Fragment key={k.label}>
-              <div style={S.kpiItem}>
+              <div className="sm-kpi-item" style={S.kpiItem}>
                 <div style={{ ...S.kpiIcon, background: k.color }}>
                   <Ico d={ICO.tag} size={18} color="#fff" />
                 </div>
@@ -914,14 +915,14 @@ export default function ManageOrders({
                   <div style={S.kpiLbl}>{k.label}</div>
                 </div>
               </div>
-              {i < arr.length - 1 && <div style={S.kpiDivider} />}
+              {i < arr.length - 1 && <div className="sm-kpi-divider" style={S.kpiDivider} />}
             </React.Fragment>
           ))}
         </div>
 
         {/* ── Controls ── */}
-        <div style={S.controls}>
-          <div style={S.searchWrap}>
+        <div className="sm-controls" style={S.controls}>
+          <div className="sm-search-wrap" style={S.searchWrap}>
             <Ico d={ICO.search} size={15} color="#9ca3af" />
             <input
               style={S.searchInput}
@@ -933,7 +934,7 @@ export default function ManageOrders({
               <button onClick={() => setSearch("")} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16, padding: 2 }}>×</button>
             )}
           </div>
-          <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+          <div className="sm-status-filters" style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
             {STATUS_FILTERS.map(s => (
               <button
                 key={s}
@@ -958,14 +959,14 @@ export default function ManageOrders({
         {loading ? (
           <div style={S.empty}>Chargement des commandes…</div>
         ) : (
-          <div style={S.card}>
-            <div style={S.cardHeader}>
+          <div className="sm-table-card" style={S.card}>
+            <div className="sm-card-header" style={S.cardHeader}>
               <div>
                 <h2 style={S.cardTitle}>Liste des commandes</h2>
                 <p style={S.cardSub}>{filteredOrders.length} résultat{filteredOrders.length !== 1 ? "s" : ""} sur {orders.length}</p>
               </div>
             </div>
-            <div style={{ overflowX: "auto" }}>
+            <div className="sm-table-wrap" style={{ overflowX: "auto" }}>
               <table style={S.table}>
                 <thead>
                   <tr style={{ background: "#f9fafb" }}>

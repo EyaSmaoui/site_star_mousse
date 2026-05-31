@@ -155,7 +155,7 @@ const Auth = ({ role: requiredRole } = {}) => {
       toast.success(tab === 0 ? "Heureux de vous revoir !" : "Compte créé avec succès !");
       submitPendingOrder().catch((err) => {
         console.error('Erreur commande en attente :', err);
-        toast.warning("Connexion réussie, mais la commande en attente n'a pas pu être envoyée.");
+        toast.warning("Connexion reussie. Votre ancienne commande en attente n'a pas pu etre envoyee, merci de la refaire.");
       });
       setTimeout(() => {
         if (tab === 0) {

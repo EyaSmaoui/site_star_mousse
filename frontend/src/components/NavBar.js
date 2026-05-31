@@ -161,6 +161,7 @@ function NavBar() {
         }
 
         .ssn-nav {
+          width: 100%;
           max-width: 1440px;
           min-height: 76px;
           margin: 0 auto;
@@ -195,7 +196,7 @@ function NavBar() {
 
         .ssn-links {
           display: flex;
-          align-items: center;
+          flex-wrap: wrap;
           justify-content: center;
           gap: 6px;
           margin: 0;
@@ -484,11 +485,20 @@ function NavBar() {
 
         .ssn-mobile-menu {
           display: none;
-          padding: 0 20px 22px;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 100%;
+          width: 100%;
+          padding: 0 16px 20px;
+          box-sizing: border-box;
+          background: transparent;
+          z-index: 5001;
         }
         .ssn-mobile-menu.open { display: block; }
         .ssn-mobile-panel {
-          max-width: 520px;
+          width: 100%;
+          max-width: 100%;
           margin: 0 auto;
           padding: 12px;
           border: 1px solid rgba(26,26,46,0.08);
@@ -544,6 +554,8 @@ function NavBar() {
         @media (max-width: 1120px) {
           .ssn-search { display: none; }
           .ssn-nav { gap: 16px; }
+          .ssn-logo img { height: 48px; }
+          .ssn-promo { padding: 8px 24px; }
         }
         @media (max-width: 960px) {
           .ssn-promo {
@@ -556,16 +568,31 @@ function NavBar() {
           .ssn-promo::-webkit-scrollbar { display: none; }
           .ssn-nav {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
             min-height: 68px;
-            padding: 10px 20px !important;
+            padding: 10px 18px !important;
           }
           .ssn-links,
           .ssn-actions { display: none; }
           .ssn-hamburger { display: inline-flex; margin-left: auto; }
-          .ssn-logo img { height: 46px; }
+          .ssn-logo img { height: 44px; }
+          .ssn-mobile-menu {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            width: 100%;
+            padding: 0 16px 16px;
+            background: transparent;
+          }
+          .ssn-mobile-panel {
+            width: 100%;
+            max-width: 100%;
+          }
         }
-        @media (max-width: 520px) {
-          .ssn-promo { font-size: 11.5px; }
+        @media (max-width: 680px) {
+          .ssn-promo { font-size: 11.5px; padding: 8px 16px; gap: 12px; }
           .ssn-mobile-actions { grid-template-columns: 1fr; }
         }
       `}</style>

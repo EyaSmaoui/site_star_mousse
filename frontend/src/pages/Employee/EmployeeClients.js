@@ -78,7 +78,7 @@ export default function EmployeeClients() {
   return (
     <div style={S.root}>
       <EmployeeSidebar />
-      <main style={S.main}>
+      <main className="employee-main sm-internal-main" style={S.main}>
         <div style={S.header}>
           <div>
             <p style={S.eyebrow}>Employé / Clients</p>

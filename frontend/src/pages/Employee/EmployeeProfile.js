@@ -85,7 +85,7 @@ export default function EmployeeProfile() {
   return (
     <div style={styles.wrapper}>
       <EmployeeSidebar />
-      <main style={styles.main}>
+      <main className="employee-main sm-internal-main" style={styles.main}>
         <div style={styles.header}>
           <div>
             <p style={styles.breadcrumb}>Employé / Profil</p>

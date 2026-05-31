@@ -33,27 +33,10 @@ import EmployeeClients from "./pages/Employee/EmployeeClients";
 import EmployeeSettings from "./pages/Employee/EmployeeSettings";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import ChatbotAssistant from "./components/ChatbotAssistant";
+import CookiesModal from "./components/CookiesModal";
+import PromoModal from "./components/PromoModal";
 
-import {
-  RelaxPlus,
-  MedicoPlus,
-  Tendresse,
-  VenisePlus,
-  SoftPlus,
-  ConfortPlus,
-  RelaxPillow,
-  TendressePillow,
-  MedicoPillow,
-  VenisePillow,
-  GelPillow,
-  AromaLavande,
-  AromaMenthe,
-  OceanPuff,
-  AnatoliaGel,
-  BebeConfortPlus,
-  BebeSoft,
-  BebeVenise,
-} from "./pages/Product/index.js";
+import ProductTemplate from "./components/ProductTemplate";
 
 function GlobalBrandTheme() {
   return (
@@ -462,6 +445,8 @@ function AppContent() {
   return (
     <div className="App">
       {showThemeToggle && <ThemeToggle />}
+      <CookiesModal />
+      <PromoModal />
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -511,24 +496,7 @@ function AppContent() {
         <Route path="/add-employer" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AddEmployer />} />} />
         <Route path="/quiz" element={<Quiz />} />
 
-        <Route path="/product/relax-plus" element={<RelaxPlus />} />
-        <Route path="/product/medico-plus" element={<MedicoPlus />} />
-        <Route path="/product/tendresse" element={<Tendresse />} />
-        <Route path="/product/venise-plus" element={<VenisePlus />} />
-        <Route path="/product/soft-plus" element={<SoftPlus />} />
-        <Route path="/product/confort-plus" element={<ConfortPlus />} />
-        <Route path="/product/relax-pillow" element={<RelaxPillow />} />
-        <Route path="/product/tendresse-pillow" element={<TendressePillow />} />
-        <Route path="/product/medico-pillow" element={<MedicoPillow />} />
-        <Route path="/product/venise-pillow" element={<VenisePillow />} />
-        <Route path="/product/gel-pillow" element={<GelPillow />} />
-        <Route path="/product/aroma-lavande" element={<AromaLavande />} />
-        <Route path="/product/aroma-menthe" element={<AromaMenthe />} />
-        <Route path="/product/ocean-puff" element={<OceanPuff />} />
-        <Route path="/product/anatolia-gel" element={<AnatoliaGel />} />
-        <Route path="/product/bebe-confort-plus" element={<BebeConfortPlus />} />
-        <Route path="/product/bebe-soft" element={<BebeSoft />} />
-        <Route path="/product/bebe-venise" element={<BebeVenise />} />
+        <Route path="/product/:slug" element={<ProductTemplate />} />
 
         <Route path="*" element={<Home />} />
       </Routes>

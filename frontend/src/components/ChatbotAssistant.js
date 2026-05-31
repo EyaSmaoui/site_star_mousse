@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { sendChatMessage } from "../services/apiChatbot";
+import { sendChatMessage, getRecommendations } from "../services/apiChatbot";
 import "../styles/chatbot.css";
 
 const QUICK_PROMPTS = [
-  "Nheb nechri jraya",
-  "Budgeti 300 DT",
-  "Jraya 160x200",
-  "T5alsou ki tousel ?",
+  "Je cherche un matelas pour le dos",
+  "Budget 300 DT pour un matelas",
+  "Un oreiller cervical",
+  "Quels sont vos best-sellers ?",
 ];
 
 const FALLBACK_RECOMMENDATIONS = [
@@ -45,7 +45,16 @@ function shouldShowRecommendations(messages) {
 }
 
 function canRecommend(intent) {
-  return ["dos", "budget", "premium", "oreiller", "bebe"].includes(intent);
+  return [
+    "dos",
+    "budget",
+    "premium",
+    "oreiller",
+    "bebe",
+    "commande",
+    "conseil_matelas",
+    "recommendation",
+  ].includes(intent);
 }
 
 export default function ChatbotAssistant() {
@@ -55,7 +64,7 @@ export default function ChatbotAssistant() {
   const [messages, setMessages] = useState([
     {
       from: "bot",
-      text: "Aslema, ena Dali mte3 Star Mousse. 9olli chnowa 7achtek w n3awnk direct.",
+      text: "Bonjour, je suis l'assistant Star Mousse. Comment puis-je vous aider aujourd'hui ?",
       recommendations: [],
     },
   ]);
@@ -119,33 +128,35 @@ export default function ChatbotAssistant() {
 
       try {
         const data = await sendChatMessage(message);
-        setMessages((current) => {
-          const recommendations = shouldShowRecommendations(current) && canRecommend(data.intent)
-            ? data.recommendations || []
-            : [];
+        let recommendations = Array.isArray(data.recommendations) ? data.recommendations : [];
 
-          return [
-            ...current,
-            {
-              from: "bot",
-              text: data.response || "Desole, je n'ai pas encore de reponse.",
-              recommendations,
-            },
-          ];
-        });
+        if (!recommendations.length && canRecommend(data.intent)) {
+          try {
+            recommendations = await getRecommendations(data.recommendationQuery || message, 3);
+          } catch (recommendationError) {
+            console.warn('[Chatbot] Impossible de charger des recommandations additionnelles.', recommendationError);
+          }
+        }
+
+        setMessages((current) => [
+          ...current,
+          {
+            from: "bot",
+            text: data.response || "Désolé, je n'ai pas encore de réponse.",
+            recommendations,
+          },
+        ]);
       } catch (error) {
         setMessages((current) => {
-          const recommendations = shouldShowRecommendations(current)
-            ? FALLBACK_RECOMMENDATIONS
-            : [];
+          const recommendations = FALLBACK_RECOMMENDATIONS;
 
           return [
             ...current,
             {
               from: "bot",
               text: recommendations.length
-                ? "Je n'arrive pas a joindre le serveur. Voici quelques recommandations utiles."
-                : "Je n'arrive pas a joindre le serveur. 9olli encore chwaya chnowa 7achtek w n3awnk.",
+                ? "Je n'arrive pas à joindre le serveur pour le moment. Voici quelques recommandations utiles."
+                : "Je n'arrive pas à joindre le serveur. Réessaie avec un autre message, s'il te plaît.",
               recommendations,
             },
           ];
@@ -179,7 +190,7 @@ export default function ChatbotAssistant() {
               <div>
                 <div className="sm-chatbot-avatars" aria-hidden="true">
                   <span className="avatar">SM</span>
-                  <span className="avatar">JD</span>
+                  <span className="avatar">AS</span>
                   <span className="avatar">A</span>
                 </div>
                 <h2 id="sm-chatbot-title">Bonjour</h2>
@@ -196,7 +207,7 @@ export default function ChatbotAssistant() {
               <div key={`${message.from}-${index}`} className={`sm-chatbot-message ${message.from}`}>
                 <div className={`sm-chatbot-message-row ${message.from}`}>
                   <div className="sm-chatbot-message-avatar" aria-hidden="true">
-                    {message.from === "bot" ? "DL" : "Me"}
+                    {message.from === "bot" ? "SM" : "Me"}
                   </div>
                   <div className="sm-chatbot-message-bubble">
                     <p>{message.text}</p>
@@ -211,7 +222,7 @@ export default function ChatbotAssistant() {
                         <span>
                           <strong>{product.name}</strong>
                           <small>{product.description}</small>
-                          <em>{formatPrice(product.price)}</em>
+                          <em>{product.priceLabel || formatPrice(product.price)}</em>
                         </span>
                       </a>
                     ))}
@@ -293,7 +304,7 @@ export default function ChatbotAssistant() {
         aria-label={open ? "Fermer le chatbot" : "Ouvrir le chatbot"}
         aria-expanded={open}
       >
-        <span className="sm-chatbot-toggle-icon">{hasRecommendations ? "DL" : "?"}</span>
+        <span className="sm-chatbot-toggle-icon">{hasRecommendations ? "SM" : "?"}</span>
         <span>Conseil</span>
       </button>
     </div>

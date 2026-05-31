@@ -34,9 +34,29 @@ export const clearPendingOrder = () => {
   }
 };
 
+const isValidPendingOrder = (orderPayload) => {
+  const products = Array.isArray(orderPayload?.products) ? orderPayload.products : [];
+  return Boolean(
+    orderPayload &&
+    String(orderPayload.phone || '').trim() &&
+    String(orderPayload.address || '').trim() &&
+    products.some((product) => product?.name) &&
+    Number.isFinite(Number(orderPayload.total ?? products.reduce(
+      (sum, product) => sum + Number(product?.price || 0) * Number(product?.quantity || 1),
+      0
+    )))
+  );
+};
+
 export const submitPendingOrder = async () => {
   const pendingOrder = getPendingOrder();
   if (!pendingOrder) return null;
+
+  if (!isValidPendingOrder(pendingOrder)) {
+    clearPendingOrder();
+    return null;
+  }
+
   clearPendingOrder();
   return submitOrder(pendingOrder);
 };

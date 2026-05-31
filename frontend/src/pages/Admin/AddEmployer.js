@@ -54,7 +54,7 @@ const AddEmployer = () => {
     <div style={s.root}>
       <AdminSidebar />
 
-      <main style={s.main}>
+      <main className="admin-main sm-internal-main" style={s.main}>
 
         {/* Header */}
         <header style={s.header}>

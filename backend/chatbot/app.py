@@ -6,18 +6,18 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Dictionnaire complet : Soft Plus et Venise Plus sont bien dans la gamme orthopedique
+# Dictionnaire complet : prix par dimension, standardises en petit x grand.
 PRIX_CATALOGUE = {
     "gamme_orthopedique": {
-        "Soft Plus": {"90x190": 250, "120x190": 350, "140x190": 450, "160x190": 520, "160x200": 550, "180x200": 600},
-        "Venise Plus": {"90x190": 300, "120x190": 450, "140x190": 600, "160x190": 420, "160x200": 750, "180x200": 935}
+        "Soft Plus": {"80x190": 255, "90x190": 285, "120x190": 385, "140x190": 395, "160x190": 445, "160x200": 505, "180x200": 605},
+        "Venise Plus": {"80x190": 305, "90x190": 335, "120x190": 445, "140x190": 465, "160x190": 525, "160x200": 595, "180x200": 705}
     },
     "gamme_orthomedical": {
-        "Medico Plus": {"90x190": 420, "120x190": 650, "140x190": 950, "160x190": 1200, "160x200": 1530}
+        "Medico Plus": {"80x190": 425, "90x190": 475, "120x190": 675, "140x190": 695, "160x190": 805, "160x200": 880, "180x200": 1055}
     },
     "gamme_ergonomique": {
-        "Relax Plus": {"90x190": 510, "120x190": 750, "140x190": 1100, "160x190": 1500, "160x200": 1500, "180x200": 1850},
-        "Tendresse Plus": {"90x190": 700, "120x190": 1100, "140x190": 1600, "160x190": 2100, "160x200": 2100, "180x200": 2555}
+        "Relax Plus": {"80x190": 515, "90x190": 575, "120x190": 810, "140x190": 835, "160x190": 965, "160x200": 1105, "180x200": 1305},
+        "Tendresse Plus": {"80x190": 705, "90x190": 775, "120x190": 1105, "140x190": 1155, "160x190": 1335, "160x200": 1475, "180x200": 1755}
     }
 }
 
@@ -74,7 +74,29 @@ def detect_purchase_intent(text: str):
     return any(keyword in text for keyword in PURCHASE_KEYWORDS)
 
 
-def build_response(category_tag: str, dimension: str):
+def detect_service_intent(text: str):
+    if any(keyword in text for keyword in ["livraison", "livrer", "delivery", "delai", "48h", "72h"]):
+        return {
+            "response": "La livraison est disponible en Tunisie, generalement sous 48h a 72h selon la ville et la disponibilite. Vous pouvez aussi payer a la livraison.",
+            "intent": "livraison",
+            "recommendations": []
+        }
+    if any(keyword in text for keyword in ["paiement", "payer", "payement", "t5alsou", "cash", "carte", "facilite"]):
+        return {
+            "response": "Vous pouvez payer a la livraison. Pour commander, envoyez la dimension, le modele souhaite et votre numero de telephone afin qu'un conseiller confirme avec vous.",
+            "intent": "paiement",
+            "recommendations": []
+        }
+    if any(keyword in text for keyword in ["garantie", "sav", "retour", "echange"]):
+        return {
+            "response": "La garantie depend du modele choisi. Donnez-moi le nom du matelas ou la gamme, et je vous indique les informations utiles avant la commande.",
+            "intent": "garantie",
+            "recommendations": []
+        }
+    return None
+
+
+def build_response_legacy(category_tag: str, dimension: str):
     product_map = PRIX_CATALOGUE.get(category_tag)
     if not product_map:
         return None
@@ -87,6 +109,23 @@ def build_response(category_tag: str, dimension: str):
     return "\n".join(lines)
 
 
+def build_response(category_tag: str, dimension: str):
+    product_map = PRIX_CATALOGUE.get(category_tag)
+    if not product_map:
+        return None
+
+    category_label = category_tag.replace("_", " ").replace("gamme ", "").strip()
+    if category_tag == "gamme_orthomedical":
+        lines = [f"Pour {dimension} en gamme {category_label}, je recommande Medico Plus avec le prix exact de cette dimension :"]
+    else:
+        lines = [f"Pour {dimension} en gamme {category_label}, voici les modeles disponibles avec le prix exact de cette dimension :"]
+    for product_name, prices in product_map.items():
+        price = prices.get(dimension)
+        price_label = f"{price} DT" if isinstance(price, int) else "Sur demande"
+        lines.append(f"- {product_name} : {price_label}")
+    return "\n".join(lines)
+
+
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json() or {}
@@ -94,49 +133,72 @@ def chat():
     user_id = data.get("userId", "default_user")
 
     normalized_input = normalize_text(raw_message)
-    
-    # Check for greeting first
-    if detect_greeting(normalized_input):
-        return jsonify({
-            "response": "Aslema, ena Dali mte3 Star Mousse. 9olli chnowa 7achtek w n3awnk direct.",
-            "intent": "greeting"
-        })
-    
-    # Check for purchase intent
-    if detect_purchase_intent(normalized_input):
-        return jsonify({
-            "response": "Mrigel, t7eb nechri jraya. 9olli juste l 9yes, budgetek, w ken t7ebha ferme wala rtwiba bech n9arblek choix behi.",
-            "intent": "purchase_intent"
-        })
-    
-    # Check for budget/price questions
-    if detect_budget(normalized_input):
-        return jsonify({
-            "response": "Sam7ni, ma fhimtech mrigel. 9olli t7eb ta7ki 3la soum, livraison, paiement, garantie, dhar, m5adda wala commande ?",
-            "intent": "budget"
-        })
-    
     dimension = extraire_dimension(normalized_input)
     category_tag = detect_category(normalized_input)
+    session = user_sessions.get(user_id)
+    if not isinstance(session, dict):
+        session = {"dimension": session} if session else {}
+        user_sessions[user_id] = session
 
+    # Greeting should respond quickly
+    if detect_greeting(normalized_input):
+        return jsonify({
+            "response": "Bonjour, je suis l'assistant Star Mousse. Comment puis-je vous aider aujourd'hui ?",
+            "intent": "greeting"
+        })
+
+    service_reply = detect_service_intent(normalized_input)
+    if service_reply:
+        return jsonify(service_reply)
+
+    # If user provides both dimension and category in one message, répondre immédiatement
     if dimension and category_tag:
-        user_sessions[user_id] = dimension
+        session["dimension"] = dimension
+        session["category"] = category_tag
         response_text = build_response(category_tag, dimension)
         return jsonify({"response": response_text, "intent": category_tag})
 
-    if dimension:
-        user_sessions[user_id] = dimension
+    # Purchase intent without dimension can still guide user
+    if detect_purchase_intent(normalized_input) and not dimension:
         return jsonify({
-            "response": f"9yes {dimension} mrigel ! Chnowa t7eb l gamme : Orthopédique, Orthomedical, wala Ergonomique ?",
+            "response": "Je peux vous aider à choisir un matelas. Indiquez-moi la dimension souhaitée et si vous préférez une gamme orthopédique, orthomédicale ou ergonomique.",
+            "intent": "purchase_intent"
+        })
+
+    # Save the dimension if set, and ask for la gamme
+    if dimension:
+        session["dimension"] = dimension
+        if session.get("category"):
+            response_text = build_response(session["category"], dimension)
+            return jsonify({"response": response_text, "intent": session["category"]})
+        return jsonify({
+            "response": f"J'ai bien noté {dimension}. Quelle gamme recherchez-vous ? Orthopédique, Orthomédicale ou Ergonomique haut de gamme ?",
             "intent": "dimension_captured"
         })
 
-    dimension = user_sessions.get(user_id, "160x190")
-
+    # If the user mentions a category after dimension, use the stored dimension
     if category_tag:
+        session["category"] = category_tag
+        dimension = session.get("dimension")
+        if not dimension:
+            return jsonify({
+                "response": "Gamme bien notee. Donnez-moi la dimension (ex: 160x190) pour vous proposer les modeles exacts.",
+                "intent": "category_selected",
+                "recommendations": []
+            })
         response_text = build_response(category_tag, dimension)
         return jsonify({"response": response_text, "intent": category_tag})
 
-    return jsonify({"response": "T7eb Orthopédique, Orthomedical wala Ergonomique ?", "intent": "fallback"})
+    # If the user asks about budget/prix, guide the next step
+    if detect_budget(normalized_input):
+        return jsonify({
+            "response": "Je peux vous proposer des matelas dans votre budget. Donnez-moi la dimension souhaitée et la gamme préférée pour trouver la meilleure option.",
+            "intent": "budget"
+        })
+
+    return jsonify({
+        "response": "Pour mieux vous aider, parlez-moi de votre matelas : dimension, gamme (orthopédique/orthomédicale/ergonomique), budget ou confort dos.",
+        "intent": "fallback"
+    })
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5001, debug=True, use_reloader=False)
