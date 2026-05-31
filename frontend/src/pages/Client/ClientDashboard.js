@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -8,6 +7,47 @@ import { getMyOrders } from '../../services/orderService';
 import { hasAccess, ROLES } from '../../utils/authUtils';
 import './ClientDashboard.css';
 import ClientSidebar from './ClientSidebar';
+
+const KPI_CONFIG = [
+  {
+    label: "Commandes totales",
+    valueKey: "totalOrders",
+    format: (v) => String(v || 0),
+    iconColor: "#3b82f6",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+      </svg>
+    ),
+  },
+  {
+    label: "Commandes actives",
+    valueKey: "activeOrders",
+    format: (v) => String(v || 0),
+    iconColor: "#7c3aed",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+      </svg>
+    ),
+  },
+  {
+    label: "Note moyenne",
+    valueKey: "averageRating",
+    format: (v) => `${v || 0}/5`,
+    iconColor: "#10b981",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
+        <line x1="7" y1="7" x2="7.01" y2="7" />
+      </svg>
+    ),
+  },
+];
 
 const ClientDashboard = () => {
   const navigate = useNavigate();
@@ -39,6 +79,8 @@ const ClientDashboard = () => {
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [dataSyncedAt, setDataSyncedAt] = useState(null);
+  const [time, setTime] = useState(new Date());
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -53,20 +95,18 @@ const ClientDashboard = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const dateStr = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
     month: 'long'
   });
 
-  const avatarLetters = profile.username
-    ? profile.username
-        .split(' ')
-        .map((part) => part[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
-    : 'CL';
+  const timeStr = time.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -115,6 +155,7 @@ const ClientDashboard = () => {
         phone: profileData.phone,
         address: profileData.address || ''
       });
+      setDataSyncedAt(new Date());
     } catch (error) {
       console.error('Erreur:', error);
       toast.error('Erreur lors du chargement des données');
@@ -173,6 +214,12 @@ const ClientDashboard = () => {
   const averageRating = reviews.length
     ? (reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.length).toFixed(1)
     : '0.0';
+
+  const statsSummary = {
+    totalOrders,
+    activeOrders: activeOrdersCount,
+    averageRating: parseFloat(averageRating)
+  };
 
   useEffect(() => {
     if (loading || isReviewModalOpen || !orderProductOptions.length) return;
@@ -329,33 +376,34 @@ const ClientDashboard = () => {
             </div>
 
             <div style={S.topbarRight}>
-              <div style={S.clock}>{dateStr}</div>
-              <div style={S.avatar}>{avatarLetters}</div>
-              <span style={S.userName}>Dernière mise à jour</span>
+              <div style={S.clock}>{timeStr}</div>
+              <div style={S.avatar}>{profile.username ? profile.username.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase() : 'CL'}</div>
+              <span style={S.userName}>{dateStr}</span>
             </div>
           </div>
 
-          <div className="dashboard-stats">
-            <div className="stat-card">
-              <span className="stat-label">Commandes totales</span>
-              <strong>{totalOrders}</strong>
-              <p>Nombre de commandes reçues</p>
-            </div>
-            <div className="stat-card">
-              <span className="stat-label">Commandes en cours</span>
-              <strong>{activeOrdersCount}</strong>
-              <p>Suivez vos livraisons et préparations</p>
-            </div>
-            <div className="stat-card">
-              <span className="stat-label">Note moyenne</span>
-              <strong>{averageRating} ★</strong>
-              <p>Basée sur vos avis reçus</p>
-            </div>
+          <div style={S.kpiGrid}>
+            {KPI_CONFIG.map((kpi, i) => (
+              <div key={i} style={S.kpiCard}>
+                <div style={{...S.kpiIconBox, background: kpi.iconColor}}>
+                  {kpi.icon}
+                </div>
+                <div style={S.kpiBody}>
+                  <div style={S.kpiMeta}>
+                    <span style={S.kpiLabel}>{kpi.label}</span>
+                  </div>
+                  <div style={S.kpiValue}>
+                    {loading ? "…" : kpi.format(statsSummary[kpi.valueKey])}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           <div style={S.tabsRow} className="dashboard-tabs">
             <button
               type="button"
+              className={activeTab === 'orders' ? 'active' : ''}
               style={{ ...S.tabBtn, ...(activeTab === 'orders' ? S.tabBtnActive : S.tabBtnInactive) }}
               onClick={() => handleTabClick('orders')}
             >
@@ -363,6 +411,7 @@ const ClientDashboard = () => {
             </button>
             <button
               type="button"
+              className={activeTab === 'reviews' ? 'active' : ''}
               style={{ ...S.tabBtn, ...(activeTab === 'reviews' ? S.tabBtnActive : S.tabBtnInactive) }}
               onClick={() => handleTabClick('reviews')}
             >
@@ -370,6 +419,7 @@ const ClientDashboard = () => {
             </button>
             <button
               type="button"
+              className={activeTab === 'profile' ? 'active' : ''}
               style={{ ...S.tabBtn, ...(activeTab === 'profile' ? S.tabBtnActive : S.tabBtnInactive) }}
               onClick={() => handleTabClick('profile')}
             >
@@ -672,13 +722,13 @@ const S = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 24,
     gap: 16,
   },
   title: {
     fontSize: 34,
     fontWeight: 700,
-    color: '#111827',
+    color: '#1f2937',
     margin: 0,
   },
   subtitle: {
@@ -689,7 +739,7 @@ const S = {
   topbarRight: {
     display: 'flex',
     alignItems: 'center',
-    gap: 14,
+    gap: 12,
     flexShrink: 0,
   },
   clock: {
@@ -698,7 +748,7 @@ const S = {
     borderRadius: 10,
     padding: '10px 14px',
     fontVariantNumeric: 'tabular-nums',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 600,
     color: '#374151',
   },
@@ -718,30 +768,82 @@ const S = {
     fontSize: 13,
     color: '#6b7280',
   },
+  kpiGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: 16,
+    marginBottom: 24,
+  },
+  kpiCard: {
+    background: '#fff',
+    border: '1px solid #f0e8df',
+    borderRadius: 12,
+    padding: '18px 20px',
+    display: 'flex',
+    gap: 16,
+    alignItems: 'flex-start',
+  },
+  kpiIconBox: {
+    width: 54,
+    height: 54,
+    borderRadius: 12,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  kpiBody: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6,
+  },
+  kpiMeta: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  kpiLabel: {
+    fontSize: 11,
+    color: '#9ca3af',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+  },
+  kpiValue: {
+    fontSize: 20,
+    fontWeight: 700,
+    color: '#1f2937',
+  },
   tabsRow: {
     display: 'flex',
-    gap: 10,
+    gap: 0,
     marginBottom: 24,
     flexWrap: 'wrap',
+    borderBottom: '1px solid #e5e7eb',
   },
   tabBtn: {
     padding: '10px 20px',
     border: 'none',
-    borderRadius: 10,
+    borderRadius: 0,
+    borderBottom: '2px solid transparent',
     fontSize: 14,
     cursor: 'pointer',
     fontFamily: 'inherit',
     transition: 'all .15s ease',
+    marginBottom: '-1px',
+    color: '#9ca3af',
+    fontWeight: 400,
   },
   tabBtnActive: {
-    background: '#f97316',
-    color: '#fff',
+    borderBottom: '2px solid #f97316',
+    color: '#f97316',
     fontWeight: 600,
   },
   tabBtnInactive: {
-    background: '#fff',
-    color: '#6b7280',
-    border: '1px solid #e5e7eb',
+    borderBottom: '2px solid transparent',
+    color: '#9ca3af',
+    fontWeight: 400,
   },
 };
 

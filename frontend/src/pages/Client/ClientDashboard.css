@@ -1,8 +1,8 @@
 .dashboard-container {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f5f5f5;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
   min-height: 100vh;
 }
 
@@ -12,11 +12,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 24px 20px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  padding: 24px 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   margin-bottom: 24px;
 }
 
@@ -38,33 +38,107 @@
   margin-bottom: 24px;
 }
 
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: #fff;
+  border: 1px solid #f0e8df;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.kpi-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kpi-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kpi-date {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.kpi-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.kpi-change {
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .stat-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 22px 20px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  background: #fff;
+  border: 1px solid #f0e8df;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .stat-label {
-  display: inline-block;
-  margin-bottom: 8px;
-  color: #6b7280;
-  font-size: 0.95em;
+  display: block;
+  margin-bottom: 4px;
+  color: #9ca3af;
+  font-size: 12px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .stat-card strong {
   display: block;
-  font-size: 2rem;
-  margin-bottom: 6px;
-  color: #111827;
+  font-size: 24px;
+  margin-bottom: 4px;
+  color: #1f2937;
+  font-weight: 700;
 }
 
 .stat-card p {
   margin: 0;
   color: #6b7280;
-  font-size: 0.95em;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .dashboard-content {
