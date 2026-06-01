@@ -1,0 +1,8 @@
+2026-05-31T22:10:10.998Z info: [0mGET /api/health [32m200 [0m5.438 ms - 111[0m 
+2026-05-31T22:10:11.033Z info: [0mPOST /api/chat [33m404 [0m24.675 ms - 148[0m 
+2026-05-31T22:10:11.042Z info: [0mPOST /api/chat [33m404 [0m1.080 ms - 148[0m 
+2026-05-31T22:10:11.047Z info: [0mPOST /api/chat [33m404 [0m0.694 ms - 148[0m 
+2026-05-31T22:10:11.054Z info: [0mPOST /api/chat [33m404 [0m1.436 ms - 148[0m 
+2026-05-31T22:10:11.059Z info: [0mPOST /api/chat [33m404 [0m0.870 ms - 148[0m 
+2026-05-31T22:10:11.065Z info: [0mPOST /api/chat [33m404 [0m0.848 ms - 148[0m 
+2026-05-31T22:10:11.151Z info: [0mGET /api/products [32m200 [0m70.864 ms - -[0m 

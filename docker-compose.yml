@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6.0
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongoadmin:secret@mongo:27017/star-mousse?authSource=admin
+      - NODE_ENV=development
+    restart: on-failure
+
+  chatbot:
+    build:
+      context: ./backend/chatbot
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - FLASK_ENV=production
+      - SENTENCE_MODEL=all-MiniLM-L6-v2
+    volumes:
+      - ./backend/chatbot/pattern_embeddings_0038ddeb7996.npy:/app/pattern_embeddings_0038ddeb7996.npy:ro
+    restart: on-failure
+
+volumes:
+  mongo-data:
