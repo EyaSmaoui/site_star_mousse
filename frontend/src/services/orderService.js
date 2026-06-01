@@ -99,7 +99,7 @@ export const submitOrder = async (orderPayload) => {
   };
 
   try {
-    const response = await httpClient.post('orders/addOrder', payload);
+    const response = await httpClient.post('/api/orders/addOrder', payload);
     const savedOrder = response.data;
 
     try {

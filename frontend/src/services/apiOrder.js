@@ -29,7 +29,7 @@ export const getAllOrders = async ({ force = false, limit = 300 } = {}) => {
   }
 
   ordersCache.key = cacheKey;
-  ordersCache.promise = httpClient.get('orders/getAllOrders', {
+  ordersCache.promise = httpClient.get('/api/orders/getAllOrders', {
     params: { limit },
     timeout: 10000,
   }).then((response) => {
@@ -46,24 +46,24 @@ export const getAllOrders = async ({ force = false, limit = 300 } = {}) => {
 export const getCachedOrders = () => ordersCache.data || [];
 
 export const updateOrder = async (orderId, updateData) => {
-  const response = await httpClient.put(`orders/updateOrder/${orderId}`, updateData);
+  const response = await httpClient.put(`/api/orders/updateOrder/${orderId}`, updateData);
   invalidateOrdersCache();
   return response.data;
 };
 
 export const deleteOrder = async (orderId) => {
-  const response = await httpClient.delete(`orders/deleteOrder/${orderId}`);
+  const response = await httpClient.delete(`/api/orders/deleteOrder/${orderId}`);
   invalidateOrdersCache();
   return response.data;
 };
 
 export const getMyOrders = async () => {
-  const response = await httpClient.get('orders/my-orders');
+  const response = await httpClient.get('/api/orders/my-orders');
   return response.data;
 };
 
 export const addOrder = async (data) => {
-  const response = await httpClient.post('orders/addOrder', data);
+  const response = await httpClient.post('/api/orders/addOrder', data);
   invalidateOrdersCache();
   return response.data;
 };

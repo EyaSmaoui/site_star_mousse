@@ -25,7 +25,7 @@ export const getAll = async ({ force = false } = {}) => {
     return productsCache.promise;
   }
 
-  productsCache.promise = httpClient.get('products').then((response) => {
+  productsCache.promise = httpClient.get('/api/products').then((response) => {
     productsCache.data = Array.isArray(response.data) ? response.data : [];
     productsCache.timestamp = Date.now();
     return productsCache.data;
@@ -37,42 +37,42 @@ export const getAll = async ({ force = false } = {}) => {
 };
 
 export const getAllProductsFresh = async () => {
-  const response = await httpClient.get('products');
+  const response = await httpClient.get('/api/products');
   return response.data;
 };
 
 export const getRecommended = async (limit = 6) => {
-  const response = await httpClient.get('products/recommended', {
+  const response = await httpClient.get('/api/products/recommended', {
     params: { limit },
   });
   return response.data;
 };
 
 export const getById = async (id) => {
-  const response = await httpClient.get(`products/${id}`);
+  const response = await httpClient.get(`/api/products/${id}`);
   return response.data;
 };
 
 export const createProduct = async (productData) => {
-  const response = await httpClient.post('products/add', productData);
+  const response = await httpClient.post('/api/products/add', productData);
   invalidateProductsCache();
   return response.data;
 };
 
 export const updateProduct = async (id, productData) => {
-  const response = await httpClient.put(`products/update/${id}`, productData);
+  const response = await httpClient.put(`/api/products/update/${id}`, productData);
   invalidateProductsCache();
   return response.data;
 };
 
 export const deleteProduct = async (id) => {
-  const response = await httpClient.delete(`products/delete/${id}`);
+  const response = await httpClient.delete(`/api/products/delete/${id}`);
   invalidateProductsCache();
   return response.data;
 };
 
 export const search = async (query) => {
-  const response = await httpClient.get('products/search', {
+  const response = await httpClient.get('/api/products/search', {
     params: { name: query },
   });
   return response.data;
