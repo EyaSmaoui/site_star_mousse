@@ -126,16 +126,52 @@ function TopContactHeader() {
       `}</style>
 
       <div className="ssn-top-header-section">
-        <a className="ssn-contact-btn" href="tel:+21622900131" title="Appeler Star Mousse">
+        <a 
+          className="ssn-contact-btn" 
+          href="tel:+21622900131" 
+          title="Appeler Star Mousse"
+          onClick={() => {
+            if (window.trackPhoneCall) {
+              window.trackPhoneCall('+21622900131');
+            }
+          }}
+        >
           <FiPhone /> <span className="contact-text">22.900.131</span>
         </a>
-        <a className="ssn-contact-btn" href={whatsappUrl} title="WhatsApp Star Mousse">
+        <a 
+          className="ssn-contact-btn" 
+          href={whatsappUrl} 
+          title="WhatsApp Star Mousse"
+          onClick={() => {
+            if (window.trackWhatsApp) {
+              window.trackWhatsApp('general-inquiry', 'TopContactHeader');
+            }
+          }}
+        >
           <FiMessageCircle /> <span className="contact-text">22.900.207</span>
         </a>
-        <a className="ssn-contact-btn" href="mailto:SUPERSIESTA3@GMAIL.COM" title="Email Star Mousse">
+        <a 
+          className="ssn-contact-btn" 
+          href="mailto:SUPERSIESTA3@GMAIL.COM" 
+          title="Email Star Mousse"
+          onClick={() => {
+            if (window.trackWhatsApp) {
+              window.trackWhatsApp('email-inquiry', 'TopContactHeader');
+            }
+          }}
+        >
           <FiMail /> <span className="contact-text contact-email">SUPERSIESTA3@GMAIL.COM</span>
         </a>
-        <a className="ssn-contact-btn" href="/contact" title="Page Contact">
+        <a 
+          className="ssn-contact-btn" 
+          href="/contact" 
+          title="Page Contact"
+          onClick={() => {
+            if (window.trackContactForm) {
+              window.trackContactForm('page-contact-link');
+            }
+          }}
+        >
           ✉️ Contact
         </a>
       </div>
@@ -144,6 +180,11 @@ function TopContactHeader() {
         className="ssn-top-header-location"
         href="https://www.google.com/maps/search/?api=1&query=Borj%20Chakir%20Tunisie"
         style={{ color: "#ffffff", textDecoration: "none" }}
+        onClick={() => {
+          if (window.trackMapClick) {
+            window.trackMapClick('Borj Chakir');
+          }
+        }}
       >
         <FiMapPin />
         <span>Borj Chakir, Tunisie</span>

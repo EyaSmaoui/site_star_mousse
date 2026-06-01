@@ -325,7 +325,12 @@ export default function ProductShowcase() {
                   </button>
                   <button 
                     className="ssn-product-btn ssn-product-btn-secondary"
-                    onClick={() => window.open(whatsappLink, '_blank')}
+                    onClick={() => {
+                      if (window.trackWhatsApp) {
+                        window.trackWhatsApp(product.name, 'ProductShowcase');
+                      }
+                      window.open(whatsappLink, '_blank');
+                    }}
                     aria-label={`Envoyer un message WhatsApp concernant le ${product.name}`}
                     title={`Envoyer un message WhatsApp concernant le ${product.name}`}
                   >
@@ -340,7 +345,12 @@ export default function ProductShowcase() {
         <div className="ssn-showcase-cta">
           <button 
             className="ssn-showcase-cta-btn"
-            onClick={() => navigate('/products')}
+            onClick={() => {
+              if (window.trackProductView) {
+                window.trackProductView('all-products', 'Voir tous les matelas');
+              }
+              navigate('/products');
+            }}
           >
             Voir tous les matelas →
           </button>
