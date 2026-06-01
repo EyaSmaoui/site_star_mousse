@@ -31,6 +31,7 @@ const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
   : defaultOrigins;
 const deploymentOrigins = [
+  'https://site-star-mousse.vercel.app',
   process.env.FRONTEND_URL,
   process.env.CLIENT_URL,
   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, '')}` : null,
