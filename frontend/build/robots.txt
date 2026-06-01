@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://site-star-mousse.vercel.app/sitemap.xml

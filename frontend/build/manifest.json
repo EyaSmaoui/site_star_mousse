@@ -1,10 +1,11 @@
 {
   "name": "Star Mousse",
   "short_name": "Star Mousse",
+  "description": "Matelas, oreillers et literie premium en Tunisie.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#fbfaf8",
+  "theme_color": "#b52f2f",
   "icons": [
     {
       "src": "%PUBLIC_URL%/logo-star-mousse.png",

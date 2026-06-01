@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://site-star-mousse.vercel.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/products</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/nos-matelas</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/promos</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/about</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/help</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/relax-plus</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/medico-plus</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/tendresse</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/venise-plus</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/soft-plus</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/confort-plus</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/relax-pillow</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/tendresse-pillow</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/medico-pillow</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/venise-pillow</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/gel-pillow</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/aroma-lavande</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/aroma-menthe</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/ocean-puff</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/anatolia-gel</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/bebe-confort-plus</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/bebe-soft</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://site-star-mousse.vercel.app/product/bebe-venise</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+</urlset>

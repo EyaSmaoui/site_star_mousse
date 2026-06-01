@@ -11,6 +11,7 @@ export default function ProductShowcase() {
       name: 'Matelas Relax Plus',
       description: 'Ergonomique et soutien optimal',
       image: '/relax_eluproduit.jpg',
+      altText: 'Matelas Relax Plus - Matelas ergonomique mousse HR 18cm avec soutien optimal pour le confort quotidien',
       price: '999 TND',
       specs: ['18cm', 'Mousse HR', 'Fermeté moyenne'],
       badge: '⭐ BEST SELLER',
@@ -21,6 +22,7 @@ export default function ProductShowcase() {
       name: 'Matelas Medico Plus',
       description: 'Spécialement conçu pour le mal de dos',
       image: '/medico.jpg',
+      altText: 'Matelas Medico Plus - Matelas orthopédique 20cm avec soutien ferme conçu pour soulager les douleurs dorsales',
       price: '1,199 TND',
       specs: ['20cm', 'Soutien ferme', 'Orthopédique'],
       route: '/product/medico-plus'
@@ -30,6 +32,7 @@ export default function ProductShowcase() {
       name: 'Matelas Tendresse',
       description: 'Confort enveloppant et moelleux',
       image: '/tendresse.jpg',
+      altText: 'Matelas Tendresse - Matelas ultra confortable mousse HR 16cm avec confort enveloppant et moelleux',
       price: '799 TND',
       specs: ['16cm', 'Mousse HR', 'Ultra confortable'],
       route: '/product/tendresse'
@@ -39,6 +42,7 @@ export default function ProductShowcase() {
       name: 'Matelas Venise Plus',
       description: 'Ressorts ensachés premium',
       image: '/venise.jpg',
+      altText: 'Matelas Venise Plus - Matelas premium 22cm avec ressorts ensachés pour durabilité maximale et confort',
       price: '1,499 TND',
       specs: ['22cm', 'Ressorts ensachés', 'Durabilité maximale'],
       route: '/product/venise-plus'
@@ -295,7 +299,12 @@ export default function ProductShowcase() {
           {featuredProducts.map((product) => (
             <div key={product.id} className="ssn-product-card">
               {product.badge && <div className="ssn-product-badge">{product.badge}</div>}
-              <img src={product.image} alt={product.name} className="ssn-product-image" />
+              <img 
+                src={product.image} 
+                alt={product.altText} 
+                className="ssn-product-image"
+                loading="lazy"
+              />
               <div className="ssn-product-content">
                 <h3 className="ssn-product-title">{product.name}</h3>
                 <p className="ssn-product-desc">{product.description}</p>
@@ -309,12 +318,16 @@ export default function ProductShowcase() {
                   <button 
                     className="ssn-product-btn ssn-product-btn-primary"
                     onClick={() => navigate(product.route)}
+                    aria-label={`Voir les détails du ${product.name}`}
+                    title={`Voir les détails du ${product.name}`}
                   >
                     Voir détails →
                   </button>
                   <button 
                     className="ssn-product-btn ssn-product-btn-secondary"
                     onClick={() => window.open(whatsappLink, '_blank')}
+                    aria-label={`Envoyer un message WhatsApp concernant le ${product.name}`}
+                    title={`Envoyer un message WhatsApp concernant le ${product.name}`}
                   >
                     💬 Info rapide
                   </button>
