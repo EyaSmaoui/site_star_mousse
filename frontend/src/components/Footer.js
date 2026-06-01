@@ -211,11 +211,11 @@ function Footer() {
           <div className="ssn-footer-bottom">
             <p>© 2026 <span>Star Mousse</span> - Fabrique avec passion en Tunisie.</p>
             <div className="ssn-legal">
-              <a href="/help">Mentions legales</a>
+              <a href="/legal-terms">Mentions légales</a>
               <div className="ssn-legal-dot"></div>
-              <a href="/help">Confidentialite</a>
+              <a href="/privacy-policy">Confidentialité</a>
               <div className="ssn-legal-dot"></div>
-              <a href="/help">CGV</a>
+              <a href="/legal-terms">CGV</a>
             </div>
           </div>
         </div>

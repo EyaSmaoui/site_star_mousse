@@ -43,6 +43,8 @@ import WhatsAppWidget from "./components/WhatsAppWidget";
 import Breadcrumbs from "./components/Breadcrumbs";
 import GoogleMapsEmbed from "./components/GoogleMapsEmbed";
 import Matelas from "./pages/Store/Matelas";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import LegalTerms from "./pages/LegalTerms";
 
 function GlobalBrandTheme() {
   return (
@@ -549,6 +551,8 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/help" element={<Help />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/legal-terms" element={<LegalTerms />} />
 
         <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminDashboard />} />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminDashboard />} />} />
