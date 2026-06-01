@@ -38,6 +38,7 @@ import PromoModal from "./components/PromoModal";
 
 import ProductTemplate from "./components/ProductTemplate";
 import TopContactHeader from "./components/TopContactHeader";
+import WhatsAppWidget from "./components/WhatsAppWidget";
 import Matelas from "./pages/Store/Matelas";
 
 function GlobalBrandTheme() {
@@ -424,6 +425,69 @@ function ThemeToggle() {
   );
 }
 
+function FloatingWhatsApp() {
+  return (
+    <>
+      <style>{`
+        .ssn-floating-whatsapp {
+          position: fixed;
+          right: 22px;
+          bottom: 22px;
+          z-index: 5200;
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          min-height: 52px;
+          padding: 0 18px;
+          border-radius: 999px;
+          background: #25D366;
+          color: #ffffff;
+          font-weight: 800;
+          font-size: 14px;
+          text-decoration: none;
+          box-shadow: 0 18px 40px rgba(21, 21, 34, 0.24);
+          border: 1px solid rgba(255,255,255,0.25);
+        }
+        .ssn-floating-whatsapp:hover {
+          color: #ffffff;
+          transform: translateY(-2px);
+          box-shadow: 0 22px 48px rgba(21, 21, 34, 0.3);
+        }
+        .ssn-floating-whatsapp__icon {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.18);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          line-height: 1;
+        }
+        @media (max-width: 560px) {
+          .ssn-floating-whatsapp {
+            right: 14px;
+            bottom: 14px;
+            min-height: 48px;
+            padding: 0 14px;
+            font-size: 13px;
+          }
+        }
+      `}</style>
+      <a
+        className="ssn-floating-whatsapp"
+        href="https://wa.me/21622900207?text=Bonjour%20Star%20Mousse%2C%20je%20voudrais%20des%20informations%20sur%20vos%20matelas."
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Contacter Star Mousse sur WhatsApp"
+      >
+        <span className="ssn-floating-whatsapp__icon" aria-hidden="true">W</span>
+        WhatsApp
+      </a>
+    </>
+  );
+}
+
 function AppContent() {
   const location = useLocation();
   const showThemeToggle = PRIVATE_PREFIXES.some((path) => location.pathname.startsWith(path));
@@ -448,6 +512,7 @@ function AppContent() {
     <div className="App">
       {showThemeToggle && <ThemeToggle />}
       <TopContactHeader />
+      <WhatsAppWidget />
       <CookiesModal />
       <PromoModal />
       <ToastContainer
@@ -505,6 +570,7 @@ function AppContent() {
         <Route path="*" element={<Home />} />
       </Routes>
       {showChatbot && <ChatbotAssistant />}
+      {showChatbot && <FloatingWhatsApp />}
       <GlobalBrandTheme />
     </div>
   );
