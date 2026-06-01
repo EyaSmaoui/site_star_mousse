@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const CHATBOT_API_URL = process.env.REACT_APP_CHATBOT_API_URL || "";
+const CHATBOT_API_URL = process.env.REACT_APP_CHATBOT_API_URL || "https://starmousse-chatbot.onrender.com";
 const API_URL = process.env.REACT_APP_API_URL || "";
 const useMock = process.env.REACT_APP_CHATBOT_USE_MOCK === "true";
 const LEGACY_GREETING = "Bonjour, je suis l'assistant Star Mousse. Je peux vous recommander un matelas ou un oreiller selon votre besoin.";
