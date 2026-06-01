@@ -37,6 +37,8 @@ import CookiesModal from "./components/CookiesModal";
 import PromoModal from "./components/PromoModal";
 
 import ProductTemplate from "./components/ProductTemplate";
+import TopContactHeader from "./components/TopContactHeader";
+import Matelas from "./pages/Store/Matelas";
 
 function GlobalBrandTheme() {
   return (
@@ -445,6 +447,7 @@ function AppContent() {
   return (
     <div className="App">
       {showThemeToggle && <ThemeToggle />}
+      <TopContactHeader />
       <CookiesModal />
       <PromoModal />
       <ToastContainer
@@ -471,6 +474,7 @@ function AppContent() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route path="/products" element={<Products />} />
+        <Route path="/nos-matelas" element={<Matelas />} />
         <Route path="/promos" element={<Promos />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<About />} />

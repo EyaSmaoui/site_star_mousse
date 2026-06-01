@@ -17,6 +17,7 @@ function NavBar() {
 
   const dropdownProducts = useMemo(
     () => [
+      { to: "/nos-matelas", label: "Relax Plus - PHARE", desc: "⭐ Matelas Ergonomique Premium" },
       { to: "/product/confort-plus", label: "Confort Plus", desc: "Soutien quotidien renforcé" },     
       { to: "/product/soft-plus", label: "Soft Plus", desc: "Matelas Orthopédique " },
       { to: "/product/venise-plus", label: "Venise Plus", desc: "Matelas Super Orthopédique " },

@@ -1387,18 +1387,19 @@ const Home = () => {
               </div>
 
               <h1 className="ssn-hero-title">
-                Confort et bien‑être, <br />
-                <span className="accent">chaque nuit.</span>
+                Matelas Ergonomique <br />
+                <span className="accent">Relax Plus</span>
               </h1>
 
               <p className="ssn-hero-desc">
-                Matelas, oreillers et accessoires pensés pour un sommeil profond.
-                Fabriqués avec passion en Tunisie pour transformer vos nuits en pur bonheur.
+                Le Matelas ergonomique Relax Plus n'est pas simplement un matelas ; 
+                c'est une expérience de sommeil conçue pour offrir confort, soutien et tranquillité d'esprit. 
+                Offrez-vous le sommeil que vous méritez.
               </p>
 
               <div className="ssn-hero-btns">
-                <button className="ssn-btn-primary" onClick={() => navigate('/products')}>Découvrir nos produits</button>
-                <button className="ssn-btn-secondary" onClick={() => navigate('/quiz')}>Faire le quiz sommeil</button>
+                <button className="ssn-btn-primary" onClick={() => navigate('/nos-matelas')}>Découvrir Relax Plus</button>
+                <button className="ssn-btn-secondary" onClick={() => window.open('https://wa.me/21622900207', '_blank')}>💬 WhatsApp</button>
               </div>
 
               <div className="ssn-stats">
