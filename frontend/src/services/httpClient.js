@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// Puisque tu utilises le "proxy" dans package.json, l'URL de base est simplement '/api'
-const baseURL = '/api';
+const baseURL = process.env.REACT_APP_API_URL || 'https://starmousse-backend.onrender.com';
 
 const httpClient = axios.create({
   baseURL,
