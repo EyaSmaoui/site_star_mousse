@@ -15,6 +15,7 @@ import Promos from "./pages/Store/Promos";
 import Cart from "./pages/Store/Cart";
 import About from "./pages/Info/About";
 import Help from "./pages/Info/Help";
+import Contact from "./pages/Contact";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import Profile from "./pages/Admin/Profile";
 import ManageClients from "./pages/Admin/ManageClients";
@@ -39,6 +40,8 @@ import PromoModal from "./components/PromoModal";
 import ProductTemplate from "./components/ProductTemplate";
 import TopContactHeader from "./components/TopContactHeader";
 import WhatsAppWidget from "./components/WhatsAppWidget";
+import Breadcrumbs from "./components/Breadcrumbs";
+import GoogleMapsEmbed from "./components/GoogleMapsEmbed";
 import Matelas from "./pages/Store/Matelas";
 
 function GlobalBrandTheme() {
@@ -512,6 +515,7 @@ function AppContent() {
     <div className="App">
       {showThemeToggle && <ThemeToggle />}
       <TopContactHeader />
+      <Breadcrumbs />
       <WhatsAppWidget />
       <CookiesModal />
       <PromoModal />
@@ -544,6 +548,7 @@ function AppContent() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<About />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/contact" element={<Contact />} />
 
         <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminDashboard />} />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminDashboard />} />} />

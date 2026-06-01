@@ -135,6 +135,9 @@ function TopContactHeader() {
         <a className="ssn-contact-btn" href="mailto:SUPERSIESTA3@GMAIL.COM" title="Email Star Mousse">
           <FiMail /> <span className="contact-text contact-email">SUPERSIESTA3@GMAIL.COM</span>
         </a>
+        <a className="ssn-contact-btn" href="/contact" title="Page Contact">
+          ✉️ Contact
+        </a>
       </div>
 
       <a
