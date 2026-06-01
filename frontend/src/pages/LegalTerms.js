@@ -24,7 +24,7 @@ const LegalTerms = () => {
               <strong>Forme Juridique :</strong> Entreprise Individuelle<br/>
               <strong>Adresse :</strong> Borj Chakir, Tunis, Tunisie<br/>
               <strong>Téléphone :</strong> +216 22 900 131<br/>
-              <strong>Email :</strong> SUPERSIESTA3@GMAIL.COM<br/>
+              <strong>Contact :</strong> formulaire de contact<br/>
               <strong>Site Web :</strong> site-star-mousse.vercel.app
             </p>
           </div>
@@ -257,7 +257,7 @@ const LegalTerms = () => {
           <div style={styles.contactInfo}>
             <p>
               <strong>Star Mousse</strong><br/>
-              📧 Email: SUPERSIESTA3@GMAIL.COM<br/>
+              Contact: formulaire de contact<br/>
               📞 Téléphone: +216 22 900 131<br/>
               💬 WhatsApp: +216 22 900 207<br/>
               📍 Adresse: Borj Chakir, Tunis, Tunisie

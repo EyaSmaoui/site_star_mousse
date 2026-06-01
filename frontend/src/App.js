@@ -45,6 +45,7 @@ import GoogleMapsEmbed from "./components/GoogleMapsEmbed";
 import Matelas from "./pages/Store/Matelas";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalTerms from "./pages/LegalTerms";
+import SEO from "./components/SEO";
 
 function GlobalBrandTheme() {
   return (
@@ -515,6 +516,7 @@ function AppContent() {
 
   return (
     <div className="App">
+      <SEO />
       {showThemeToggle && <ThemeToggle />}
       <TopContactHeader />
       <Breadcrumbs />

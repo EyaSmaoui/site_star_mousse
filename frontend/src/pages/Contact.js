@@ -360,7 +360,7 @@ export default function Contact() {
               <div className="contact-info-icon">📧</div>
               <div className="contact-info-title">Email</div>
               <div className="contact-info-value">
-                <a href="mailto:SUPERSIESTA3@GMAIL.COM">SUPERSIESTA3@GMAIL.COM</a>
+                <a href="/contact">Formulaire de contact</a>
               </div>
             </div>
 

@@ -233,7 +233,7 @@ export default function GoogleMapsEmbed() {
         <div className="maps-info-item">
           <span className="maps-info-label">📧 Email:</span>
           <span className="maps-info-value">
-            <a href="mailto:SUPERSIESTA3@GMAIL.COM">SUPERSIESTA3@GMAIL.COM</a>
+            <a href="/contact">Formulaire de contact</a>
           </span>
         </div>
         <div className="maps-info-item">

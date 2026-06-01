@@ -44,17 +44,30 @@
     <link rel="stylesheet" href="https://unpkg.com/tabler-icons@latest/iconfont/tabler-icons.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@400..800&display=swap" rel="stylesheet" />
 
-    <!-- Google Analytics 4 (Placeholder - Replace G-XXXXXXXXXX with actual ID) -->
-    <!-- TODO: Get GA4 Measurement ID from https://analytics.google.com/ and replace below -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+    <!-- Google Analytics 4: set REACT_APP_GA4_MEASUREMENT_ID to enable tracking -->
     <script>
+      window.STAR_MOUSSE_GA_ID = "%REACT_APP_GA4_MEASUREMENT_ID%";
+      window.STAR_MOUSSE_HAS_GA =
+        window.STAR_MOUSSE_GA_ID &&
+        window.STAR_MOUSSE_GA_ID.indexOf("%") !== 0 &&
+        window.STAR_MOUSSE_GA_ID !== ("G-" + "PLACEHOLDER");
+
+      if (window.STAR_MOUSSE_HAS_GA) {
+        var gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.STAR_MOUSSE_GA_ID;
+        document.head.appendChild(gaScript);
+      }
+
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-PLACEHOLDER', {
-        'page_path': window.location.pathname,
-        'anonymize_ip': true
-      });
+      if (window.STAR_MOUSSE_HAS_GA) {
+        gtag('config', window.STAR_MOUSSE_GA_ID, {
+          'page_path': window.location.pathname,
+          'anonymize_ip': true
+        });
+      }
       
       // Custom event tracking functions
       window.trackWhatsApp = function(productName, location) {
@@ -112,7 +125,6 @@
             "logo": "https://site-star-mousse.vercel.app/logo-star-mousse.png",
             "description": "Showroom de matelas ergonomiques, oreillers et literie premium à Borj Chakir, Tunisie. Relax Plus, Medico Plus, Tendresse. Paiement à la livraison, garantie 10 ans.",
             "telephone": "+216 22 900 131",
-            "email": "SUPERSIESTA3@GMAIL.COM",
             "priceRange": "750-1500 TND",
             "address": {
               "@type": "PostalAddress",
@@ -203,7 +215,7 @@
           </p>
           <p style="margin:12px 0;">
             <strong style="display:block;margin-bottom:8px;">Email :</strong>
-            <a href="mailto:SUPERSIESTA3@GMAIL.COM" style="color:#b52f2f;text-decoration:none;font-weight:bold;">SUPERSIESTA3@GMAIL.COM</a>
+            <a href="/contact" style="color:#b52f2f;text-decoration:none;font-weight:bold;">Formulaire de contact</a>
           </p>
           <p style="margin:12px 0;">
             <strong style="display:block;margin-bottom:8px;">📍 Adresse :</strong>

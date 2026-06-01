@@ -200,7 +200,7 @@ function Footer() {
             <ul>
               <li><a href="tel:+21622900131">+216 22 900 131</a></li>
               <li><a href={whatsappUrl}>WhatsApp +216 22 900 207</a></li>
-              <li><a href="mailto:SUPERSIESTA3@GMAIL.COM">SUPERSIESTA3@GMAIL.COM</a></li>
+              <li><a href="/contact">Formulaire de contact</a></li>
               <li><a href="https://www.google.com/maps/search/?api=1&query=Borj%20Chakir%20Tunisie">Borj Chakir, Tunisie</a></li>
               <li><a href="/help">Lun-Sam : 8h-18h</a></li>
             </ul>

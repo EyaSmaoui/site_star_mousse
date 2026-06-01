@@ -152,7 +152,7 @@ function TopContactHeader() {
         </a>
         <a 
           className="ssn-contact-btn" 
-          href="mailto:SUPERSIESTA3@GMAIL.COM" 
+          href="/contact" 
           title="Email Star Mousse"
           onClick={() => {
             if (window.trackWhatsApp) {
@@ -160,7 +160,7 @@ function TopContactHeader() {
             }
           }}
         >
-          <FiMail /> <span className="contact-text contact-email">SUPERSIESTA3@GMAIL.COM</span>
+          <FiMail /> <span className="contact-text contact-email">Email</span>
         </a>
         <a 
           className="ssn-contact-btn" 

@@ -430,7 +430,7 @@ function Matelas() {
               <button className="contact-button contact-btn-phone" onClick={contactPhone}>
                 <FiPhone /> Téléphone
               </button>
-              <a href="mailto:SUPERSIESTA3@GMAIL.COM" className="contact-button" style={{backgroundColor: '#667eea'}}>
+              <a href="/contact" className="contact-button" style={{backgroundColor: '#667eea'}}>
                 📧 Email
               </a>
             </div>

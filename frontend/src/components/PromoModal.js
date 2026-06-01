@@ -38,7 +38,7 @@ const PromoModal = () => {
         </div>
 
         <div style={styles.content}>
-          <h1 style={styles.logo}>⭐ Star Mousse</h1>
+          <div style={styles.logo}>Star Mousse</div>
 
           <h2 style={styles.promoTitle}>
             Jusqu'à -50% + -10% en plus :

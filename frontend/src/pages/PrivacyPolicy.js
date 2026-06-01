@@ -27,7 +27,7 @@ const PrivacyPolicy = () => {
           </p>
           <p>
             <strong>Nous nous engageons à protéger votre vie privée.</strong> Si vous avez des questions concernant 
-            nos pratiques de confidentialité, veuillez contacter SUPERSIESTA3@GMAIL.COM.
+            nos pratiques de confidentialite, veuillez utiliser le formulaire de contact.
           </p>
         </section>
 
@@ -150,7 +150,7 @@ const PrivacyPolicy = () => {
             <li><strong>Retrait du Consentement :</strong> Vous pouvez retirer votre consentement à tout moment</li>
           </ul>
           <p>
-            <strong>Pour exercer ces droits, contactez-nous :</strong> SUPERSIESTA3@GMAIL.COM
+            <strong>Pour exercer ces droits, contactez-nous :</strong> formulaire de contact.
           </p>
         </section>
 
@@ -191,7 +191,7 @@ const PrivacyPolicy = () => {
           <div style={styles.contactInfo}>
             <p>
               <strong>Star Mousse</strong><br/>
-              📧 Email: SUPERSIESTA3@GMAIL.COM<br/>
+              Contact: formulaire de contact<br/>
               📞 Téléphone: +216 22 900 131<br/>
               💬 WhatsApp: +216 22 900 207<br/>
               📍 Adresse: Borj Chakir, Tunis, Tunisie

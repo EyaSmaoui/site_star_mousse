@@ -28,7 +28,7 @@ const CookiesModal = () => {
         <button style={styles.closeBtn} onClick={handleSettings}>✕</button>
 
         <div style={styles.header}>
-          <h1 style={styles.logo}>🌟 Star Mousse</h1>
+          <div style={styles.logo}>Star Mousse</div>
         </div>
 
         <h2 style={styles.title}>Paramètres de confidentialité</h2>
