@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
+import ProductShowcase from "../components/ProductShowcase";
 import { getAll as getAllProducts, getRecommended as getRecommendedProducts } from "../services/apiProduct";
 
 const FALLBACK_BEST_SELLERS = [
@@ -1446,6 +1447,9 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+        {/* ── PRODUITS VEDETTES ── */}
+        <ProductShowcase />
 
         <section className="ssn-trust-strip" aria-label="Avantages Star Mousse">
           <div className="ssn-trust-inner">
