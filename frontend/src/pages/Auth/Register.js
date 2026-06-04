@@ -75,14 +75,14 @@ const Register = () => {
   };
 
   return (
-    <div className="home-midnight">
+    <>
       <NavBar />
       <ToastContainer theme="dark" position="top-right" />
 
       <section className="login-section">
         <div className="login-blob"></div>
 
-        <div className="login-card fade-up visible">
+        <div className="login-card">
           <div className="login-header">
             <h2>Créer un compte</h2>
             <p>Rejoignez le showroom Star Mousse et finalisez votre commande en toute simplicité.</p>
@@ -158,7 +158,7 @@ const Register = () => {
       </section>
 
       <Footer />
-    </div>
+    </>
   );
 };
 

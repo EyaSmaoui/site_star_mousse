@@ -140,7 +140,12 @@ module.exports.getRecommendedProducts = async (req, res) => {
         const limit = Math.min(Number(req.query.limit) || 6, 12);
         const q = String(req.query.q || '').trim();
         const products = await fetchRecommendedProducts({ q, limit });
-        res.status(200).json(products);
+        // Masquer le _id MongoDB de la réponse (sensibilité données)
+        const cleanedProducts = products.map(product => {
+            const { _id, ...rest } = product;
+            return rest;
+        });
+        res.status(200).json(cleanedProducts);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

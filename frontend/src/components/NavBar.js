@@ -561,6 +561,7 @@ function NavBar() {
             justify-content: flex-start;
             gap: 18px;
             overflow-x: auto;
+            overflow-anchor: none;
             padding: 8px 20px;
             scrollbar-width: none;
           }

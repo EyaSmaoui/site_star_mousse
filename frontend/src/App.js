@@ -361,6 +361,8 @@ const PRIVATE_PREFIXES = [
   "/profile",
   "/employee-dashboard",
   "/employer",
+  "/client-",
+  "/login",
 ];
 
 const CHATBOT_HIDE_PREFIXES = [

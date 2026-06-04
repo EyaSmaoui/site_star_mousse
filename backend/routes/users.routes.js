@@ -35,7 +35,6 @@ router.post('/login',
 );
 
 router.post('/forgot-password',
-  forgotPasswordLimiter,
   validators.email(),
   handleValidationErrors,
   userController.forgotPassword
@@ -64,7 +63,7 @@ router.put('/update-profile',
 
 router.put('/change-password',
   requireAuthUser,
-  validators.password('oldPassword'),
+  validators.password('currentPassword'),
   validators.password('newPassword'),
   handleValidationErrors,
   userController.changePassword

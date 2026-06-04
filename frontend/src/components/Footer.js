@@ -52,10 +52,20 @@ function Footer() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          gap: 8px;
           text-decoration: none;
           font-size: 13px;
           font-weight: 700;
           transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s, background 0.18s;
+        }
+        .ssn-social a .ssn-social-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          font-size: 18px;
+          line-height: 1;
         }
         .ssn-social a:hover {
           transform: translateY(-3px);
@@ -64,6 +74,9 @@ function Footer() {
         }
         .ssn-social a.wa:hover { background: #25D366; }
         .ssn-social a.call:hover { background: #b52f2f; }
+        .ssn-social a.fb:hover { background: #1877F2; }
+        .ssn-social a.ig:hover { background: #E1306C; }
+        .ssn-social a.yt:hover { background: #FF0000; }
         .ssn-footer-col h4 {
           font-size: 12px;
           font-weight: 700;
@@ -167,10 +180,21 @@ function Footer() {
             </p>
             <div className="ssn-social">
               <a href={whatsappUrl} className="wa" aria-label="Contacter Star Mousse sur WhatsApp">
+                <span className="ssn-social-icon ti ti-brand-whatsapp" aria-hidden="true"></span>
                 WhatsApp
               </a>
               <a href="tel:+21622900131" className="call" aria-label="Appeler Star Mousse">
+                <span className="ssn-social-icon ti ti-phone" aria-hidden="true"></span>
                 Appeler
+              </a>
+              <a href="https://www.facebook.com/SuperSiestaBorjChakir/" className="fb" target="_blank" rel="noreferrer" aria-label="Facebook Super Siesta Borj Chakir" title="Facebook">
+                <span className="ssn-social-icon ti ti-brand-facebook" aria-hidden="true"></span>
+              </a>
+              <a href="https://www.instagram.com/super_siesta_tunis/" className="ig" target="_blank" rel="noreferrer" aria-label="Instagram Super Siesta Tunis" title="Instagram">
+                <span className="ssn-social-icon ti ti-brand-instagram" aria-hidden="true"></span>
+              </a>
+              <a href="https://www.youtube.com/@StarMousseTunisie" className="yt" target="_blank" rel="noreferrer" aria-label="YouTube Star Mousse" title="YouTube">
+                <span className="ssn-social-icon ti ti-brand-youtube" aria-hidden="true"></span>
               </a>
             </div>
           </div>

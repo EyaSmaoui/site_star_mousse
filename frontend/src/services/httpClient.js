@@ -1,9 +1,19 @@
 import axios from 'axios';
 
-const defaultLocalApi = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:5000'
-  : 'https://starmousse-backend.onrender.com';
-const baseURL = (process.env.REACT_APP_API_URL || defaultLocalApi).replace(/\/api$/, '');
+const fallbackProductionApi = 'https://starmousse-backend.onrender.com';
+const defaultApi = fallbackProductionApi;
+
+const normalizeApiUrl = (url) => {
+  const value = String(url || '').trim().replace(/\/$/, '');
+
+  if (!value || value === '/api') {
+    return defaultApi;
+  }
+
+  return value.replace(/\/api$/, '');
+};
+
+const baseURL = normalizeApiUrl(process.env.REACT_APP_API_URL);
 
 const httpClient = axios.create({
   baseURL,
@@ -13,6 +23,18 @@ const httpClient = axios.create({
   },
   timeout: 8000,
 });
+
+const shouldRetryWithFallback = (error) => {
+  if (baseURL === fallbackProductionApi) return false;
+  if (error.config?.__retriedWithFallback) return false;
+  return ['ERR_NETWORK', 'ECONNABORTED'].includes(error.code);
+};
+
+const getResponseMessage = (error) => {
+  const data = error.response?.data;
+  if (typeof data === 'string') return data;
+  return data?.error || data?.message || '';
+};
 
 // Intercepteur de requête : Ajout propre du Token
 httpClient.interceptors.request.use(
@@ -43,9 +65,23 @@ httpClient.interceptors.request.use(
 // Intercepteur de réponse : Gestion des erreurs de Token
 httpClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    if (shouldRetryWithFallback(error)) {
+      const retryConfig = {
+        ...error.config,
+        baseURL: fallbackProductionApi,
+        __retriedWithFallback: true,
+      };
+      return httpClient.request(retryConfig);
+    }
+
+    const responseMessage = getResponseMessage(error);
+    if (responseMessage) {
+      error.message = responseMessage;
+    }
+
     if (error.response?.status === 401) {
-      const message = error.response?.data?.error || error.response?.data?.message || '';
+      const message = responseMessage;
       if (message.includes('Token invalide') || message.includes('Token not found')) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -68,5 +104,7 @@ httpClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const apiPath = (path = '') => `${baseURL}${path.startsWith('/') ? path : `/${path}`}`;
 
 export default httpClient;

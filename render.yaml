@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: starmousse-backend
+    runtime: node
+    plan: standard
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: starmousse_db
+          property: connectionString
+    routes:
+      - path: /api
+        destination: /api
+
+databases:
+  - name: starmousse_db
+    engine: mongodb
+    plan: standard

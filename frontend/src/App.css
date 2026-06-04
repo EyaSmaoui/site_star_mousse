@@ -947,6 +947,7 @@ html {
   padding: 50px 24px;
   position: relative;
   overflow: hidden;
+  overflow-anchor: none;
   background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 24%),
     radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.14), transparent 28%),
     linear-gradient(180deg, #050816 0%, #0b1222 100%);

@@ -442,15 +442,13 @@ const mockResponse = async (message) => {
 };
 
 const uniqueUrls = (urls) => [...new Set(urls.filter(Boolean).map((url) => url.replace(/\/$/, "")))];
+const apiChatbotUrl = API_URL
+  ? `${API_URL.replace(/\/api\/?$/, "").replace(/\/$/, "")}/api/chatbot`
+  : "";
 
 const chatbotBaseUrls = () => uniqueUrls([
   CHATBOT_API_URL,
-  API_URL ? `${API_URL.replace(/\/$/, "")}/chatbot` : "",
-  "/api/chatbot",
-  "http://localhost:5000/api/chatbot",
-  "http://127.0.0.1:5000/api/chatbot",
-  "http://localhost:5005",
-  "http://127.0.0.1:5005",
+  apiChatbotUrl,
 ]);
 
 const requestFirstAvailable = async ({ method, path, params, data }) => {

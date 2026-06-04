@@ -45,7 +45,7 @@ export default function ResetPassword() {
       <NavBar />
       <section className="login-section">
         <div className="login-blob" />
-        <div className="login-card fade-up visible">
+        <div className="login-card">
           <div className="login-header">
             <h2>Nouveau mot de passe</h2>
             <p>Choisissez un mot de passe d'au moins 6 caracteres.</p>

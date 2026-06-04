@@ -25,7 +25,7 @@ const validators = {
     .normalizeEmail()
     .withMessage('Email invalide'),
   
-  password: (minLength = 6) => body('password')
+  password: (fieldName = 'password', minLength = 6) => body(fieldName)
     .trim()
     .isLength({ min: minLength })
     .withMessage(`Le mot de passe doit contenir au moins ${minLength} caractères`),

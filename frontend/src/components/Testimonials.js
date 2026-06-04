@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const Testimonials = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   React.useEffect(() => {
@@ -69,19 +68,7 @@ const Testimonials = () => {
     window.open('https://www.google.com/search?q=Star+Mousse+Borj+Chakir', '_blank');
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const goToSlide = (index) => {
-    setCurrentIndex(index);
-  };
-
-  const displayTestimonials = isMobile ? [testimonials[currentIndex]] : testimonials;
+  const displayTestimonials = testimonials;
 
   return (
     <>
@@ -99,74 +86,89 @@ const Testimonials = () => {
         @media (max-width: 768px) {
           .testimonials-grid {
             display: flex !important;
-            gap: 0 !important;
+            gap: 16px !important;
             position: relative;
-            overflow: hidden;
+            overflow-x: auto !important;
+            overflow-anchor: none !important;
+            scroll-snap-type: x mandatory;
+            padding: 0 16px 14px !important;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-x;
           }
-          .testimonials-carousel-container {
-            position: relative;
-            width: 100%;
+          .testimonials-grid::-webkit-scrollbar {
+            height: 8px;
+          }
+          .testimonials-grid::-webkit-scrollbar-thumb {
+            background: rgba(181, 47, 47, 0.35);
+            border-radius: 999px;
+          }
+          .testimonials-grid::-webkit-scrollbar-track {
+            background: transparent;
           }
           .testimonials-card {
-            flex: 0 0 100%;
-            min-width: 100%;
-            animation: slideIn 0.4s ease-in-out;
-          }
-          @keyframes slideIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          .carousel-nav {
-            display: flex !important;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-top: 24px;
-          }
-          .carousel-btn {
-            background: #b52f2f;
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
+            flex: 0 0 92%;
+            min-width: 92%;
+            max-width: 92%;
+            scroll-snap-align: start;
+            animation: fadeIn 0.4s ease-in-out;
+            padding: 20px !important;
+            min-height: auto !important;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
+            flex-direction: column;
+            justify-content: space-between;
           }
-          .carousel-btn:hover {
-            background: #8f2424;
-            transform: scale(1.1);
-          }
-          .carousel-dots {
-            display: flex !important;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-          }
-          .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ddd;
-            cursor: pointer;
-            transition: all 0.2s ease;
-          }
-          .dot.active {
-            background: #b52f2f;
-            width: 28px;
-            border-radius: 5px;
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(16px); }
+            to { opacity: 1; transform: translateX(0); }
           }
         }
         @media (max-width: 480px) {
           .testimonials-section {
             padding: 40px 16px !important;
           }
+          .testimonials-header {
+            margin-bottom: 30px !important;
+          }
+          .testimonials-header h2 {
+            font-size: 1.8em !important;
+            line-height: 1.3 !important;
+          }
+          .testimonials-header p {
+            font-size: 0.95em !important;
+            line-height: 1.4 !important;
+          }
           .testimonials-card {
-            padding: 14px !important;
+            padding: 20px !important;
+            border-radius: 12px;
+            min-height: 500px;
+          }
+          .testimonials-card > p {
+            font-size: 1em !important;
+            line-height: 1.6 !important;
+            margin: 16px 0 !important;
+          }
+          .testimonials-card strong {
+            font-size: 1.05em !important;
+          }
+          .testimonials-card .avatar {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 1.1em !important;
+          }
+          .testimonials-card .stars {
+            font-size: 1.3em !important;
+            letter-spacing: 3px !important;
+          }
+          .cta-section {
+            padding: 40px 20px !important;
+          }
+          .cta-title {
+            font-size: 1.3em !important;
+          }
+          .cta-button {
+            width: 100% !important;
+            padding: 16px !important;
+            font-size: 1em !important;
           }
           .testimonials-badges {
             grid-template-columns: 1fr !important;
@@ -182,18 +184,18 @@ const Testimonials = () => {
       <section style={styles.section} className="testimonials-section">
         <div style={styles.container}>
         {/* Header */}
-        <div style={styles.header}>
+        <div style={styles.header} className="testimonials-header">
           <h2 style={styles.title}>⭐ Ce que disent nos clients</h2>
           <p style={styles.subtitle}>Plus de 500 clients satisfaits en Tunisie • Note moyenne : 4.9/5</p>
         </div>
 
         {/* Testimonials Grid / Carousel */}
         <div style={isMobile ? styles.carouselContainer : styles.gridContainer} className="testimonials-carousel-container">
-          <div style={styles.grid} className="testimonials-grid">
+          <div style={isMobile ? styles.gridMobile : styles.grid} className="testimonials-grid">
             {displayTestimonials.map((testimonial) => (
             <div 
               key={testimonial.id} 
-              style={styles.card}
+              style={isMobile ? {...styles.card, ...styles.cardMobile} : styles.card}
               className="testimonials-card"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-8px)';
@@ -235,52 +237,16 @@ const Testimonials = () => {
           </div>
         </div>
 
-        {/* Carousel Navigation (Mobile Only) */}
-        {isMobile && (
-          <div style={styles.carouselNav} className="carousel-nav">
-            <button 
-              className="carousel-btn"
-              onClick={prevSlide}
-              style={styles.carouselBtn}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#8f2424'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#b52f2f'}
-            >
-              ‹
-            </button>
-            <div style={styles.dotsContainer} className="carousel-dots">
-              {testimonials.map((_, index) => (
-                <div
-                  key={index}
-                  className={`dot ${index === currentIndex ? 'active' : ''}`}
-                  style={{
-                    ...styles.dot,
-                    ...(index === currentIndex ? styles.dotActive : {})
-                  }}
-                  onClick={() => goToSlide(index)}
-                />
-              ))}
-            </div>
-            <button 
-              className="carousel-btn"
-              onClick={nextSlide}
-              style={styles.carouselBtn}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#8f2424'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#b52f2f'}
-            >
-              ›
-            </button>
-          </div>
-        )}
-
         {/* CTA Section */}
-        <div style={styles.ctaSection}>
-          <h3 style={styles.ctaTitle}>Vous aussi, vous avez aimé ?</h3>
+        <div style={styles.ctaSection} className="cta-section">
+          <h3 style={styles.ctaTitle} className="cta-title">Vous aussi, vous avez aimé ?</h3>
           <p style={styles.ctaText}>
             Votre avis nous aide à nous améliorer et à bâtir la confiance avec d'autres clients.
           </p>
           <button 
             onClick={openGoogleReviews}
             style={styles.ctaButton}
+            className="cta-button"
             onMouseEnter={(e) => {
               e.currentTarget.style.background = '#8f2424';
               e.currentTarget.style.transform = 'scale(1.05)';
@@ -364,6 +330,16 @@ const styles = {
     gap: '16px',
     marginBottom: '40px'
   },
+  gridMobile: {
+    display: 'flex',
+    flexWrap: 'nowrap',
+    gap: '16px',
+    overflowX: 'auto',
+    scrollSnapType: 'x mandatory',
+    WebkitOverflowScrolling: 'touch',
+    marginBottom: '40px',
+    paddingBottom: '12px'
+  },
   card: {
     background: 'white',
     padding: '18px',
@@ -443,6 +419,12 @@ const styles = {
     fontSize: '0.8em',
     marginTop: '12px',
     fontWeight: 'bold'
+  },
+  cardMobile: {
+    minWidth: '92%',
+    maxWidth: '92%',
+    minHeight: 'auto',
+    scrollSnapAlign: 'start'
   },
   ctaSection: {
     background: 'white',

@@ -240,10 +240,10 @@ exports.forgotPassword = async (req, res) => {
         }
 
         const user = await User.findOne({ email: email.trim().toLowerCase() });
-        const message = "Si cet email existe, un lien de reinitialisation a ete envoye.";
-
+        
+        // Si l'email n'existe pas, retourner erreur directe
         if (!user) {
-            return res.status(200).json({ message });
+            return res.status(404).json({ error: "Email non trouvé dans la base de données." });
         }
 
         const token = crypto.randomBytes(32).toString('hex');
@@ -267,7 +267,11 @@ exports.forgotPassword = async (req, res) => {
             }
         }
 
-        const payload = { message, emailSent };
+        const payload = { 
+            message: "Lien de réinitialisation envoyé avec succès.",
+            emailSent,
+            email: user.email 
+        };
         if (process.env.NODE_ENV !== 'production') {
             payload.resetLink = resetLink;
         }
@@ -275,7 +279,7 @@ exports.forgotPassword = async (req, res) => {
         res.status(200).json(payload);
     } catch (error) {
         console.error('Erreur forgotPassword:', error);
-        res.status(500).json({ error: "Impossible de creer le lien de reinitialisation." });
+        res.status(500).json({ error: "Impossible de créer le lien de réinitialisation." });
     }
 };
 

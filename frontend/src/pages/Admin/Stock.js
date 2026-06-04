@@ -208,11 +208,6 @@ export default function Stock({
           </div>
 
           <div style={S.topbarRight}>
-            <div style={S.clock}>{timeStr}</div>
-            <div style={S.notifBtn}>
-              <FiPackage size={20} color="#6b7280" />
-              <span style={S.notifDot}>{stats.lowStock + stats.outStock}</span>
-            </div>
             <div style={S.avatar}>SM</div>
             <span style={S.userName}>{dateStr}</span>
           </div>
@@ -221,7 +216,7 @@ export default function Stock({
         <div style={S.periodRow}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 260 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, padding: "9px 14px", flex: 1 }}>
-              <svg className="search" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
+              <svg className="search" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" style={{ width: 16, height: 16, flexShrink: 0 }}>
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21l-4.35-4.35" />
               </svg>

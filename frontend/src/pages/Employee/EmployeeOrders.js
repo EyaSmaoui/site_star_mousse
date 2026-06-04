@@ -876,7 +876,7 @@ function OrderRow({ order, onView, onEdit, onStatus, onDelete }) {
       </td>
       <td style={S.td}><StatusBadge status={order.status} /></td>
              <td style={S.td}>
-         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+         <div style={{ display: "flex", gap: 8, flexWrap: "nowrap", alignItems: "center" }}>
            <button style={S.btnView}   onClick={onView} title="Voir les d�tails">
              <FaEye size={16} />
            </button>

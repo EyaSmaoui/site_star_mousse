@@ -1,57 +1,78 @@
 // Rate limiting middleware
 const rateLimit = require('express-rate-limit');
 
+const positiveInt = (value, fallback) => {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+};
+
+const keyFromEmailOrIp = (req) => {
+  const email = req.body?.email;
+  // Eviter de différentier des emails proches à cause des espaces/casse
+  return email ? String(email).trim().toLowerCase() : req.ip;
+};
+
+
+const jsonRateLimitHandler = (message) => (req, res) => {
+  const retryAfter = req.rateLimit?.resetTime
+    ? Math.max(1, Math.ceil((req.rateLimit.resetTime.getTime() - Date.now()) / 1000))
+    : undefined;
+
+  if (retryAfter) {
+    res.setHeader('Retry-After', String(retryAfter));
+  }
+
+  res.status(429).json({
+    error: message,
+    retryAfter,
+  });
+};
+
+
 // Global rate limiter - 200 requests per 15 minutes
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 200,
-  message: 'Trop de requêtes, veuillez réessayer plus tard',
-  standardHeaders: true,  // Return rate limit info in `RateLimit-*` headers
-  legacyHeaders: false,   // Disable `X-RateLimit-*` headers
+  message: 'Trop de requetes, veuillez reessayer plus tard',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Stricter limiter for authentication endpoints - 5 attempts per 15 minutes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
-  skipSuccessfulRequests: false,  // Don't reset counter on successful request
-  keyGenerator: (req) => {
-    // Use email if available (for login/register), fallback to IP
-    return req.body?.email || req.ip;
-  },
-  message: 'Trop de tentatives de connexion, veuillez réessayer dans 15 minutes',
+  skipSuccessfulRequests: false,
+  keyGenerator: keyFromEmailOrIp,
+  message: 'Trop de tentatives de connexion, veuillez reessayer dans 15 minutes',
 });
 
 // Password reset limiter - 3 attempts per hour
 const passwordResetLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,  // 1 hour
+  windowMs: 60 * 60 * 1000,
   max: 3,
-  keyGenerator: (req) => req.body?.email || req.ip,
-  message: 'Trop de tentatives de réinitialisation de mot de passe, veuillez réessayer plus tard',
+  keyGenerator: keyFromEmailOrIp,
+  message: 'Trop de tentatives de reinitialisation de mot de passe, veuillez reessayer plus tard',
 });
 
-// Forgot password limiter - 5 attempts per 24 hours
-const forgotPasswordLimiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,  // 24 hours
-  max: 5,
-  keyGenerator: (req) => req.body?.email || req.ip,
-  message: 'Trop de tentatives, veuillez réessayer demain',
-});
+// Forgot password limiter - COMPLETELY DISABLED
+const forgotPasswordLimiter = (req, res, next) => next();
+
 
 // Create/Update limiter - 100 per 15 minutes
 const createUpdateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   keyGenerator: (req) => req.user?.id || req.ip,
-  message: 'Trop de requêtes de création/modification, veuillez réessayer plus tard',
+  message: 'Trop de requetes de creation/modification, veuillez reessayer plus tard',
 });
 
-// Delete limiter - 50 per 15 minutes (stricter than create/update)
+// Delete limiter - 50 per 15 minutes
 const deleteLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 50,
   keyGenerator: (req) => req.user?.id || req.ip,
-  message: 'Trop de tentatives de suppression, veuillez réessayer plus tard',
+  message: 'Trop de tentatives de suppression, veuillez reessayer plus tard',
 });
 
 module.exports = {
@@ -60,5 +81,5 @@ module.exports = {
   passwordResetLimiter,
   forgotPasswordLimiter,
   createUpdateLimiter,
-  deleteLimiter
+  deleteLimiter,
 };
