@@ -33,20 +33,26 @@ export const getAllOrders = async ({ force = false, limit = 300 } = {}) => {
   }
 
   ordersCache.key = cacheKey;
-  ordersCache.promise = httpClient.get('/api/orders/getAllOrders', {
-    params: force ? { limit, _t: Date.now() } : { limit },
-    timeout: 20000,
-  }).then((response) => {
-    ordersCache.data = Array.isArray(response.data)
-      ? response.data
-      : Array.isArray(response.data?.orders)
-        ? response.data.orders
-        : [];
-    ordersCache.timestamp = Date.now();
-    return ordersCache.data;
-  }).finally(() => {
-    ordersCache.promise = null;
-  });
+  ordersCache.promise = (async () => {
+    try {
+      const response = await httpClient.get('/api/orders/getAllOrders', {
+        params: force ? { limit, _t: Date.now() } : { limit },
+        timeout: 8000,
+      });
+      ordersCache.data = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.orders)
+          ? response.data.orders
+          : [];
+      ordersCache.timestamp = Date.now();
+      return ordersCache.data;
+    } catch (error) {
+      console.error('Get all orders error:', error.message);
+      throw error;
+    } finally {
+      ordersCache.promise = null;
+    }
+  })();
 
   return ordersCache.promise;
 };
@@ -54,29 +60,54 @@ export const getAllOrders = async ({ force = false, limit = 300 } = {}) => {
 export const getCachedOrders = () => ordersCache.data || [];
 
 export const checkOrdersConnection = async () => {
-  const response = await httpClient.get('/api/orders/ping', { timeout: 8000 });
-  return response.data;
+  try {
+    const response = await httpClient.get('/api/orders/ping', { timeout: 8000 });
+    return response.data;
+  } catch (error) {
+    console.error('Check orders connection error:', error.message);
+    throw error;
+  }
 };
 
 export const updateOrder = async (orderId, updateData) => {
-  const response = await httpClient.put(`/api/orders/updateOrder/${orderId}`, updateData);
-  invalidateOrdersCache();
-  return response.data;
+  try {
+    const response = await httpClient.put(`/api/orders/updateOrder/${orderId}`, updateData, { timeout: 8000 });
+    invalidateOrdersCache();
+    return response.data;
+  } catch (error) {
+    console.error('Update order error:', error.message);
+    throw error;
+  }
 };
 
 export const deleteOrder = async (orderId) => {
-  const response = await httpClient.delete(`/api/orders/deleteOrder/${orderId}`);
-  invalidateOrdersCache();
-  return response.data;
+  try {
+    const response = await httpClient.delete(`/api/orders/deleteOrder/${orderId}`, { timeout: 8000 });
+    invalidateOrdersCache();
+    return response.data;
+  } catch (error) {
+    console.error('Delete order error:', error.message);
+    throw error;
+  }
 };
 
 export const getMyOrders = async () => {
-  const response = await httpClient.get('/api/orders/my-orders');
-  return response.data;
+  try {
+    const response = await httpClient.get('/api/orders/my-orders', { timeout: 8000 });
+    return response.data;
+  } catch (error) {
+    console.error('Get my orders error:', error.message);
+    throw error;
+  }
 };
 
 export const addOrder = async (data) => {
-  const response = await httpClient.post('/api/orders/addOrder', data);
-  invalidateOrdersCache();
-  return response.data;
+  try {
+    const response = await httpClient.post('/api/orders/addOrder', data, { timeout: 8000 });
+    invalidateOrdersCache();
+    return response.data;
+  } catch (error) {
+    console.error('Add order error:', error.message);
+    throw error;
+  }
 };

@@ -177,9 +177,9 @@ function ProductTemplate({ product: fallbackProduct }) {
         .ssn-product-badge { background: ${accent} !important; border-color: transparent !important; color: #fff !important; }
         .ssn-title { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 3.8vw, 4.5rem); line-height: 1.02; margin-bottom: 14px; color: #1b1b33; }
         .ssn-subtitle { font-size: 1rem; line-height: 1.8; color: #4f5668; max-width: 680px; margin-bottom: 24px; }
-        .ssn-price-block { display: flex; align-items: center; gap: 18px; margin-bottom: 26px; flex-wrap: wrap; }
-        .ssn-price-current { font-size: clamp(2.4rem, 3vw, 3.4rem); font-weight: 800; color: #1f2937; }
-        .ssn-price-old { font-size: 1.1rem; color: #94a3b8; text-decoration: line-through; }
+        .ssn-price-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 26px; width: fit-content; align-items: flex-start; }
+        .ssn-price-current { font-size: clamp(2.4rem, 3vw, 3.4rem); font-weight: 800; color: #1f2937; white-space: nowrap; }
+        .ssn-price-old { font-size: 1.1rem; color: #94a3b8; text-decoration: line-through; white-space: nowrap; margin-top: 4px; }
         .ssn-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 30px; }
         .ssn-info-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 18px; padding: 18px 20px; color: #475569; }
         .ssn-info-card strong { display: block; font-size: 0.95rem; margin-bottom: 8px; color: #1f2937; }
@@ -202,6 +202,7 @@ function ProductTemplate({ product: fallbackProduct }) {
         }
         @media (max-width: 640px) {
           .ssn-container { padding: 20px 16px 40px; }
+          .ssn-price-block { gap: 12px; }
           .ssn-price-current { font-size: 2.4rem; }
           .ssn-info-grid { grid-template-columns: 1fr; }
         }

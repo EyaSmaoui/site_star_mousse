@@ -269,13 +269,15 @@ const Promos = () => {
           text-decoration: line-through;
           color: #b0b0c0;
           display: block;
-          margin-bottom: 2px;
+          margin-bottom: 6px;
+          white-space: nowrap;
         }
         .ssn-new-price {
           font-size: 22px;
           font-weight: 800;
           color: #b52f2f;
           letter-spacing: -0.5px;
+          white-space: nowrap;
         }
         /* ── PACKS ── */
         .ssn-section-packs {
@@ -386,8 +388,21 @@ const Promos = () => {
           border-radius: 6px;
           margin-bottom: 6px;
         }
-        .ssn-pack-old { font-size: 13px; text-decoration: line-through; color: #b0b0c0; display: block; margin-bottom: 2px; }
-        .ssn-pack-new { font-size: 24px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.5px; }
+        .ssn-pack-old { 
+          font-size: 13px; 
+          text-decoration: line-through; 
+          color: #b0b0c0; 
+          display: block; 
+          margin-bottom: 6px;
+          white-space: nowrap;
+        }
+        .ssn-pack-new { 
+          font-size: 24px; 
+          font-weight: 800; 
+          color: #b52f2f; 
+          letter-spacing: -0.5px;
+          white-space: nowrap;
+        }
         /* ── RESPONSIVE ── */
         @media (max-width: 1000px) {
           .ssn-packs-grid { grid-template-columns: 1fr; }

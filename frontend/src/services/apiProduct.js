@@ -25,55 +25,98 @@ export const getAll = async ({ force = false } = {}) => {
     return productsCache.promise;
   }
 
-  productsCache.promise = httpClient.get('/api/products').then((response) => {
-    productsCache.data = Array.isArray(response.data) ? response.data : [];
-    productsCache.timestamp = Date.now();
-    return productsCache.data;
-  }).finally(() => {
-    productsCache.promise = null;
-  });
+  productsCache.promise = (async () => {
+    try {
+      const response = await httpClient.get('/api/products', { timeout: 8000 });
+      productsCache.data = Array.isArray(response.data) ? response.data : [];
+      productsCache.timestamp = Date.now();
+      return productsCache.data;
+    } catch (error) {
+      console.error('Get all products error:', error.message);
+      throw error;
+    } finally {
+      productsCache.promise = null;
+    }
+  })();
 
   return productsCache.promise;
 };
 
 export const getAllProductsFresh = async () => {
-  const response = await httpClient.get('/api/products');
-  return response.data;
+  try {
+    const response = await httpClient.get('/api/products', { timeout: 8000 });
+    return response.data;
+  } catch (error) {
+    console.error('Get all products fresh error:', error.message);
+    throw error;
+  }
 };
 
 export const getRecommended = async (limit = 6) => {
-  const response = await httpClient.get('/api/products/recommended', {
-    params: { limit },
-  });
-  return response.data;
+  try {
+    const response = await httpClient.get('/api/products/recommended', {
+      params: { limit },
+      timeout: 8000,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Get recommended products error:', error.message);
+    throw error;
+  }
 };
 
 export const getById = async (id) => {
-  const response = await httpClient.get(`/api/products/${id}`);
-  return response.data;
+  try {
+    const response = await httpClient.get(`/api/products/${id}`, { timeout: 8000 });
+    return response.data;
+  } catch (error) {
+    console.error('Get product by id error:', error.message);
+    throw error;
+  }
 };
 
 export const createProduct = async (productData) => {
-  const response = await httpClient.post('/api/products/add', productData);
-  invalidateProductsCache();
-  return response.data;
+  try {
+    const response = await httpClient.post('/api/products/add', productData, { timeout: 8000 });
+    invalidateProductsCache();
+    return response.data;
+  } catch (error) {
+    console.error('Create product error:', error.message);
+    throw error;
+  }
 };
 
 export const updateProduct = async (id, productData) => {
-  const response = await httpClient.put(`/api/products/update/${id}`, productData);
-  invalidateProductsCache();
-  return response.data;
+  try {
+    const response = await httpClient.put(`/api/products/update/${id}`, productData, { timeout: 8000 });
+    invalidateProductsCache();
+    return response.data;
+  } catch (error) {
+    console.error('Update product error:', error.message);
+    throw error;
+  }
 };
 
 export const deleteProduct = async (id) => {
-  const response = await httpClient.delete(`/api/products/delete/${id}`);
-  invalidateProductsCache();
-  return response.data;
+  try {
+    const response = await httpClient.delete(`/api/products/delete/${id}`, { timeout: 8000 });
+    invalidateProductsCache();
+    return response.data;
+  } catch (error) {
+    console.error('Delete product error:', error.message);
+    throw error;
+  }
 };
 
 export const search = async (query) => {
-  const response = await httpClient.get('/api/products/search', {
-    params: { name: query },
-  });
-  return response.data;
+  try {
+    const response = await httpClient.get('/api/products/search', {
+      params: { name: query },
+      timeout: 8000,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Search products error:', error.message);
+    throw error;
+  }
 };

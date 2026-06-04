@@ -153,7 +153,12 @@ const Home = () => {
   useEffect(() => {
     const loadBestSellers = async () => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
         const response = await getRecommendedProducts(3);
+        clearTimeout(timeoutId);
+        
         const products = Array.isArray(response)
           ? response
           : Array.isArray(response?.products)
@@ -212,8 +217,7 @@ const Home = () => {
         });
         setBestSellers(topProducts);
       } catch (error) {
-        console.error("Erreur lors du chargement des best-sellers:", error);
-        // Fallback vers les données hardcodées en cas d'erreur
+        console.error("Erreur lors du chargement des best-sellers:", error.message);
         setBestSellers(FALLBACK_BEST_SELLERS);
       } finally {
         setLoading(false);

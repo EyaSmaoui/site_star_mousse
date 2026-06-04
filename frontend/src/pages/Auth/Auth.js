@@ -279,21 +279,7 @@ const Auth = ({ role: requiredRole } = {}) => {
         .sm-title em { color: #4a4ade; font-style: italic; }
         .sm-desc { font-size: 13.5px; color: #9090b0; margin-bottom: 26px; }
 
-        /* social */
-        .sm-socials { display: flex; gap: 9px; margin-bottom: 22px; }
-        .sm-social {
-          flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
-          padding: 11px 10px; border-radius: 11px; cursor: pointer;
-          border: 1.5px solid #e8e8f0; background: #fff;
-          font-size: 12.5px; font-weight: 500; font-family: 'Sora', sans-serif;
-          color: #2a2a3d; transition: all 0.2s;
-        }
-        .sm-social:hover { border-color: #4a4ade; color: #4a4ade; background: #f5f5ff; }
 
-        /* divider */
-        .sm-divider { display: flex; align-items: center; gap: 11px; margin-bottom: 22px; }
-        .sm-divider-line { flex: 1; height: 1px; background: #ebebf5; }
-        .sm-divider-text { font-size: 11.5px; color: #c0c0d8; white-space: nowrap; }
 
         /* fields */
         .sm-field { margin-bottom: 15px; }
@@ -365,16 +351,7 @@ const Auth = ({ role: requiredRole } = {}) => {
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* biometric */
-        .sm-bios { display: flex; gap: 9px; margin-bottom: 22px; }
-        .sm-bio {
-          flex: 1; padding: 11px; border-radius: 11px;
-          border: 1.5px solid #e8e8f0; background: #fff; cursor: pointer;
-          font-size: 12px; font-weight: 500; font-family: 'Sora', sans-serif; color: #60607a;
-          display: flex; align-items: center; justify-content: center; gap: 6px;
-          transition: all 0.2s;
-        }
-        .sm-bio:hover { border-color: #0f9e75; color: #0f9e75; background: #f0fbf7; }
+
 
         /* footer */
         .sm-foot { text-align: center; font-size: 13px; color: #9090b0; }
@@ -475,34 +452,7 @@ const Auth = ({ role: requiredRole } = {}) => {
               {tab === 0 ? "Accédez à votre espace client Star Mousse." : "Rejoignez la famille Star Mousse en quelques secondes."}
             </p>
 
-            {/* Social */}
-            <div className="sm-socials">
-              {[
-                {
-                  label: "Google",
-                  icon: <svg width="17" height="17" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                },
-                {
-                  label: "Facebook",
-                  icon: <svg width="17" height="17" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                },
-                {
-                  label: "Apple",
-                  icon: <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.14-2.18 1.27-2.16 3.8.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                },
-              ].map((s) => (
-                <button key={s.label} className="sm-social" onClick={() => toast.info(`${s.label} bientôt disponible`)}>
-                  {s.icon}{s.label}
-                </button>
-              ))}
-            </div>
 
-            {/* Divider */}
-            <div className="sm-divider">
-              <div className="sm-divider-line" />
-              <span className="sm-divider-text">ou avec votre email</span>
-              <div className="sm-divider-line" />
-            </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit}>
@@ -636,20 +586,7 @@ const Auth = ({ role: requiredRole } = {}) => {
               </button>
             </form>
 
-            {/* Biometric */}
-            {tab === 0 && (
-              <div className="sm-bios">
-                {[
-                  { label: "Empreinte", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 10a2 2 0 00-2 2c0 1.02-.1 2.51-.26 4M14 13.12c0 2.38-.08 3.46-.08 5.88M17.41 11.56c.34 1.69.35 2.95.35 4.44M17 5.57a10 10 0 00-10 .29M12 3a9.96 9.96 0 018 4.43M3.34 9a10.06 10.06 0 00-.05 4.9M8.16 17.54a11 11 0 003.23 3.46"/></svg> },
-                  { label: "Face ID", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 9h.01M15 9h.01M8 13s1 2 4 2 4-2 4-2M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/></svg> },
-                  { label: "QR Code", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM17 17h3v3h-3zM14 20h3"/></svg> },
-                ].map(b => (
-                  <button key={b.label} className="sm-bio" onClick={() => toast.info(`${b.label} bientôt disponible`)}>
-                    {b.icon}{b.label}
-                  </button>
-                ))}
-              </div>
-            )}
+
 
             {/* Footer */}
             <div className="sm-sec">

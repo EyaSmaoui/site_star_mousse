@@ -277,11 +277,12 @@ const Products = () => {
           justify-content: space-between;
         }
         .ssn-price {
-          font-size: 14px;
+          font-size: 16px;
           font-weight: 700;
-          color: #1a1a2e;
+          color: #b52f2f;
           letter-spacing: -0.2px;
           line-height: 1.3;
+          white-space: nowrap;
         }
         .ssn-btn-card {
           background: #f3f3fb;

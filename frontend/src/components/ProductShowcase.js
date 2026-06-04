@@ -190,14 +190,15 @@ export default function ProductShowcase() {
     .ssn-product-price-row {
       display: flex;
       align-items: baseline;
-      gap: 10px;
+      gap: 16px;
       flex-wrap: wrap;
     }
 
     .ssn-product-price-new {
-      font-size: 1.4em;
+      font-size: 1.5em;
       font-weight: 800;
       color: #b52f2f;
+      white-space: nowrap;
     }
 
     .ssn-product-price-old {
@@ -205,6 +206,7 @@ export default function ProductShowcase() {
       font-size: 0.95em;
       font-weight: 700;
       text-decoration: line-through;
+      white-space: nowrap;
     }
 
     .ssn-product-buttons {

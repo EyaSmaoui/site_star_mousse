@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Testimonials = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const testimonials = [
     {
       id: 1,
@@ -58,21 +69,132 @@ const Testimonials = () => {
     window.open('https://www.google.com/search?q=Star+Mousse+Borj+Chakir', '_blank');
   };
 
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
+
+  const displayTestimonials = isMobile ? [testimonials[currentIndex]] : testimonials;
+
   return (
-    <section style={styles.section}>
-      <div style={styles.container}>
+    <>
+      <style>{`
+        .testimonials-grid {
+          display: grid !important;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+          gap: 16px !important;
+        }
+        @media (max-width: 1024px) {
+          .testimonials-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .testimonials-grid {
+            display: flex !important;
+            gap: 0 !important;
+            position: relative;
+            overflow: hidden;
+          }
+          .testimonials-carousel-container {
+            position: relative;
+            width: 100%;
+          }
+          .testimonials-card {
+            flex: 0 0 100%;
+            min-width: 100%;
+            animation: slideIn 0.4s ease-in-out;
+          }
+          @keyframes slideIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          .carousel-nav {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+          }
+          .carousel-btn {
+            background: #b52f2f;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+          }
+          .carousel-btn:hover {
+            background: #8f2424;
+            transform: scale(1.1);
+          }
+          .carousel-dots {
+            display: flex !important;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+          }
+          .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+          .dot.active {
+            background: #b52f2f;
+            width: 28px;
+            border-radius: 5px;
+          }
+        }
+        @media (max-width: 480px) {
+          .testimonials-section {
+            padding: 40px 16px !important;
+          }
+          .testimonials-card {
+            padding: 14px !important;
+          }
+          .testimonials-badges {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .carousel-btn {
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+          }
+        }
+      `}</style>
+      <section style={styles.section} className="testimonials-section">
+        <div style={styles.container}>
         {/* Header */}
         <div style={styles.header}>
           <h2 style={styles.title}>⭐ Ce que disent nos clients</h2>
           <p style={styles.subtitle}>Plus de 500 clients satisfaits en Tunisie • Note moyenne : 4.9/5</p>
         </div>
 
-        {/* Testimonials Grid */}
-        <div style={styles.grid}>
-          {testimonials.map((testimonial) => (
+        {/* Testimonials Grid / Carousel */}
+        <div style={isMobile ? styles.carouselContainer : styles.gridContainer} className="testimonials-carousel-container">
+          <div style={styles.grid} className="testimonials-grid">
+            {displayTestimonials.map((testimonial) => (
             <div 
               key={testimonial.id} 
               style={styles.card}
+              className="testimonials-card"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-8px)';
                 e.currentTarget.style.boxShadow = '0 12px 28px rgba(181, 47, 47, 0.15)';
@@ -110,7 +232,45 @@ const Testimonials = () => {
               </div>
             </div>
           ))}
+          </div>
         </div>
+
+        {/* Carousel Navigation (Mobile Only) */}
+        {isMobile && (
+          <div style={styles.carouselNav} className="carousel-nav">
+            <button 
+              className="carousel-btn"
+              onClick={prevSlide}
+              style={styles.carouselBtn}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#8f2424'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#b52f2f'}
+            >
+              ‹
+            </button>
+            <div style={styles.dotsContainer} className="carousel-dots">
+              {testimonials.map((_, index) => (
+                <div
+                  key={index}
+                  className={`dot ${index === currentIndex ? 'active' : ''}`}
+                  style={{
+                    ...styles.dot,
+                    ...(index === currentIndex ? styles.dotActive : {})
+                  }}
+                  onClick={() => goToSlide(index)}
+                />
+              ))}
+            </div>
+            <button 
+              className="carousel-btn"
+              onClick={nextSlide}
+              style={styles.carouselBtn}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#8f2424'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#b52f2f'}
+            >
+              ›
+            </button>
+          </div>
+        )}
 
         {/* CTA Section */}
         <div style={styles.ctaSection}>
@@ -135,7 +295,7 @@ const Testimonials = () => {
         </div>
 
         {/* Trust Badges */}
-        <div style={styles.badges}>
+        <div style={styles.badges} className="testimonials-badges">
           <div style={styles.badge}>
             <span style={styles.badgeIcon}>✓</span>
             <div style={styles.badgeText}>
@@ -167,6 +327,7 @@ const Testimonials = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 
@@ -199,14 +360,14 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '24px',
-    marginBottom: '50px'
+    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+    gap: '16px',
+    marginBottom: '40px'
   },
   card: {
     background: 'white',
-    padding: '24px',
-    borderRadius: '12px',
+    padding: '18px',
+    borderRadius: '10px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
     display: 'flex',
@@ -222,8 +383,8 @@ const styles = {
     borderBottom: '1px solid #eee'
   },
   avatar: {
-    width: '50px',
-    height: '50px',
+    width: '44px',
+    height: '44px',
     borderRadius: '50%',
     background: 'linear-gradient(135deg, #b52f2f, #8f2424)',
     display: 'flex',
@@ -231,7 +392,8 @@ const styles = {
     justifyContent: 'center',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: '1.2em'
+    fontSize: '1em',
+    flexShrink: 0
   },
   avatarText: {
     color: 'white'
@@ -242,10 +404,10 @@ const styles = {
     letterSpacing: '2px'
   },
   text: {
-    fontSize: '0.95em',
+    fontSize: '0.9em',
     color: '#333',
-    lineHeight: '1.6',
-    margin: '16px 0',
+    lineHeight: '1.5',
+    margin: '12px 0',
     fontStyle: 'italic',
     flex: '1'
   },
@@ -341,6 +503,59 @@ const styles = {
     color: '#999',
     fontSize: '0.85em',
     marginTop: '4px'
+  },
+  carouselContainer: {
+    position: 'relative',
+    width: '100%',
+    marginBottom: '40px'
+  },
+  gridContainer: {
+    marginBottom: '40px'
+  },
+  carouselNav: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '16px',
+    marginTop: '24px',
+    marginBottom: '40px'
+  },
+  carouselBtn: {
+    background: '#b52f2f',
+    color: 'white',
+    border: 'none',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    fontSize: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s ease',
+    padding: '0',
+    lineHeight: '1'
+  },
+  dotsContainer: {
+    display: 'flex',
+    gap: '8px',
+    justifyContent: 'center',
+    flexWrap: 'wrap'
+  },
+  dot: {
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    background: '#ddd',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    border: 'none',
+    padding: '0'
+  },
+  dotActive: {
+    background: '#b52f2f',
+    width: '28px',
+    borderRadius: '5px'
   }
 };
 

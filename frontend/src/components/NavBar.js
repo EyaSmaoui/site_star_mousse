@@ -43,7 +43,6 @@ function NavBar() {
         ticking = true;
       }
     };
-    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -145,15 +144,15 @@ function NavBar() {
         }
 
         .ssn-promo {
-          min-height: 34px;
-          padding: 8px 40px;
+          min-height: 26px;
+          padding: 5px 40px;
           background: #151522;
           color: #f7f1e8;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 28px;
-          font-size: 12.5px;
+          gap: 16px;
+          font-size: 11px;
           font-weight: 700;
           letter-spacing: 0.1px;
         }
@@ -178,19 +177,19 @@ function NavBar() {
         .ssn-nav {
           width: 100%;
           max-width: 1440px;
-          min-height: 76px;
+          min-height: 60px;
           margin: 0 auto;
-          padding: 14px 40px;
+          padding: 10px 40px;
           display: grid;
           grid-template-columns: auto minmax(0, 1fr) auto;
           align-items: center;
-          gap: 24px;
+          gap: 16px;
           transition: min-height 0.25s ease, padding 0.25s ease;
         }
         .ssn-header.scrolled .ssn-nav {
-          min-height: 68px;
-          padding-top: 10px;
-          padding-bottom: 10px;
+          min-height: 56px;
+          padding-top: 8px;
+          padding-bottom: 8px;
         }
 
         .ssn-logo {
@@ -199,14 +198,14 @@ function NavBar() {
           text-decoration: none;
         }
         .ssn-logo img {
-          height: 52px;
+          height: 44px;
           width: auto;
           object-fit: contain;
           display: block;
           filter: drop-shadow(0 10px 18px rgba(21,21,34,0.08));
           transition: transform 0.22s ease, height 0.22s ease;
         }
-        .ssn-header.scrolled .ssn-logo img { height: 46px; }
+        .ssn-header.scrolled .ssn-logo img { height: 40px; }
         .ssn-logo:hover img { transform: translateY(-1px); }
 
         .ssn-links {
@@ -455,22 +454,7 @@ function NavBar() {
           border-bottom: 0;
           border-radius: 999px 999px 0 0;
         }
-        .ssn-cart-badge {
-          position: absolute;
-          top: -4px;
-          right: -4px;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          color: #ffffff;
-          background: #b52f2f;
-          border: 2px solid #ffffff;
-          font-size: 10px;
-          font-weight: 900;
-        }
+
 
         .ssn-hamburger {
           display: none;
@@ -515,47 +499,47 @@ function NavBar() {
           width: 100%;
           max-width: 100%;
           margin: 0 auto;
-          padding: 12px;
+          padding: 10px;
           border: 1px solid rgba(26,26,46,0.08);
-          border-radius: 24px;
+          border-radius: 18px;
           background: rgba(255,255,255,0.96);
           box-shadow: 0 24px 70px rgba(21,21,34,0.16);
         }
-        .ssn-mobile-link {
+         .ssn-mobile-link {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          min-height: 46px;
-          padding: 0 12px;
-          border-radius: 15px;
+          min-height: 38px;
+          padding: 0 10px;
+          border-radius: 12px;
           color: #242436;
           text-decoration: none;
-          font-size: 14.5px;
-          font-weight: 900;
+          font-size: 13px;
+          font-weight: 800;
         }
         .ssn-mobile-link:hover { background: #f8f3ed; color: #b52f2f; }
         .ssn-mobile-link.sub {
-          min-height: 40px;
-          margin-left: 10px;
+          min-height: 34px;
+          margin-left: 8px;
           color: #747587;
-          font-size: 13px;
-          font-weight: 800;
+          font-size: 12px;
+          font-weight: 700;
         }
         .ssn-mobile-actions {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 10px;
-          margin-top: 12px;
+          gap: 8px;
+          margin-top: 10px;
         }
         .ssn-mobile-actions a {
-          min-height: 44px;
-          border-radius: 16px;
+          min-height: 38px;
+          border-radius: 12px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           text-decoration: none;
-          font-size: 14px;
-          font-weight: 900;
+          font-size: 12.5px;
+          font-weight: 800;
         }
         .ssn-mobile-login {
           background: #f8f3ed;
@@ -689,7 +673,6 @@ function NavBar() {
 
             <Link to="/cart" className="ssn-cart" onClick={closeMenu} title="Panier" aria-label="Panier">
               <span className="ssn-cart-icon"></span>
-              <span className="ssn-cart-badge">{cartCount}</span>
             </Link>
           </div>
 

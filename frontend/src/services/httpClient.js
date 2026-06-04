@@ -11,7 +11,7 @@ const httpClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 8000,
 });
 
 // Intercepteur de requête : Ajout propre du Token
@@ -35,6 +35,7 @@ httpClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error('Request interceptor error:', error.message);
     return Promise.reject(error);
   }
 );
@@ -48,10 +49,22 @@ httpClient.interceptors.response.use(
       if (message.includes('Token invalide') || message.includes('Token not found')) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        // Optionnel : Rediriger vers la page de login si nécessaire
-        // window.location.href = '/login';
       }
     }
+    
+    // Meilleur handling des erreurs
+    if (error.code === 'ECONNABORTED') {
+      error.message = 'Timeout - Le serveur met trop de temps à répondre';
+    } else if (error.code === 'ERR_NETWORK') {
+      error.message = 'Erreur réseau - Impossible de contacter le serveur';
+    }
+    
+    console.error('API Error:', {
+      status: error.response?.status,
+      message: error.message,
+      data: error.response?.data
+    });
+    
     return Promise.reject(error);
   }
 );
