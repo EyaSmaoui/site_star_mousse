@@ -5,12 +5,46 @@ import ClientSidebar from "./ClientSidebar";
 import { getMyOrders } from "../../services/orderService";
 import { getProfile } from "../../services/apiAuth";
 import { hasAccess, ROLES } from "../../utils/authUtils";
+import { getCachedProfile, subscribeToProfileChanges } from "../../services/profileSyncService";
+
+const applyProfileToOrders = (orders, profile) => {
+  if (!Array.isArray(orders)) return [];
+  if (!profile) return orders;
+  const has = (key) => Object.prototype.hasOwnProperty.call(profile, key);
+
+  return orders.map((order) => ({
+    ...order,
+    customerName: has("username") || has("name") ? (profile.username || profile.name || "") : order.customerName,
+    customerEmail: has("email") ? profile.email : order.customerEmail,
+    phone: has("phone") ? profile.phone : order.phone,
+    address: has("address") ? profile.address : order.address,
+  }));
+};
 
 export default function ClientMyOrders() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
-  const [profile, setProfile] = useState({ username: "" });
+  const [profile, setProfile] = useState(() => getCachedProfile() || { username: "" });
   const [loading, setLoading] = useState(true);
+
+  // Fonction pour rafraîchir les commandes
+  const refreshOrders = async (profileOverride = profile) => {
+    try {
+      console.log('🔄 Rafraîchissement des commandes... (forceRefresh=true)');
+      const ordersData = await getMyOrders(true); // ✅ FORCE REFRESH
+      setOrders(applyProfileToOrders(ordersData, profileOverride));
+      console.log('✅ Commandes rafraîchies! Nombre:', ordersData.length);
+      if (ordersData.length > 0) {
+        console.log('📊 Nouvelle première commande:', {
+          customerName: ordersData[0].customerName,
+          phone: ordersData[0].phone,
+          address: ordersData[0].address
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors du rafraîchissement:', error);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -24,7 +58,7 @@ export default function ClientMyOrders() {
 
     if (userData) {
       const parsedUser = JSON.parse(userData);
-      if (!hasAccess(parsedUser, [ROLES.CLIENT])) {
+      if (!hasAccess(parsedUser, [ROLES.CLIENT, ROLES.USER])) {
         toast.error("Accès non autorisé");
         navigate("/login/client");
         return;
@@ -34,9 +68,9 @@ export default function ClientMyOrders() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [profileData, ordersData] = await Promise.all([getProfile(), getMyOrders()]);
+        const [profileData, ordersData] = await Promise.all([getProfile(), getMyOrders(true)]);
         setProfile(profileData);
-        setOrders(Array.isArray(ordersData) ? ordersData : []);
+        setOrders(applyProfileToOrders(ordersData, profileData));
       } catch (error) {
         console.error(error);
         toast.error("Impossible de charger vos commandes.");
@@ -47,6 +81,23 @@ export default function ClientMyOrders() {
 
     fetchData();
   }, [navigate]);
+
+  // 🔔 S'abonner aux changements de profil GLOBAL
+  useEffect(() => {
+    console.log('👂 ClientMyOrders: Écoute les changements de profil global');
+    const unsubscribe = subscribeToProfileChanges((updatedProfile) => {
+      console.log('🔔 ClientMyOrders: Profil changé globalement! Mise à jour:', updatedProfile);
+      setProfile(updatedProfile);
+      // Rafraîchir les commandes aussi
+      setOrders((currentOrders) => applyProfileToOrders(currentOrders, updatedProfile));
+      refreshOrders(updatedProfile);
+    });
+
+    return () => {
+      console.log('👋 ClientMyOrders: Arrêt de l\'écoute des changements');
+      unsubscribe();
+    };
+  }, []);
 
   const formatDate = (date) => {
     if (!date) return "-";
@@ -101,6 +152,10 @@ export default function ClientMyOrders() {
                   </span>
                 </div>
                 <div style={S.orderDetails}>
+                  <div style={S.detailRow}>
+                    <span style={S.detailLabel}>Nom</span>
+                    <span>{order.customerName}</span>
+                  </div>
                   <div style={S.detailRow}>
                     <span style={S.detailLabel}>Email</span>
                     <span>{order.customerEmail}</span>

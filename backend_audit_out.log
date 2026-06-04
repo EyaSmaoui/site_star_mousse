@@ -1,5 +1,0 @@
-
-> site-star-mousse@0.0.0 start
-> node --max-http-header-size=16384 app.js
-
-◇ injected env (13) from .env // tip: ⌘ enable debugging { debug: true }

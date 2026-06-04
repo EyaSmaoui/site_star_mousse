@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Review = require('../models/review.model');
 const Product = require('../models/product.model');
+const Recommendation = require('../models/recommendation.model');
 
 /**
  * Section 5.3.4 & 5.3.5 - Analyse de sentiment via BERT (Flask) et mise à jour de l'avis
@@ -65,8 +66,13 @@ const updateProductRecommendation = async (productId) => {
             await Product.findByIdAndUpdate(productId, {
                 note_coeur: 0,
                 isRecommended: false,
-                reviewCount: 0
+                averageRating: 0,
+                reviewCount: 0,
+                sentimentScore: 0,
+                recommendationRank: 0,
+                lastRecommendationUpdate: new Date()
             });
+            await Recommendation.deleteOne({ product: productId });
             return;
         }
 
@@ -83,8 +89,25 @@ const updateProductRecommendation = async (productId) => {
             note_coeur: nouvelleMoyenne,        // Ta variable personnalisée pour le rapport
             averageRating: nouvelleMoyenne,     // Synchro avec ton modèle actuel
             reviewCount: reviews.length,
-            isRecommended: misEnAvant           // Filtre de ta vitrine dynamique
+            isRecommended: misEnAvant,          // Filtre de ta vitrine dynamique
+            sentimentScore: nouvelleMoyenne,
+            recommendationRank: nouvelleMoyenne + Math.log1p(reviews.length) * 0.25,
+            lastRecommendationUpdate: new Date()
         });
+
+        await Recommendation.findOneAndUpdate(
+            { product: productId },
+            {
+                product: productId,
+                averageRating: nouvelleMoyenne,
+                reviewCount: reviews.length,
+                sentimentScore: nouvelleMoyenne,
+                rank: nouvelleMoyenne + Math.log1p(reviews.length) * 0.25,
+                reason: `${reviews.length} avis clients favorables, note moyenne ${nouvelleMoyenne.toFixed(1)}/5.`,
+                updatedAt: new Date()
+            },
+            { upsert: true, new: true }
+        );
 
         console.log(`[Recommandation] Matelas ${productId} mis à jour. Nouvelle moyenne : ${nouvelleMoyenne} (Recommandé: ${misEnAvant})`);
 

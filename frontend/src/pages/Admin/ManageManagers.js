@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
+import SearchBar from "../../components/SearchBar";
 import { getAllManagers, createManager, updateManager, deleteManager } from "../../services/apiManagers";
 
 /* ─── Constantes ─────────────────────────────────────────────────────────── */
-const EMPTY_FORM = { name: "", email: "", phone: "", role: "Livreur", status: "actif" };
+const EMPTY_FORM = { name: "", email: "", phone: "", password: "", role: "gestionnaire", status: "actif" };
 
-const ROLE_OPTIONS = ["Livreur", "Responsable Stock", "Vendeur", "Nettoyeur", "Agent de Sécurité"];
+const ROLE_OPTIONS = ["gestionnaire", "Livreur", "Responsable Stock", "Vendeur", "Nettoyeur", "Agent de Sécurité"];
 
 const ROLE_COLORS = {
+  "gestionnaire":         { bg: "#f3e8ff", color: "#7c3aed", border: "#ddd6fe" },
   "Livreur":             { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
   "Responsable Stock":   { bg: "#f0fdf4", color: "#16a34a", border: "#86efac" },
   "Vendeur":             { bg: "#fdf4ff", color: "#9333ea", border: "#e9d5ff" },
@@ -86,16 +88,23 @@ export default function ManageManagers() {
 
   const openAdd  = () => { setForm(EMPTY_FORM); setModal("add"); };
   const openEdit = (m) => {
-    setForm({ name: m.name || "", email: m.email || "", phone: m.phone || "", role: m.role || ROLE_OPTIONS[0], status: m.status || "actif" });
+    setForm({ name: m.name || "", email: m.email || "", phone: m.phone || "", password: "", role: m.role || "gestionnaire", status: m.status || "actif" });
     setModal({ mode: "edit", manager: m });
   };
   const closeModal = () => { setModal(null); setForm(EMPTY_FORM); };
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) {
-      toast.warning("Nom, email et téléphone sont obligatoires"); return;
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.role.trim()) {
+      toast.warning("Nom, email, téléphone et rôle sont obligatoires"); return;
+    }
+    if ((form.phone || "").toString().replace(/\D/g, "").length !== 8) {
+      toast.warning("Le numéro de téléphone doit contenir exactement 8 chiffres"); return;
+    }
+    if (modal === "add" && !form.password.trim()) {
+      toast.warning("Mot de passe obligatoire pour un nouveau gestionnaire"); return;
     }
     const payload = { name: form.name.trim(), email: form.email.trim().toLowerCase(), phone: form.phone.trim(), role: form.role, status: form.status };
+    if (form.password.trim()) payload.password = form.password;
     setSaving(true);
     try {
       if (modal === "add") { await createManager(payload); toast.success("Gestionnaire ajouté"); }
@@ -136,45 +145,6 @@ export default function ManageManagers() {
             <p style={S.topbarSub}>Star Mousse · Administration</p>
             <h1 style={S.topbarTitle}>Gestion des Gestionnaires</h1>
           </div>
-          <button style={S.btnAdd} onClick={openAdd}
-            onMouseEnter={e => e.currentTarget.style.background = "#ea580c"}
-            onMouseLeave={e => e.currentTarget.style.background = "#f97316"}>
-            <Ico d={ICO.plus} size={15} color="#fff" sw={2.5} />
-            Nouveau gestionnaire
-          </button>
-        </div>
-
-        {/* ── KPI strip ── */}
-        <div style={S.kpiStrip}>
-          <div style={S.kpiItem}>
-            <div style={{ ...S.kpiIcon, background: "#3b82f6" }}>
-              <Ico d={ICO.user} size={18} color="#fff" />
-            </div>
-            <div>
-              <div style={S.kpiVal}>{managers.length}</div>
-              <div style={S.kpiLbl}>Total gestionnaires</div>
-            </div>
-          </div>
-          <div style={S.kpiDivider} />
-          <div style={S.kpiItem}>
-            <div style={{ ...S.kpiIcon, background: "#10b981" }}>
-              <Ico d={ICO.check} size={18} color="#fff" />
-            </div>
-            <div>
-              <div style={S.kpiVal}>{actifCount}</div>
-              <div style={S.kpiLbl}>Actifs</div>
-            </div>
-          </div>
-          <div style={S.kpiDivider} />
-          <div style={S.kpiItem}>
-            <div style={{ ...S.kpiIcon, background: "#f97316" }}>
-              <Ico d={ICO.shield} size={18} color="#fff" />
-            </div>
-            <div>
-              <div style={S.kpiVal}>{ROLE_OPTIONS.length}</div>
-              <div style={S.kpiLbl}>Rôles disponibles</div>
-            </div>
-          </div>
         </div>
 
         {/* ── Card ── */}
@@ -186,25 +156,12 @@ export default function ManageManagers() {
               <p style={S.cardSub}>{filtered.length} résultat{filtered.length !== 1 ? "s" : ""}</p>
             </div>
             <div style={S.headerActions}>
-              {/* Role filter pills */}
-              <div style={S.filterRow}>
-                {["Tous", ...ROLE_OPTIONS].map(role => (
-                  <button key={role} onClick={() => setFilterRole(role)}
-                    style={{ ...S.filterPill, ...(filterRole === role ? S.filterPillActive : S.filterPillInactive) }}>
-                    {role}
-                  </button>
-                ))}
-              </div>
               {/* Search */}
-              <div style={S.searchWrap}>
-                <Ico d={ICO.search} size={15} color="#9ca3af" />
-                <input
-                  style={S.searchInput}
-                  placeholder="Rechercher..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                />
-              </div>
+              <SearchBar 
+                placeholder="Rechercher gestionnaires, rôles, email..." 
+                value={search} 
+                onChange={setSearch} 
+              />
             </div>
           </div>
 
@@ -260,7 +217,8 @@ export default function ManageManagers() {
               <div style={S.modalBody}>
                 <Field label="Nom complet *"  value={form.name}  onChange={v => setForm(f => ({ ...f, name: v }))}  placeholder="Ex : Amira Ben Salah" />
                 <Field label="Email *"        value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="amira@example.com" type="email" />
-                <Field label="Téléphone *"    value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} placeholder="+216 XX XXX XXX" />
+                <Field label={modal === "add" ? "Mot de passe *" : "Mot de passe (laisser vide pour ne pas changer)"}        value={form.password} onChange={v => setForm(f => ({ ...f, password: v }))} placeholder="••••••••" type="password" />
+                <Field label="Téléphone *"    value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v.replace(/\D/g, "").slice(0,8) }))} placeholder="+216 XX XXX XXX" type="tel" />
 
                 <div style={{ display: "flex", gap: 14 }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
@@ -377,7 +335,14 @@ function Field({ label, value, onChange, placeholder, type = "text" }) {
         type={type}
         style={S.fieldInput}
         value={value}
-        onChange={e => onChange(e.target.value)}
+            onChange={e => {
+              let v = e.target.value;
+              if (type === "tel") v = v.replace(/\D/g, "").slice(0, 8);
+              onChange(v);
+            }}
+            inputMode={type === "tel" ? "numeric" : undefined}
+            pattern={type === "tel" ? "\\d{8}" : undefined}
+            maxLength={type === "tel" ? 8 : undefined}
         placeholder={placeholder}
         onFocus={e => { e.target.style.borderColor = "#f97316"; e.target.style.boxShadow = "0 0 0 3px rgba(249,115,22,0.12)"; }}
         onBlur={e  => { e.target.style.borderColor = "#e5e7eb"; e.target.style.boxShadow = "none"; }}

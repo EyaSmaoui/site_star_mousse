@@ -21,7 +21,13 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phone") {
+      const digits = value.replace(/\D/g, "").slice(0, 8);
+      setFormData({ ...formData, [name]: digits });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -30,6 +36,11 @@ const Register = () => {
     // 1. Validation simple
     if (!formData.username || !formData.email || !formData.password || !formData.phone) {
       toast.error("Veuillez remplir tous les champs ⚠️");
+      return;
+    }
+    // phone must be exactly 8 digits
+    if ((formData.phone || "").replace(/\D/g, "").length !== 8) {
+      toast.error("Le numéro de téléphone doit contenir exactement 8 chiffres.");
       return;
     }
 
@@ -42,6 +53,10 @@ const Register = () => {
       if (response?.token) {
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
+      }
+      const hasPendingOrder = Boolean(sessionStorage.getItem('pendingOrder'));
+      if (hasPendingOrder) {
+        sessionStorage.setItem('showReviewAfterAuth', 'true');
       }
       toast.success("Compte Star Mousse créé ! Bienvenue 🌙");
       submitPendingOrder().catch((err) => {

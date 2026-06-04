@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmployeeSidebar from "./EmployeeSidebar";
+import SearchBar from "../../components/SearchBar";
 import { getAllOrders } from "../../services/apiOrder";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 
@@ -85,11 +86,10 @@ export default function EmployeeClients() {
             <h1 style={S.title}>Clients commandés</h1>
             <p style={S.subtitle}>Vue lecture seule construite depuis les commandes existantes.</p>
           </div>
-          <input
-            style={S.search}
-            placeholder="Rechercher client..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
+          <SearchBar 
+            placeholder="Rechercher client, téléphone, email..." 
+            value={search} 
+            onChange={setSearch} 
           />
         </div>
 
@@ -149,7 +149,7 @@ const S = {
   eyebrow: { margin: 0, color: "#9ca3af", fontSize: 12, textTransform: "uppercase", letterSpacing: ".12em" },
   title: { margin: "6px 0", fontSize: 32, color: "#1f2937" },
   subtitle: { margin: 0, color: "#6b7280", fontSize: 14 },
-  search: { minWidth: 280, padding: "11px 14px", border: "1px solid #e5e7eb", borderRadius: 10, outline: 0, font: "inherit" },
+
   grid: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 14, marginBottom: 20 },
   kpi: { background: "#fff", border: "1px solid #f0e8df", borderRadius: 12, padding: 18, display: "flex", flexDirection: "column", gap: 4 },
   card: { background: "#fff", border: "1px solid #f0e8df", borderRadius: 12, overflowX: "auto" },

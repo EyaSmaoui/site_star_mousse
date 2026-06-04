@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { sendChatMessage, getRecommendations } from "../services/apiChatbot";
 import "../styles/chatbot.css";
+import formatPrice from '../utils/formatPrice';
 
 const QUICK_PROMPTS = [
   "Je cherche un matelas pour le dos",
@@ -36,9 +37,7 @@ const FALLBACK_RECOMMENDATIONS = [
   },
 ];
 
-function formatPrice(price) {
-  return `${Number(price || 0).toFixed(2)} DT`;
-}
+// use shared formatPrice util for consistent formatting
 
 function shouldShowRecommendations(messages) {
   return messages.filter((message) => message.from === "user").length >= 2;
@@ -105,17 +104,8 @@ export default function ChatbotAssistant() {
     }
   }, [open]);
 
-  useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 640px)").matches;
-    if (!open || !isMobile) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [open]);
+  // REMOVED: No longer lock body scroll - use CSS modal scrolling instead
+  // This was causing mobile users to be unable to scroll when chatbot is open
 
   const submitMessage = useCallback(
     async (text = input) => {

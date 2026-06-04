@@ -5,18 +5,29 @@ const managerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  email: {
+ email: { 
+    type: String, 
+    required: [true, 'L\'email est requis'], 
+    unique: true, 
+    lowercase: true,
+    trim: true,
+    match: [/^\S+@\S+\.\S+$/, 'Veuillez entrer un email valide']
+  },
+  password: {
     type: String,
-    required: true,
-    unique: true
+    required: [true, 'Le mot de passe est requis'],
+    minlength: [6, 'Le mot de passe doit contenir au moins 6 caractères']
   },
   phone: {
     type: String,
-    required: true
+    required: [true, 'Le numéro de téléphone est requis'],
+    trim: true
+    
   },
   role: {
     type: String,
-    required: true
+    required: true,
+    default: "gestionnaire"
   },
   status: {
     type: String,

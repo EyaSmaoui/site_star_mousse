@@ -2,26 +2,33 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createEmployer } from '../../services/apiAdmin';
+import { createManager } from '../../services/apiManagers';
 import AdminSidebar from './AdminSidebar';
+import SuccessModal from '../../components/SuccessModal';
+import { useSuccessAlert } from '../../hooks/useSuccessAlert';
 
 const FONT_HEAD = "'Syne', sans-serif";
 const FONT_BODY = "'DM Sans', sans-serif";
 const ACCENT    = "#3b82f6";
 const SIDEBAR_W = "260px";
 
+const ROLE_OPTIONS = ["gestionnaire", "Livreur", "Responsable Stock", "Vendeur", "Nettoyeur", "Agent de Sécurité"];
+
 const AddEmployer = () => {
   const navigate = useNavigate();
+  const { isOpen, message, title, showSuccess, closeSuccess } = useSuccessAlert();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
     phone: '',
-    role: 'employeur',
+    role: 'gestionnaire',
+    status: 'actif',
   });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (field) => (e) =>
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [field]: field === 'phone' ? e.target.value.replace(/\D/g, '').slice(0,8) : e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,9 +39,30 @@ const AddEmployer = () => {
     }
     try {
       setLoading(true);
-      await createEmployer(formData);
-      toast.success('Employé créé avec succès !');
-      setFormData({ username: '', email: '', password: '', phone: '', role: 'employeur' });
+      
+      // Create employee in users table
+      const employeePayload = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        role: formData.role || 'employee',
+      };
+      await createEmployer(employeePayload);
+      
+      // Also create manager in managers table
+      const managerPayload = {
+        name: formData.username,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        role: formData.role,
+        status: formData.status,
+      };
+      await createManager(managerPayload);
+      
+      showSuccess(`L'employé ${formData.username} a été créé avec succès!`, 'Employé Créé!');
+      setFormData({ username: '', email: '', password: '', phone: '', role: 'gestionnaire', status: 'actif' });
     } catch (error) {
       const message = error.response?.data?.error || error.response?.data?.message || error.message;
       toast.error(message || "Erreur lors de la création de l'employé.");
@@ -52,6 +80,12 @@ const AddEmployer = () => {
 
   return (
     <div style={s.root}>
+      <SuccessModal 
+        isOpen={isOpen} 
+        title={title} 
+        message={message}
+        onClose={closeSuccess}
+      />
       <AdminSidebar />
 
       <main className="admin-main sm-internal-main" style={s.main}>
@@ -103,6 +137,35 @@ const AddEmployer = () => {
               ))}
             </div>
 
+            {/* Role and Status Selectors */}
+            <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
+              <div style={{ flex: 1 }}>
+                <label style={s.label}>Rôle *</label>
+                <select
+                  value={formData.role}
+                  onChange={handleChange('role')}
+                  style={{ ...s.input, cursor: 'pointer' }}
+                >
+                  {ROLE_OPTIONS.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={s.label}>Statut</label>
+                <select
+                  value={formData.status}
+                  onChange={handleChange('status')}
+                  style={{ ...s.input, cursor: 'pointer' }}
+                >
+                  <option value="actif">Actif</option>
+                  <option value="inactif">Inactif</option>
+                </select>
+              </div>
+            </div>
+
             <div style={s.divider} />
 
             {/* Actions */}
@@ -114,7 +177,7 @@ const AddEmployer = () => {
                 onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = "#2563eb"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = ACCENT; }}
               >
-                {loading ? '⏳ Enregistrement...' : '✓ Enregistrer l\'employé'}
+              {loading ? '⏳ Enregistrement...' : '✓ Enregistrer l\'employé'}
               </button>
 
               <button

@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import SearchBar from './SearchBar';
 
 const AdvancedFilters = ({
   onFilterChange,
@@ -94,25 +95,11 @@ const AdvancedFilters = ({
   return (
     <div style={styles.container}>
       {/* Search Bar */}
-      <div style={styles.searchContainer}>
-        <SearchIcon />
-        <input
-          type="text"
-          placeholder={searchPlaceholder}
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-          style={styles.searchInput}
-        />
-        {searchTerm && (
-          <button
-            onClick={() => handleSearch('')}
-            style={styles.clearSearchButton}
-            title="Effacer"
-          >
-            <ClearIcon />
-          </button>
-        )}
-      </div>
+      <SearchBar 
+        placeholder={searchPlaceholder}
+        value={searchTerm}
+        onChange={handleSearch}
+      />
 
       {/* Filter Toggle Button */}
       <button

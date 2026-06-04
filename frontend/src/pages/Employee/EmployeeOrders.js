@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FaEye, FaEdit, FaFlag, FaTrash } from "react-icons/fa";
 import EmployeeSidebar from "./EmployeeSidebar";
 import AdvancedFilters from "../../components/AdvancedFilters";
-import { addOrder, deleteOrder as removeOrder, getAllOrders, getCachedOrders, updateOrder } from "../../services/apiOrder";
+import { addOrder, checkOrdersConnection, deleteOrder as removeOrder, getAllOrders, getCachedOrders, invalidateOrdersCache, updateOrder } from "../../services/apiOrder";
+import { PROFILE_CHANGED_EVENT, PROFILE_SYNC_KEY } from "../../services/profileSyncService";
 
 // ─── Config ────────────────────────────────────────────────────────────────────
 
@@ -16,6 +19,7 @@ const STATUS_CONFIG = {
 const DEFAULT_STATUS = { label: "Inconnu", color: "#374151", bg: "#f3f4f6", border: "#d1d5db" };
 const STATUS_KEYS    = Object.keys(STATUS_CONFIG);
 const STATUS_FILTERS = ["Tous", ...STATUS_KEYS];
+const PERIOD_OPTIONS = ["7 derniers jours", "30 derniers jours", "Ce mois-ci", "Ce trimestre", "Cette année"];
 
 const DIMENSIONS   = ["80×190", "90×190", "120×190", "140×190", "160×190"];
 const EMPTY_PRODUCT = { name: "", quantity: 1, dimension: DIMENSIONS[0] };
@@ -37,6 +41,77 @@ const fmtDate = (date) => {
   return new Date(date).toLocaleDateString("fr-FR", {
     day: "2-digit", month: "short", year: "numeric",
   });
+};
+
+const getOrderCustomerName = (order) => {
+  return order?.customerName?.trim() || "";
+};
+
+const getOrderCustomerEmail = (order) => {
+  return order?.customerEmail?.trim() || "";
+};
+
+const getOrderCustomerPhone = (order) => {
+  return order?.phone?.trim() || "";
+};
+
+const matchesPeriod = (order, period) => {
+  if (!order?.createdAt) return true;
+  const orderDate = new Date(order.createdAt);
+  if (Number.isNaN(orderDate.getTime())) return true;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffDays = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+  const orderQuarter = Math.floor(orderDate.getMonth() / 3);
+  const currentQuarter = Math.floor(now.getMonth() / 3);
+
+  switch (period) {
+    case "7 derniers jours":
+      return diffDays < 7;
+    case "30 derniers jours":
+      return diffDays < 30;
+    case "Ce mois-ci":
+      return orderDate.getFullYear() === now.getFullYear() && orderDate.getMonth() === now.getMonth();
+    case "Ce trimestre":
+      return orderDate.getFullYear() === now.getFullYear() && orderQuarter === currentQuarter;
+    case "Cette année":
+      return orderDate.getFullYear() === now.getFullYear();
+    default:
+      return true;
+  }
+};
+
+const getOrderDimensions = (order) => {
+  if (!order?.products?.length) return "—";
+  const dimensions = order.products
+    .map(p => normalizeProduct(p).dimension)
+    .filter(Boolean);
+  return dimensions.length > 0 ? dimensions.join(", ") : "—";
+};
+
+const getOrderErrorMessage = (err) => {
+  const status = err?.response?.status;
+  const apiMessage = err?.response?.data?.error || err?.response?.data?.message || err?.message;
+
+  if (status === 401) return "Session expirée ou token absent. Reconnectez-vous pour charger les commandes.";
+  if (status === 403) return "Votre compte n'a pas les droits employé/admin pour lire les commandes.";
+  if (status === 503) return "La base de données est lente ou indisponible pour le moment.";
+  if (err?.code === "ECONNABORTED") return "Le serveur met trop de temps à répondre. Vérifiez que le backend et MongoDB sont démarrés.";
+  if (err?.code === "ERR_NETWORK") return "Impossible de joindre l'API. Vérifiez l'URL backend, CORS et la connexion serveur.";
+
+  return apiMessage || "Impossible de récupérer les commandes depuis la base de données.";
+};
+
+const normalizeProduct = (product = {}) => {
+  const rawName = String(product.name || "Produit").trim();
+  const dimensionFromName = rawName.match(/\(([^)]+)\)\s*$/);
+  const dimension = product.dimension || dimensionFromName?.[1] || "";
+  const name = dimensionFromName ? rawName.replace(/\s*\([^)]+\)\s*$/, "") : rawName;
+  const quantity = Math.max(1, Number(product.quantity || 1));
+  const price = Number(product.price || 0);
+
+  return { name, dimension, quantity, price };
 };
 
 // ─── SVG Icon ──────────────────────────────────────────────────────────────────
@@ -77,6 +152,12 @@ const S = {
   btnAdd: {
     display: "flex", alignItems: "center", gap: 7,
     padding: "10px 20px", background: "#f97316", color: "#fff",
+    border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600,
+    cursor: "pointer", fontFamily: "inherit", transition: "background .15s",
+  },
+  btnSecondary: {
+    display: "flex", alignItems: "center", gap: 7,
+    padding: "10px 20px", background: "#4b5563", color: "#fff",
     border: "none", borderRadius: 10, fontSize: 13, fontWeight: 600,
     cursor: "pointer", fontFamily: "inherit", transition: "background .15s",
   },
@@ -144,20 +225,33 @@ const S = {
   dot: (color) => ({ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0 }),
 
   prodTag: {
-    display: "inline-flex", alignItems: "center", gap: 4,
+    display: "inline-grid", gridTemplateColumns: "auto auto", alignItems: "center", columnGap: 6, rowGap: 3,
     background: "#fff7ed", border: "1px solid #fed7aa",
-    borderRadius: 6, padding: "2px 7px", fontSize: 11, margin: "2px 2px 2px 0",
+    borderRadius: 7, padding: "5px 8px", fontSize: 11, margin: "2px 2px 2px 0",
   },
   prodName: { fontWeight: 600, color: "#92400e" },
   prodDim:  { color: "#b45309", fontSize: 10 },
   prodQty:  { background: "#f97316", color: "#fff", fontSize: 10, fontWeight: 700, padding: "1px 5px", borderRadius: 999 },
+  prodPrice: { gridColumn: "1 / -1", fontSize: 11, color: "#6b7280" },
 
-  btnView:   { padding: "5px 11px", background: "#fff7ed", color: "#f97316", border: "1px solid #fed7aa", borderRadius: 7, fontSize: 11.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
-  btnEdit:   { padding: "5px 11px", background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d", borderRadius: 7, fontSize: 11.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
-  btnState:  { padding: "5px 11px", background: "#ede9fe", color: "#5b21b6", border: "1px solid #c4b5fd", borderRadius: 7, fontSize: 11.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
-  btnDel:    { padding: "5px 11px", background: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: 7, fontSize: 11.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
+  btnView:   { padding: "6px 10px", background: "#22c55e", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, minWidth: 36, minHeight: 36, transition: "all 0.2s" },
+  btnEdit:   { padding: "6px 10px", background: "#f59e0b", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, minWidth: 36, minHeight: 36, transition: "all 0.2s" },
+  btnState:  { padding: "6px 10px", background: "#06b6d4", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, minWidth: 36, minHeight: 36, transition: "all 0.2s" },
+  btnDel:    { padding: "6px 10px", background: "#ef4444", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, minWidth: 36, minHeight: 36, transition: "all 0.2s" },
 
   empty: { padding: "52px", textAlign: "center", color: "#9ca3af", fontSize: 14 },
+  errorBanner: {
+    display: "flex", alignItems: "flex-start", gap: 10,
+    padding: "12px 14px", background: "#fef2f2",
+    border: "1px solid #fecaca", borderRadius: 10,
+    color: "#991b1b", fontSize: 13, lineHeight: 1.5,
+  },
+  okBanner: {
+    display: "flex", alignItems: "center", gap: 8,
+    padding: "10px 14px", background: "#ecfdf5",
+    border: "1px solid #bbf7d0", borderRadius: 10,
+    color: "#166534", fontSize: 12.5,
+  },
 
   // Modal
   backdrop:    { position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 },
@@ -269,13 +363,18 @@ function ProductTags({ products }) {
   if (!products?.length) return <span style={{ color: "#9ca3af", fontSize: 12 }}>—</span>;
   return (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
-      {products.map((p, i) => (
-        <span key={i} style={S.prodTag}>
-          <span style={S.prodName}>{p.name || "Produit"}</span>
-          {p.dimension && <span style={S.prodDim}>{p.dimension}</span>}
-          <span style={S.prodQty}>×{p.quantity || 1}</span>
-        </span>
-      ))}
+      {products.map((product, i) => {
+        const p = normalizeProduct(product);
+        return (
+          <span key={i} style={S.prodTag}>
+            <span style={S.prodName}>{p.name}</span>
+            <span style={S.prodQty}>Qté {p.quantity}</span>
+            {p.price > 0 && (
+              <span style={S.prodPrice}>{p.price.toLocaleString('fr-TN')} DT / unité</span>
+            )}
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -302,7 +401,14 @@ function Field({ label, value, onChange, placeholder, type = "text", error }) {
         type={type}
         style={error ? S.fieldInputErr : S.fieldInput}
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => {
+          let v = e.target.value;
+          if (type === "tel") v = v.replace(/\D/g, "").slice(0, 8);
+          onChange(v);
+        }}
+        inputMode={type === "tel" ? "numeric" : undefined}
+        pattern={type === "tel" ? "\\d{8}" : undefined}
+        maxLength={type === "tel" ? 8 : undefined}
         placeholder={placeholder}
         onFocus={e => { e.target.style.borderColor = "#f97316"; e.target.style.boxShadow = "0 0 0 3px rgba(249,115,22,0.12)"; }}
         onBlur={e  => { e.target.style.borderColor = error ? "#ef4444" : "#e5e7eb"; e.target.style.boxShadow = "none"; }}
@@ -348,12 +454,12 @@ function ViewModal({ order, onClose }) {
             <div style={S.formGrid}>
               <div>
                 <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, marginBottom: 3 }}>Nom / Prénom</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{order.customerName || "—"}</div>
-                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{order.customerEmail || "—"}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerName(order) || "—"}</div>
+                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{getOrderCustomerEmail(order) || "—"}</div>
               </div>
               <div>
                 <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, marginBottom: 3 }}>Téléphone</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{order.phone || "—"}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerPhone(order) || "—"}</div>
                 <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{order.address || "Adresse non précisée"}</div>
               </div>
             </div>
@@ -366,23 +472,29 @@ function ViewModal({ order, onClose }) {
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
-                    {["Produit", "Qté", "Dimension"].map(h => (
+                    {["Produit", "Qté", "Dimension", "Prix"].map(h => (
                       <th key={h} style={{ textAlign: "left", fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, padding: "6px 0", borderBottom: "1px solid #f0e8df" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {order.products.map((p, i) => (
-                    <tr key={i}>
-                      <td style={{ padding: "8px 0", fontSize: 13, fontWeight: 700, color: "#1f2937", borderBottom: "1px solid #fdf6ef" }}>{p.name || "Produit"}</td>
-                      <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
-                        <span style={{ ...S.prodQty, padding: "2px 8px", borderRadius: 6, fontSize: 11 }}>×{p.quantity || 1}</span>
-                      </td>
-                      <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
-                        <span style={{ background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 5, padding: "2px 7px", fontSize: 11, color: "#374151" }}>{p.dimension || "—"}</span>
-                      </td>
-                    </tr>
-                  ))}
+                  {order.products.map((product, i) => {
+                    const p = normalizeProduct(product);
+                    return (
+                      <tr key={i}>
+                        <td style={{ padding: "8px 0", fontSize: 13, fontWeight: 700, color: "#1f2937", borderBottom: "1px solid #fdf6ef" }}>{p.name}</td>
+                        <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
+                          <span style={{ ...S.prodQty, padding: "2px 8px", borderRadius: 6, fontSize: 11 }}>Qté {p.quantity}</span>
+                        </td>
+                        <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
+                          <span style={{ background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 5, padding: "2px 7px", fontSize: 11, color: "#374151" }}>{p.dimension || "—"}</span>
+                        </td>
+                        <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
+                          <span style={{ fontSize: 12, color: "#374151", fontWeight: 700 }}>{p.price > 0 ? `${p.price.toLocaleString('fr-TN')} DT` : "—"}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}
@@ -458,7 +570,9 @@ function AddEditModal({ order, onClose, onSave }) {
   const validate = () => {
     const e = {};
     if (!form.customerName.trim()) e.customerName = "Requis";
-    if (!form.phone.trim())        e.phone = "Requis";
+    const phoneDigits = (form.phone || "").toString().replace(/\D/g, "");
+    if (!phoneDigits)        e.phone = "Requis";
+    else if (phoneDigits.length !== 8) e.phone = "Téléphone invalide";
     if (!form.total || isNaN(Number(form.total))) e.total = "Montant invalide";
     form.products.forEach((p, i) => { if (!p.name.trim()) e[`prod_${i}`] = "Nom requis"; });
     setErrors(e);
@@ -469,7 +583,19 @@ function AddEditModal({ order, onClose, onSave }) {
     setTouch({ customerName: true, phone: true, total: true });
     if (!validate()) return;
     setSaving(true);
-    await onSave({ ...form, total: Number(form.total) }, order?._id);
+
+    const typedEmail = form.customerEmail?.trim() || "";
+    const payload = {
+      ...form,
+      customerEmail: typedEmail,
+      email: typedEmail,
+      total: Number(form.total),
+    };
+
+    delete payload.userId;
+    delete payload.user;
+
+    await onSave(payload, order?._id);
     setSaving(false);
   };
 
@@ -694,7 +820,7 @@ function DeleteModal({ order, onClose, onConfirm }) {
           </div>
           <p style={{ fontSize: 14, color: "#374151", textAlign: "center", lineHeight: 1.7 }}>
             Voulez-vous vraiment supprimer la commande de{" "}
-            <strong style={{ color: "#1f2937" }}>{order.customerName || "ce client"}</strong> d'un montant de{" "}
+            <strong style={{ color: "#1f2937" }}>{getOrderCustomerName(order) || "ce client"}</strong> d'un montant de{" "}
             <strong style={{ color: "#1f2937" }}>{(order.total || 0).toLocaleString("fr-TN")} DT</strong> ?
           </p>
           <div style={S.warnBox}>
@@ -704,7 +830,7 @@ function DeleteModal({ order, onClose, onConfirm }) {
           <div style={{ width: "100%", padding: "10px 14px", background: "#fdf6ef", borderRadius: 9, border: "1px solid #f0e8df" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
               <span style={{ fontSize: 12, color: "#9ca3af" }}>Client</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#1f2937" }}>{order.customerName || "—"}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerName(order) || "—"}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
               <span style={{ fontSize: 12, color: "#9ca3af" }}>Montant</span>
@@ -739,24 +865,32 @@ function OrderRow({ order, onView, onEdit, onStatus, onDelete }) {
       <td style={{ ...S.td, ...S.tdId }}>{fmtId(order._id)}</td>
       <td style={{ ...S.td, fontSize: 12, color: "#374151", whiteSpace: "nowrap" }}>{fmtDate(order.createdAt)}</td>
       <td style={S.td}>
-        <div style={S.tdName}>{order.customerName || "Client inconnu"}</div>
-        <div style={S.tdSub}>{order.customerEmail || ""}</div>
+        <div style={S.tdName}>{getOrderCustomerName(order) || "Client inconnu"}</div>
       </td>
-      <td style={{ ...S.td, fontSize: 12.5, color: "#374151", whiteSpace: "nowrap" }}>{order.phone || "—"}</td>
+      <td style={{ ...S.td, fontSize: 12.5, color: "#374151", whiteSpace: "nowrap" }}>{getOrderCustomerPhone(order) || "—"}</td>
       <td style={S.td}>{order.address || "—"}</td>
       <td style={S.td}><ProductTags products={order.products} /></td>
+      <td style={{ ...S.td, fontWeight: 600, fontSize: 12, whiteSpace: "nowrap", color: "#dc2626", background: "#fef2f2", borderRadius: 6, padding: "4px 8px" }}>{getOrderDimensions(order)}</td>
       <td style={{ ...S.td, fontWeight: 700, fontSize: 13, whiteSpace: "nowrap", color: "#1f2937" }}>
         {(order.total || 0).toLocaleString("fr-TN")} DT
       </td>
       <td style={S.td}><StatusBadge status={order.status} /></td>
-      <td style={S.td}>
-        <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-          <button style={S.btnView}   onClick={onView}>Voir</button>
-          <button style={S.btnEdit}   onClick={onEdit}>Modifier</button>
-          <button style={S.btnState}  onClick={onStatus}>État</button>
-          <button style={S.btnDel}    onClick={onDelete}>Supprimer</button>
-        </div>
-      </td>
+             <td style={S.td}>
+         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+           <button style={S.btnView}   onClick={onView} title="Voir les d�tails">
+             <FaEye size={16} />
+           </button>
+           <button style={S.btnEdit}   onClick={onEdit} title="Modifier la commande">
+             <FaEdit size={16} />
+           </button>
+           <button style={S.btnState}  onClick={onStatus} title="Changer l'�tat">
+             <FaFlag size={16} />
+           </button>
+           <button style={S.btnDel}    onClick={onDelete} title="Supprimer">
+             <FaTrash size={16} />
+           </button>
+         </div>
+       </td>
     </tr>
   );
 }
@@ -768,11 +902,15 @@ export default function ManageOrders({
   sidebarWidth = 220,
   sidebarProps = {},
 }) {
+  const navigate = useNavigate();
   const [orders,        setOrders]        = useState([]);
   const [search,        setSearch]        = useState("");
   const [filterStatus,  setFilterStatus]  = useState("Tous");
+  const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [loading,       setLoading]       = useState(false);
   const [refreshing,    setRefreshing]    = useState(false);
+  const [loadError,     setLoadError]     = useState("");
+  const [connectionInfo,setConnectionInfo]= useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showView,      setShowView]      = useState(false);
   const [showAdd,       setShowAdd]       = useState(false);
@@ -781,19 +919,33 @@ export default function ManageOrders({
   const [showDelete,    setShowDelete]    = useState(false);
 
   const fetchOrders = useCallback(async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setLoading(true);
+    if (isRefresh) {
+      invalidateOrdersCache();
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     try {
-      const data = await getAllOrders({ force: isRefresh, limit: 100 });
+      setLoadError("");
+      const data = await getAllOrders({ force: isRefresh, limit: 300 });
       setOrders(Array.isArray(data) ? data : []);
+      try {
+        const ping = await checkOrdersConnection();
+        setConnectionInfo(ping);
+      } catch {
+        setConnectionInfo(null);
+      }
     } catch (err) {
+      const message = getOrderErrorMessage(err);
       console.error("Erreur récupération commandes :", err);
+      setLoadError(message);
       const cachedOrders = getCachedOrders();
       if (cachedOrders.length) {
         setOrders(cachedOrders);
-        toast.warning("Serveur lent: affichage des dernières commandes en cache.");
+        toast.warning(`${message} Affichage des dernières commandes en cache.`);
       } else {
-        toast.error("Le serveur met trop de temps à récupérer les commandes.");
+        setOrders([]);
+        toast.error(message);
       }
     } finally {
       setLoading(false);
@@ -802,9 +954,38 @@ export default function ManageOrders({
   }, []);
 
   useEffect(() => {
-    fetchOrders();
+    invalidateOrdersCache();
+    fetchOrders(true);
     const interval = setInterval(() => fetchOrders(true), 30000);
     return () => clearInterval(interval);
+  }, [fetchOrders]);
+
+  useEffect(() => {
+    const refreshAfterProfileChange = () => {
+      invalidateOrdersCache();
+      fetchOrders(true);
+    };
+
+    const handleStorage = (event) => {
+      if (!event?.key) return;
+      if (event.key === 'profileData' || event.key === 'user' || event.key === PROFILE_SYNC_KEY) {
+        refreshAfterProfileChange();
+      }
+    };
+
+    window.addEventListener(PROFILE_CHANGED_EVENT, refreshAfterProfileChange);
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      window.removeEventListener(PROFILE_CHANGED_EVENT, refreshAfterProfileChange);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [fetchOrders]);
+
+  useEffect(() => {
+    const handleWindowFocus = () => fetchOrders(true);
+    window.addEventListener('focus', handleWindowFocus);
+    return () => window.removeEventListener('focus', handleWindowFocus);
   }, [fetchOrders]);
 
   const createOrder = async (data) => {
@@ -856,9 +1037,11 @@ export default function ManageOrders({
 
   const filteredOrders = orders.filter(order => {
     const q = search.toLowerCase();
+    const clientReference = ((order.customerName || "") + " " + (order.customerEmail || "") + " " + (order.phone || "")).toLowerCase();
     return (
-      (!q || [order.customerName, order.customerEmail, order.phone, order._id].some(v => (v || "").toLowerCase().includes(q))) &&
-      (filterStatus === "Tous" || order.status === filterStatus)
+      (!q || [clientReference, order._id].some(v => (v || "").toLowerCase().includes(q))) &&
+      (filterStatus === "Tous" || order.status === filterStatus) &&
+      matchesPeriod(order, selectedPeriod)
     );
   });
 
@@ -885,15 +1068,26 @@ export default function ManageOrders({
             <p style={S.topbarSub}>Star Mousse · Employé</p>
             <h1 style={S.topbarTitle}>Gestion des commandes</h1>
           </div>
-          <button
-            style={S.btnAdd}
-            onClick={() => setShowAdd(true)}
-            onMouseEnter={e => e.currentTarget.style.background = "#ea580c"}
-            onMouseLeave={e => e.currentTarget.style.background = "#f97316"}
-          >
-            <Ico d={ICO.plus} size={15} color="#fff" sw={2.5} />
-            Nouvelle commande
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button
+              style={S.btnSecondary}
+              onClick={() => navigate("/employer/profile")}
+              onMouseEnter={e => e.currentTarget.style.background = "#374151"}
+              onMouseLeave={e => e.currentTarget.style.background = "#4b5563"}
+            >
+              <Ico d={ICO.user} size={15} color="#fff" />
+              Mon profil
+            </button>
+            <button
+              style={S.btnAdd}
+              onClick={() => setShowAdd(true)}
+              onMouseEnter={e => e.currentTarget.style.background = "#ea580c"}
+              onMouseLeave={e => e.currentTarget.style.background = "#f97316"}
+            >
+              <Ico d={ICO.plus} size={15} color="#fff" sw={2.5} />
+              Nouvelle commande
+            </button>
+          </div>
         </div>
 
         {/* ── KPI strip ── */}
@@ -945,6 +1139,7 @@ export default function ManageOrders({
               </button>
             ))}
           </div>
+
           <button
             style={S.refreshBtn}
             onClick={() => fetchOrders(true)}
@@ -955,6 +1150,23 @@ export default function ManageOrders({
           </button>
         </div>
 
+        {loadError && (
+          <div style={S.errorBanner}>
+            <Ico d={ICO.warn} size={16} color="#b91c1c" />
+            <div>
+              <strong>Connexion aux commandes impossible.</strong>
+              <div>{loadError}</div>
+            </div>
+          </div>
+        )}
+
+        {!loadError && connectionInfo?.ok && (
+          <div style={S.okBanner}>
+            <Ico d={ICO.check} size={15} color="#166534" />
+            Données liées à la base: {connectionInfo.count ?? orders.length} commande{(connectionInfo.count ?? orders.length) !== 1 ? "s" : ""} détectée{(connectionInfo.count ?? orders.length) !== 1 ? "s" : ""}.
+          </div>
+        )}
+
         {/* ── Table ── */}
         {loading ? (
           <div style={S.empty}>Chargement des commandes…</div>
@@ -963,21 +1175,21 @@ export default function ManageOrders({
             <div className="sm-card-header" style={S.cardHeader}>
               <div>
                 <h2 style={S.cardTitle}>Liste des commandes</h2>
-                <p style={S.cardSub}>{filteredOrders.length} résultat{filteredOrders.length !== 1 ? "s" : ""} sur {orders.length}</p>
+                <p style={S.cardSub}>{filteredOrders.length} résultat{filteredOrders.length !== 1 ? "s" : ""} sur {orders.length} chargé{orders.length !== 1 ? "s" : ""} depuis la base</p>
               </div>
             </div>
             <div className="sm-table-wrap" style={{ overflowX: "auto" }}>
               <table style={S.table}>
                 <thead>
                   <tr style={{ background: "#f9fafb" }}>
-                    {["ID", "Date", "Client", "Téléphone", "Adresse", "Produits", "Montant", "État", "Actions"].map(h => (
+                    {["ID", "Date", "Client", "Téléphone", "Adresse", "Produits", "Dimensions", "Montant", "État", "Actions"].map(h => (
                       <th key={h} style={S.th}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredOrders.length === 0 ? (
-                    <tr><td colSpan={9} style={S.empty}>
+                    <tr><td colSpan={10} style={S.empty}>
                       {search || filterStatus !== "Tous"
                         ? "Aucune commande ne correspond à votre recherche."
                         : "Aucune commande disponible."}
@@ -1010,3 +1222,5 @@ export default function ManageOrders({
     </div>
   );
 }
+
+

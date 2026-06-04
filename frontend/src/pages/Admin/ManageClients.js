@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
+import SearchBar from "../../components/SearchBar";
 import { createClient, deleteClient, getAllClients, updateClient } from "../../services/apiCustomers";
 import { getAllOrders } from "../../services/apiOrder";
 
@@ -212,6 +213,10 @@ export default function ManageClients() {
       toast.error("Nom, email et téléphone sont obligatoires.");
       return;
     }
+    if ((form.phone || "").toString().replace(/\D/g, "").length !== 8) {
+      toast.error("Le numéro de téléphone doit contenir exactement 8 chiffres.");
+      return;
+    }
 
     setSaving(true);
     try {
@@ -280,16 +285,11 @@ export default function ManageClients() {
               <p style={S.panelSub}>{filteredRows.length} résultat{filteredRows.length !== 1 ? "s" : ""} sur {rows.length}</p>
             </div>
             <div style={S.tools}>
-              <div style={S.searchWrap}>
-                <Ico d={ICO.search} size={15} color="#94a3b8" />
-                <input
-                  style={S.searchInput}
-                  placeholder="Rechercher nom, email, téléphone..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                />
-                {search && <button style={S.clearBtn} onClick={() => setSearch("")}>×</button>}
-              </div>
+              <SearchBar 
+                placeholder="Rechercher clients, email, téléphone..." 
+                value={search} 
+                onChange={setSearch} 
+              />
               <div style={S.filters}>
                 {FILTERS.map(item => (
                   <button key={item.key} style={S.filterBtn(filter === item.key)} onClick={() => setFilter(item.key)}>
@@ -442,7 +442,7 @@ function ClientModal({ mode, form, setForm, saving, onClose, onSave }) {
         <div style={S.modalBody}>
           <Field label="Nom complet" value={form.name} onChange={value => setForm(f => ({ ...f, name: value }))} placeholder="Ex : Amira Ben Salah" />
           <Field label="Email" type="email" value={form.email} onChange={value => setForm(f => ({ ...f, email: value }))} placeholder="amira@example.com" />
-          <Field label="Téléphone" value={form.phone} onChange={value => setForm(f => ({ ...f, phone: value }))} placeholder="+216 71 234 567" />
+          <Field label="Téléphone" type="tel" value={form.phone} onChange={value => setForm(f => ({ ...f, phone: value.replace(/\D/g, "").slice(0,8) }))} placeholder="+216 71 234 567" />
         </div>
         <div style={S.modalFoot}>
           <button style={S.btnCancel} onClick={onClose}>Annuler</button>
@@ -494,7 +494,14 @@ function Field({ label, value, onChange, placeholder, type = "text" }) {
         type={type}
         style={S.fieldInput}
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={e => {
+          let v = e.target.value;
+          if (type === "tel") v = v.replace(/\D/g, "").slice(0, 8);
+          onChange(v);
+        }}
+        inputMode={type === "tel" ? "numeric" : undefined}
+        pattern={type === "tel" ? "\\d{8}" : undefined}
+        maxLength={type === "tel" ? 8 : undefined}
         placeholder={placeholder}
       />
     </label>

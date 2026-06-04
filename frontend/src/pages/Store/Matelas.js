@@ -347,8 +347,8 @@ function Matelas() {
             <div className="matelas-info">
               <h2>Le Confort Que Vous Méritez</h2>
               <p>
-                Le Matelas ergonomique Relax Plus n'est pas simplement un matelas ; 
-                c'est une expérience de sommeil conçue pour offrir confort, soutien et tranquillité d'esprit.
+                Profitez d'un sommeil plus confortable avec Relax Plus : un matelas ergonomique
+                pensé pour mieux dormir, soutenir votre corps et vous offrir un repos profond chaque nuit.
               </p>
 
               <div className="matelas-features">

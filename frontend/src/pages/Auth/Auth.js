@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
-import { login, register } from "../../services/apiAuth";
+import { login, register, managerLogin } from "../../services/apiAuth";
 import { submitPendingOrder } from "../../services/orderService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -70,7 +70,7 @@ const ParticleCanvas = () => {
   );
 };
 
-const TABS = ["Connexion", "Inscription"];
+const TABS = ["Connexion"];
 
 const strengthColors = ["#e0e0f0", "#ef4444", "#f59e0b", "#3b82f6", "#10b981"];
 const strengthLabels = ["", "Faible", "Moyen", "Fort", "Excellent"];
@@ -89,7 +89,12 @@ const Auth = ({ role: requiredRole } = {}) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((f) => ({ ...f, [name]: value }));
+    if (name === 'phone') {
+      const digits = value.replace(/\D/g, '').slice(0,8);
+      setFormData((f) => ({ ...f, [name]: digits }));
+    } else {
+      setFormData((f) => ({ ...f, [name]: value }));
+    }
     if (name === "password") {
       let s = 0;
       if (value.length >= 8) s++;
@@ -115,32 +120,39 @@ const Auth = ({ role: requiredRole } = {}) => {
         toast.error("Le mot de passe doit contenir au moins 6 caractères.");
         return;
       }
-    }
-    if (tab === 0) {
-      if (!formData.email.trim() || !formData.password.trim()) {
-        toast.error("Veuillez saisir votre email et mot de passe.");
+      if ((formData.phone || '').toString().replace(/\D/g, '').length !== 8) {
+        toast.error("Le numéro de téléphone doit contenir exactement 8 chiffres.");
         return;
       }
     }
     setLoading(true);
     try {
-      const response =
-        tab === 0
-          ? await login({ email: formData.email, password: formData.password })
-          : await register({
-              username: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-              password: formData.password,
-              role: "client"
-            });
+      let response;
+      
+      if (tab === 0) {
+        // Déterminer si c'est un login gestionnaire ou utilisateur
+        if (requiredRole === 'manager' || requiredRole === 'gestionnaire') {
+          response = await managerLogin({ email: formData.email, password: formData.password });
+        } else {
+          response = await login({ email: formData.email, password: formData.password });
+        }
+      } else {
+        response = await register({
+          username: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          role: "client"
+        });
+      }
 
       const payload = response?.data || response;
       const { token, user } = payload;
       if (tab === 0 && requiredRole) {
         const denied =
           (requiredRole === 'admin' && user.role !== 'admin') ||
-          (requiredRole === 'employee' && !STAFF_ROLES.includes(user.role)) ||
+          (requiredRole === 'manager' || requiredRole === 'gestionnaire') && user.role !== 'gestionnaire' ||
+          (requiredRole === 'employee' && !['manager', 'employee', 'employeur', 'gestionnaire'].includes(user.role)) ||
           (requiredRole === 'client' && user.role !== 'client' && user.role !== 'user');
         if (denied) {
           toast.error("Identifiants valides mais accès non autorisé pour cette interface.");
@@ -152,6 +164,12 @@ const Auth = ({ role: requiredRole } = {}) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
       }
+
+      const hasPendingOrder = Boolean(sessionStorage.getItem('pendingOrder'));
+      if (user && ['client', 'user'].includes(user.role) && hasPendingOrder) {
+        sessionStorage.setItem('showReviewAfterAuth', 'true');
+      }
+
       toast.success(tab === 0 ? "Heureux de vous revoir !" : "Compte créé avec succès !");
       submitPendingOrder().catch((err) => {
         console.error('Erreur commande en attente :', err);
@@ -634,13 +652,6 @@ const Auth = ({ role: requiredRole } = {}) => {
             )}
 
             {/* Footer */}
-            <p className="sm-foot">
-              {tab === 0
-                ? <>Pas encore de compte ? <a href="#" onClick={e => { e.preventDefault(); setTab(1); }}>Créer un compte</a></>
-                : <>Déjà inscrit ? <a href="#" onClick={e => { e.preventDefault(); setTab(0); }}>Se connecter</a></>
-              }
-            </p>
-
             <div className="sm-sec">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0f9e75" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>

@@ -215,16 +215,6 @@ const Help = () => {
         .ssn-contact-hours span { color: #4a4ade; font-weight: 600; }
         .ssn-contact-actions { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
 
-        .ssn-btn-primary {
-          background: #1a1a2e; color: #fff; border: none;
-          padding: 13px 24px; border-radius: 11px; font-size: 14px;
-          font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer;
-          transition: background 0.2s, transform 0.15s, box-shadow 0.2s; white-space: nowrap;
-        }
-        .ssn-btn-primary:hover {
-          background: #4a4ade; transform: translateY(-1px);
-          box-shadow: 0 6px 24px rgba(74,74,222,0.25);
-        }
         .ssn-btn-secondary {
           background: #fff; color: #2a2a3d; border: 1.5px solid #ddddf0;
           padding: 13px 24px; border-radius: 11px; font-size: 14px;
@@ -240,7 +230,7 @@ const Help = () => {
           .ssn-faq-grid { grid-template-columns: 1fr; }
           .ssn-contact-card { padding: 36px 28px; }
           .ssn-contact-actions { width: 100%; }
-          .ssn-btn-primary, .ssn-btn-secondary { width: 100%; text-align: center; }
+          .ssn-btn-secondary { width: 100%; text-align: center; }
         }
       `}</style>
 
@@ -323,7 +313,6 @@ const Help = () => {
               </div>
             </div>
             <div className="ssn-contact-actions">
-              <button className="ssn-btn-primary">📞 Contacter le support</button>
               <button className="ssn-btn-secondary" onClick={() => navigate("/quiz")}>
                 Faire le quiz sommeil →
               </button>

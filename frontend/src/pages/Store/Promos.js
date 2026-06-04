@@ -277,23 +277,6 @@ const Promos = () => {
           color: #b52f2f;
           letter-spacing: -0.5px;
         }
-        .ssn-btn-flash {
-          background: #b52f2f;
-          color: #fff;
-          border: none;
-          padding: 11px 20px;
-          border-radius: 11px;
-          font-size: 13.5px;
-          font-weight: 700;
-          font-family: 'DM Sans', sans-serif;
-          cursor: pointer;
-          transition: background 0.2s, transform 0.15s;
-        }
-        .ssn-btn-flash:hover {
-          background: #8a1e1e;
-          transform: translateY(-1px);
-        }
-
         /* ── PACKS ── */
         .ssn-section-packs {
           padding: 80px 40px;
@@ -405,29 +388,6 @@ const Promos = () => {
         }
         .ssn-pack-old { font-size: 13px; text-decoration: line-through; color: #b0b0c0; display: block; margin-bottom: 2px; }
         .ssn-pack-new { font-size: 24px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.5px; }
-        .ssn-btn-pack {
-          background: #1a1a2e;
-          color: #fff;
-          border: none;
-          padding: 13px 26px;
-          border-radius: 12px;
-          font-size: 14px;
-          font-weight: 700;
-          font-family: 'DM Sans', sans-serif;
-          cursor: pointer;
-          transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-        }
-        .ssn-btn-pack:hover {
-          background: #4a4ade;
-          transform: translateY(-1px);
-          box-shadow: 0 6px 24px rgba(74,74,222,0.25);
-        }
-        .ssn-pack-card.highlight .ssn-btn-pack { background: #c9963a; }
-        .ssn-pack-card.highlight .ssn-btn-pack:hover {
-          background: #a87730;
-          box-shadow: 0 6px 24px rgba(201,150,58,0.3);
-        }
-
         /* ── RESPONSIVE ── */
         @media (max-width: 1000px) {
           .ssn-packs-grid { grid-template-columns: 1fr; }
@@ -439,7 +399,6 @@ const Promos = () => {
           .ssn-pack-header { flex-direction: column; }
           .ssn-pack-img { width: 100%; height: 160px; }
           .ssn-pack-footer { flex-direction: column; gap: 16px; align-items: flex-start; }
-          .ssn-btn-pack { width: 100%; text-align: center; }
         }
       `}</style>
 
@@ -483,7 +442,6 @@ const Promos = () => {
                         <span className="ssn-old-price">{item.oldPrice}</span>
                         <span className="ssn-new-price">{item.newPrice}</span>
                       </div>
-                      <button className="ssn-btn-flash">J'en profite →</button>
                     </div>
                   </div>
                 </div>
@@ -536,7 +494,6 @@ const Promos = () => {
                       <span className="ssn-pack-old">{pack.oldPrice}</span>
                       <span className="ssn-pack-new">{pack.newPrice}</span>
                     </div>
-                    <button className="ssn-btn-pack">{pack.cta} →</button>
                   </div>
                 </div>
               ))}

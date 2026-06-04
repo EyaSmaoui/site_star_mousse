@@ -31,7 +31,6 @@ import EmployeeOrders from "./pages/Employee/EmployeeOrders";
 import EmployeeStock from "./pages/Employee/EmployeeStock";
 import EmployeeProfile from "./pages/Employee/EmployeeProfile";
 import EmployeeClients from "./pages/Employee/EmployeeClients";
-import EmployeeSettings from "./pages/Employee/EmployeeSettings";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import ChatbotAssistant from "./components/ChatbotAssistant";
 import CookiesModal from "./components/CookiesModal";
@@ -46,6 +45,7 @@ import Matelas from "./pages/Store/Matelas";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalTerms from "./pages/LegalTerms";
 import SEO from "./components/SEO";
+import ReviewHost from "./components/ReviewHost";
 
 function GlobalBrandTheme() {
   return (
@@ -58,8 +58,8 @@ function GlobalBrandTheme() {
         --sm-text: #242436;
         --sm-muted: #6f7180;
         --sm-border: #ebe6df;
-        --sm-brand: #b52f2f;
-        --sm-brand-dark: #8f2424;
+        --sm-brand: #8f2f2f;
+        --sm-brand-dark: #6f1f1f;
         --sm-gold: #f4c84f;
         --sm-gold-soft: #fff5cf;
         --sm-shadow: 0 22px 60px rgba(21, 21, 34, 0.1);
@@ -166,7 +166,6 @@ function GlobalBrandTheme() {
         font-weight: 800 !important;
       }
 
-      .ssn-btn-primary,
       .ssn-btn-main,
       .ssn-btn-buy,
       .ssn-btn-order,
@@ -187,7 +186,6 @@ function GlobalBrandTheme() {
         color: #ffffff !important;
       }
 
-      .ssn-btn-primary:hover,
       .ssn-btn-main:hover,
       .ssn-btn-buy:hover,
       .ssn-btn-order:hover,
@@ -431,72 +429,13 @@ function ThemeToggle() {
   );
 }
 
-function FloatingWhatsApp() {
-  return (
-    <>
-      <style>{`
-        .ssn-floating-whatsapp {
-          position: fixed;
-          right: 22px;
-          bottom: 22px;
-          z-index: 5200;
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          min-height: 52px;
-          padding: 0 18px;
-          border-radius: 999px;
-          background: #25D366;
-          color: #ffffff;
-          font-weight: 800;
-          font-size: 14px;
-          text-decoration: none;
-          box-shadow: 0 18px 40px rgba(21, 21, 34, 0.24);
-          border: 1px solid rgba(255,255,255,0.25);
-        }
-        .ssn-floating-whatsapp:hover {
-          color: #ffffff;
-          transform: translateY(-2px);
-          box-shadow: 0 22px 48px rgba(21, 21, 34, 0.3);
-        }
-        .ssn-floating-whatsapp__icon {
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.18);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 18px;
-          line-height: 1;
-        }
-        @media (max-width: 560px) {
-          .ssn-floating-whatsapp {
-            right: 14px;
-            bottom: 14px;
-            min-height: 48px;
-            padding: 0 14px;
-            font-size: 13px;
-          }
-        }
-      `}</style>
-      <a
-        className="ssn-floating-whatsapp"
-        href="https://wa.me/21622900207?text=Bonjour%20Star%20Mousse%2C%20je%20voudrais%20des%20informations%20sur%20vos%20matelas."
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Contacter Star Mousse sur WhatsApp"
-      >
-        <span className="ssn-floating-whatsapp__icon" aria-hidden="true">W</span>
-        WhatsApp
-      </a>
-    </>
-  );
-}
-
 function AppContent() {
   const location = useLocation();
-  const showThemeToggle = PRIVATE_PREFIXES.some((path) => location.pathname.startsWith(path));
+  const hideOnPaths = ["/employer/orders", "/employer/inventory", "/admin-dashboard", "/admin/dashboard", "/manage-managers", "/manage-", "/add-employer", "/profile", "/products"];
+  const hideForEmployer = location.pathname.startsWith("/employer");
+  const showThemeToggle = PRIVATE_PREFIXES.some((path) => location.pathname.startsWith(path)) && !hideOnPaths.some(p => location.pathname.startsWith(p)) && !hideForEmployer;
+  const showTopContactHeader = !PRIVATE_PREFIXES.some((path) => location.pathname.startsWith(path));
+  const showWhatsAppWidget = false;
   const showChatbot = !CHATBOT_HIDE_PREFIXES.some((path) => location.pathname.startsWith(path));
   const [toastTheme, setToastTheme] = useState(() => localStorage.getItem("theme") || "light");
 
@@ -505,8 +444,17 @@ function AppContent() {
     syncTheme();
     const observer = new MutationObserver(syncTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    if (window.history && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!showThemeToggle) {
@@ -518,9 +466,9 @@ function AppContent() {
     <div className="App">
       <SEO />
       {showThemeToggle && <ThemeToggle />}
-      <TopContactHeader />
+      {showTopContactHeader && <TopContactHeader />}
       <Breadcrumbs />
-      <WhatsAppWidget />
+      {showWhatsAppWidget && <WhatsAppWidget />}
       <CookiesModal />
       <PromoModal />
       <ToastContainer
@@ -534,6 +482,9 @@ function AppContent() {
         draggable
         pauseOnHover
         theme={toastTheme === "dark" && showThemeToggle ? "dark" : "light"}
+        toastClassName="custom-toast"
+        bodyClassName="custom-toast-body"
+        progressClassName="custom-toast-progress"
       />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -541,6 +492,7 @@ function AppContent() {
         <Route path="/login" element={<Auth />} />
         <Route path="/login/admin" element={<Auth role="admin" />} />
         <Route path="/login/employee" element={<Auth role="employee" />} />
+        <Route path="/login/manager" element={<Auth role="gestionnaire" />} />
         <Route path="/login/client" element={<Auth role="client" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -562,14 +514,13 @@ function AppContent() {
         <Route path="/client-orders" element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.USER]} element={<ClientMyOrders />} />} />
         <Route path="/client-reviews" element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.USER]} element={<ClientReviews />} />} />
         <Route path="/client-recommendations" element={<ProtectedRoute allowedRoles={[ROLES.CLIENT, ROLES.USER]} element={<ClientRecommendations />} />} />
-        <Route path="/employee-dashboard" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeDashboard />} />} />
-        <Route path="/employer/dashboard" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeDashboard />} />} />
-        <Route path="/employer/orders" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeOrders />} />} />
+        <Route path="/employee-dashboard" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.GESTIONNAIRE, ROLES.ADMIN]} element={<EmployeeDashboard />} />} />
+        <Route path="/employer/dashboard" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.GESTIONNAIRE, ROLES.ADMIN]} element={<EmployeeDashboard />} />} />
+        <Route path="/employer/orders" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.GESTIONNAIRE, ROLES.ADMIN]} element={<EmployeeOrders />} />} />
         <Route path="/admin/orders" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminOrders />} />} />
-        <Route path="/employer/inventory" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeStock />} />} />
-        <Route path="/employer/clients" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeClients />} />} />
-        <Route path="/employer/profile" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeProfile />} />} />
-        <Route path="/employer/settings" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN]} element={<EmployeeSettings />} />} />
+        <Route path="/employer/inventory" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.GESTIONNAIRE, ROLES.ADMIN]} element={<EmployeeStock />} />} />
+        <Route path="/employer/clients" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.GESTIONNAIRE, ROLES.ADMIN]} element={<EmployeeClients />} />} />
+        <Route path="/employer/profile" element={<ProtectedRoute allowedRoles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.GESTIONNAIRE, ROLES.ADMIN]} element={<EmployeeProfile />} />} />
         <Route path="/profile" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<Profile />} />} />
         <Route path="/manage-clients" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<ManageClients />} />} />
         <Route path="/manage-managers" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<ManageManagers />} />} />
@@ -581,7 +532,6 @@ function AppContent() {
         <Route path="*" element={<Home />} />
       </Routes>
       {showChatbot && <ChatbotAssistant />}
-      {showChatbot && <FloatingWhatsApp />}
       <GlobalBrandTheme />
     </div>
   );
@@ -591,6 +541,7 @@ function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppContent />
+      <ReviewHost />
     </Router>
   );
 }

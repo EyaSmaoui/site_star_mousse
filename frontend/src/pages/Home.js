@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import ProductShowcase from "../components/ProductShowcase";
-import Testimonials from "../components/Testimonials";
 import { getAll as getAllProducts, getRecommended as getRecommendedProducts } from "../services/apiProduct";
+import formatPrice from '../utils/formatPrice';
 
 const FALLBACK_BEST_SELLERS = [
   {
@@ -16,7 +16,7 @@ const FALLBACK_BEST_SELLERS = [
     oldPrice: "850 DT",
     discount: "Jusqu'à -40%",
     badges: ["Meilleure offre", "Best seller"],
-    features: ["Confort équilibré", "Mousse haute densité", "Soutien quotidien"],
+    features: ["Hauteur 28 cm", "Ressorts ensachés", "Réversible été/hiver"],
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const FALLBACK_BEST_SELLERS = [
     oldPrice: "700 DT",
     discount: "Jusqu'à -40%",
     badges: ["Orthopédique", "Offre limitée"],
-    features: ["Fermeté maîtrisée", "Soutien du dos", "Respirabilité renforcée"],
+    features: ["Hauteur 25 cm", "Ressorts Bonnell", "Double face mi-ferme"],
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ const FALLBACK_BEST_SELLERS = [
     oldPrice: "1 100 DT",
     discount: "Jusqu'à -35%",
     badges: ["Confort premium", "Favori client"],
-    features: ["Accueil enveloppant", "Soutien durable", "Finition haut confort"],
+    features: ["Hauteur prestige de 30 cm", "Tissu haute couture anti-acarien", "Confort enveloppant"],
   },
 ];
 
@@ -94,10 +94,10 @@ const getBestSellerMeta = (name = "", price) => {
 
   if (normalizedName.includes("medico")) {
     return {
-      desc: "Soutien orthopédique pensé pour garder le dos bien aligné.",
+      desc: "Soutien orthomedical pensé pour garder le dos bien aligné.",
       discount: "Jusqu'à -40%",
       badges: ["Orthopédique", "Offre limitée"],
-      features: ["Fermeté maîtrisée", "Soutien du dos", "Respirabilité renforcée"],
+      features: ["Garantie 9 ans ", "Soutien du dos", "Respirabilité renforcée"],
       oldPrice: getOldPrice(0.4),
     };
   }
@@ -107,7 +107,7 @@ const getBestSellerMeta = (name = "", price) => {
       desc: "Un confort enveloppant avec une sensation premium dès la première nuit.",
       discount: "Jusqu'à -35%",
       badges: ["Confort premium", "Favori client"],
-      features: ["Accueil enveloppant", "Soutien durable", "Finition haut confort"],
+      features: ["garantie 11 ans", "Soutien durable", "Finition haut confort"],
       oldPrice: getOldPrice(0.35),
     };
   }
@@ -116,7 +116,7 @@ const getBestSellerMeta = (name = "", price) => {
     desc: "Accueil moelleux et soutien ergonomique pour un sommeil profond.",
     discount: "Jusqu'à -40%",
     badges: ["Meilleure offre", "Best seller"],
-    features: ["Confort équilibré", "Mousse haute densité", "Soutien quotidien"],
+    features: ["garantie 5 ans", "Mousse haute densité", "Soutien quotidien"],
     oldPrice: getOldPrice(0.4),
   };
 };
@@ -188,19 +188,26 @@ const Home = () => {
 
         const topProducts = productsToShow.map(product => {
           const meta = getBestSellerMeta(product.name, product.price);
+          const recommendation = product.recommendation || {};
+          const reviewCount = Number(recommendation.reviewCount || product.reviewCount || 0);
+          const rating = reviewCount > 0
+            ? Number(recommendation.averageRating || product.averageRating || 0)
+            : null;
 
           return {
-            id: product._id,
+            id: product._id || product.id || product.name,
             img: normalizeProductImage(product.image, product.name),
             name: removeProductDimension(product.name),
             desc: meta.desc || getProductDesc(product),
             price: `${Number(product.price).toLocaleString("fr-FR")} DT`,
             oldPrice: meta.oldPrice,
             discount: product.discount || meta.discount,
-            badges: meta.badges,
+            badges: reviewCount > 0 ? ["Avis clients", "Recommandé"] : meta.badges,
             features: meta.features,
-            rating: product.recommendation?.averageRating || product.averageRating || 4.9,
-            reviewCount: product.recommendation?.reviewCount || product.reviewCount || 0,
+            rating,
+            reviewCount,
+            recommendationScore: recommendation.rank || product.recommendationRank || 0,
+            reason: recommendation.reason,
           };
         });
         setBestSellers(topProducts);
@@ -483,37 +490,6 @@ const Home = () => {
         @keyframes ssn-float {
           0%, 100% { transform: translateY(0); }
           50%       { transform: translateY(-10px); }
-        }
-
-        /* ── TRUST STRIP ── */
-        .ssn-trust-strip {
-          padding: 24px 40px 64px;
-          background: #fbfaf8;
-        }
-        .ssn-trust-inner {
-          max-width: 1280px;
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 14px;
-        }
-        .ssn-trust-item {
-          background: #ffffff;
-          border: 1px solid #ebe6df;
-          border-radius: 8px;
-          padding: 18px;
-          box-shadow: 0 14px 35px rgba(26,26,46,0.06);
-        }
-        .ssn-trust-item strong {
-          display: block;
-          color: #151522;
-          font-size: 14px;
-          margin-bottom: 5px;
-        }
-        .ssn-trust-item span {
-          color: #6a6b78;
-          font-size: 12.5px;
-          line-height: 1.5;
         }
 
         /* ── MOTION SHOWCASE ── */
@@ -1072,6 +1048,11 @@ const Home = () => {
           padding: 5px 10px;
           font-weight: 800;
         }
+        .ssn-rating.muted {
+          background: #f6f6f7;
+          border-color: #e7e7ec;
+          color: #6c6f7d;
+        }
         .ssn-card-body h3 {
           font-size: 22px;
           font-weight: 800;
@@ -1110,6 +1091,13 @@ const Home = () => {
           background: #b52f2f;
           box-shadow: 0 0 0 4px rgba(181,47,47,0.1);
           flex-shrink: 0;
+        }
+        .ssn-recommendation-reason {
+          color: #64677a;
+          font-size: 12.5px;
+          line-height: 1.5;
+          margin: -6px 0 16px;
+          min-height: 0;
         }
         .ssn-card-footer {
           display: flex;
@@ -1161,7 +1149,7 @@ const Home = () => {
           white-space: nowrap;
         }
         .ssn-btn-card:hover {
-          background: #b52f2f;
+          background: #7a7a7a;
           color: #fff;
           transform: translateX(2px);
         }
@@ -1178,10 +1166,75 @@ const Home = () => {
           font-weight: 700;
         }
 
+        /* ── AVIS CLIENTS AVANT LE QUIZ ── */
+        .ssn-reviews-section {
+          padding: 72px 40px;
+          background: #f2f2f2;
+        }
+        .ssn-reviews-inner {
+          max-width: 1180px;
+          margin: 0 auto;
+        }
+        .ssn-reviews-header {
+          text-align: center;
+          max-width: 680px;
+          margin: 0 auto 40px;
+        }
+        .ssn-reviews-header h2 {
+          font-size: clamp(2rem, 2.7vw, 2.8rem);
+          margin: 18px auto 12px;
+          color: #151522;
+        }
+        .ssn-reviews-header p {
+          color: #5c5c6f;
+          font-size: 15px;
+          line-height: 1.8;
+        }
+        .ssn-reviews-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 20px;
+        }
+        .ssn-review-card {
+          background: #ffffff;
+          border: 1px solid rgba(21,21,34,0.08);
+          border-radius: 24px;
+          padding: 28px;
+          box-shadow: 0 16px 46px rgba(119,119,119,0.08);
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+        }
+        .ssn-review-stars {
+          color: #7a7a7a;
+          font-size: 1rem;
+          letter-spacing: 0.1em;
+        }
+        .ssn-review-card p {
+          color: #4e4e63;
+          line-height: 1.8;
+          font-size: 15px;
+          margin: 0;
+          flex: 1;
+        }
+        .ssn-review-author {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          align-items: center;
+          color: #151522;
+          font-weight: 700;
+          font-size: 14px;
+        }
+        .ssn-review-author span {
+          color: #7f7f91;
+          font-weight: 500;
+        }
+
         /* ── QUIZ BANNER ── */
         .ssn-section-quiz {
           padding: 92px 40px;
-          background: #fbfaf8;
+          background: #eef3fb;
         }
         .ssn-quiz-card {
           max-width: 1280px;
@@ -1202,7 +1255,7 @@ const Home = () => {
           content: '';
           position: absolute;
           inset: 0;
-          background: linear-gradient(120deg, rgba(181,47,47,0.22), rgba(255,255,255,0) 42%);
+          background: rgba(255,255,255,0.08);
           z-index: 0;
           pointer-events: none;
         }
@@ -1287,8 +1340,6 @@ const Home = () => {
           .ssn-hero-visual { max-width: 420px; width: 100%; }
           .ssn-hero-card { left: 18px; bottom: 18px; text-align: left; }
           .ssn-hero-mini-video { width: 118px; right: 2px; top: 24px; }
-          .ssn-trust-strip { padding: 22px 24px 52px; }
-          .ssn-trust-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .ssn-motion-section { padding: 0 24px 64px; overflow: hidden; }
           .ssn-motion-reel { min-height: auto; }
           .ssn-motion-copy { padding: 0 0 24px; }
@@ -1345,7 +1396,6 @@ const Home = () => {
           .ssn-product-grid { grid-template-columns: 1fr; }
           .ssn-card-footer { align-items: stretch; flex-direction: column; }
           .ssn-btn-card { width: 100%; }
-          .ssn-trust-inner { grid-template-columns: 1fr; }
           .ssn-motion-copy { padding: 0 0 22px; }
           .ssn-editorial-video-card {
             min-width: 84vw;
@@ -1389,14 +1439,12 @@ const Home = () => {
               </div>
 
               <h1 className="ssn-hero-title">
-                Matelas Ergonomique <br />
-                <span className="accent">Relax Plus</span>
+                Confort et bien-être, <span className="accent">chaque nuit</span>
               </h1>
 
               <p className="ssn-hero-desc">
-                Le Matelas ergonomique Relax Plus n'est pas simplement un matelas ; 
-                c'est une expérience de sommeil conçue pour offrir confort, soutien et tranquillité d'esprit. 
-                Offrez-vous le sommeil que vous méritez.
+                Profitez d'un sommeil plus confortable avec Relax Plus : un matelas ergonomique
+                pensé pour mieux dormir, soutenir votre corps et vous offrir un repos profond chaque nuit.
               </p>
 
               <div className="ssn-hero-btns">
@@ -1452,24 +1500,6 @@ const Home = () => {
         {/* ── PRODUITS VEDETTES ── */}
         <ProductShowcase />
 
-        <Testimonials />
-
-        <section className="ssn-trust-strip" aria-label="Avantages Star Mousse">
-          <div className="ssn-trust-inner">
-            {[
-              ["Fabrication locale", "Un savoir-faire tunisien et des finitions contrôlées."],
-              ["Paiement à la livraison", "Commandez simplement, payez après réception."],
-              ["Conseil sommeil", "Un quiz rapide pour trouver le soutien adapté."],
-              ["Garantie 10 ans", "Des matériaux durables pour accompagner vos nuits."],
-            ].map(([title, text]) => (
-              <div className="ssn-trust-item ssn-fade" key={title}>
-                <strong>{title}</strong>
-                <span>{text}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* ── PRODUITS ── */}
         <section className="ssn-section-products">
           <div className="ssn-container">
@@ -1508,10 +1538,17 @@ const Home = () => {
                         <span className="ssn-offer-pill light">
                           {product.badges?.[1] || "Best seller"}
                         </span>
-                        <div className="ssn-rating">⭐ {Number(product.rating || 4.9).toFixed(1)}</div>
+                        {product.reviewCount > 0 ? (
+                          <div className="ssn-rating">⭐ {Number(product.rating).toFixed(1)} · {product.reviewCount} avis</div>
+                        ) : (
+                          <div className="ssn-rating muted">Sélection catalogue</div>
+                        )}
                       </div>
                       <h3>{product.name}</h3>
                       <p>{product.desc}</p>
+                      {product.reason && (
+                        <div className="ssn-recommendation-reason">{product.reason}</div>
+                      )}
                       <ul className="ssn-card-features">
                         {product.features?.map((feature) => (
                           <li key={feature}>{feature}</li>
@@ -1520,8 +1557,8 @@ const Home = () => {
                       <div className="ssn-card-footer">
                         <div className="ssn-price-block">
                           <span className="ssn-price-label">Dès</span>
-                          <span className="ssn-price">{product.price}</span>
-                          {product.oldPrice && <span className="ssn-old-price">{product.oldPrice}</span>}
+                          <span className="ssn-price">{formatPrice(product.price)}</span>
+                          {product.oldPrice && <span className="ssn-old-price">{formatPrice(product.oldPrice)}</span>}
                         </div>
                         <button className="ssn-btn-card" onClick={() => navigate('/products')}>Voir le produit →</button>
                       </div>
@@ -1592,6 +1629,34 @@ const Home = () => {
                 </div>
               </article>
             ))}
+          </div>
+        </section>
+
+        {/* ── AVIS CLIENTS AVANT LE QUIZ ── */}
+        <section className="ssn-reviews-section">
+          <div className="ssn-reviews-inner">
+            <header className="ssn-reviews-header">
+              <span className="ssn-section-kicker">Avis Client</span>
+              
+              <p>Des retours authentiques de clients tunisiens qui ont déjà essayé nos matelas.</p>
+            </header>
+            <div className="ssn-reviews-grid">
+              <article className="ssn-review-card ssn-fade">
+                <div className="ssn-review-stars">⭐⭐⭐⭐</div>
+                <p>« J’ai retrouvé un sommeil profond dès la première semaine. Le matelas est équilibré, confortable et adapté aux nuits chaudes. »</p>
+                <div className="ssn-review-author"><strong>Amel B.</strong><span>Tunis</span></div>
+              </article>
+              <article className="ssn-review-card ssn-fade">
+                <div className="ssn-review-stars">⭐⭐⭐⭐⭐</div>
+                <p>« Très bon soutien pour le dos. Livraison rapide et service client disponible. Je recommande sans hésiter. »</p>
+                <div className="ssn-review-author"><strong>Sami H.</strong><span>Sfax</span></div>
+              </article>
+              <article className="ssn-review-card ssn-fade">
+                <div className="ssn-review-stars">⭐⭐⭐⭐</div>
+                <p>« Le matelas est très confortable, il respire bien et j’ai moins mal au cou le matin. Achat facile et livraison soignée. »</p>
+                <div className="ssn-review-author"><strong>Leila R.</strong><span>La Marsa</span></div>
+              </article>
+            </div>
           </div>
         </section>
 

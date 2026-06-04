@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmployeeSidebar from "./EmployeeSidebar";
@@ -7,9 +7,12 @@ import { changePassword, updateProfile } from "../../services/apiUser";
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();
-  const [user, setUser] = useState({ username: "Utilisateur", email: "user@starmousse.tn", phone: "+216 20 123 456" });
+  const [user, setUser] = useState({ username: "", email: "", phone: "", role: "", address: "" });
   const [passwords, setPasswords] = useState({ current: "", next: "", confirm: "" });
+  const [showPasswords, setShowPasswords] = useState({ current: false, next: false, confirm: false });
   const [loading, setLoading] = useState(true);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [passwordUpdating, setPasswordUpdating] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -23,58 +26,84 @@ export default function EmployeeProfile() {
 
     const parsedUser = JSON.parse(userData);
     if (!hasAccess(parsedUser, [ROLES.MANAGER, ROLES.EMPLOYEE, "employeur"])) {
-      toast.error("Accès non autorisé");
+      toast.error("Acces non autorise");
       navigate("/login");
       return;
     }
 
-    setUser((prev) => ({ ...prev, username: parsedUser.username || prev.username, email: parsedUser.email || prev.email }));
+    setUser({
+      username: parsedUser.username || "",
+      email: parsedUser.email || "",
+      phone: parsedUser.phone || "",
+      role: parsedUser.role || "",
+      address: parsedUser.address || ""
+    });
     setLoading(false);
   }, [navigate]);
 
-  const handleChange = (field, value) => {
-    setUser((current) => ({ ...current, [field]: value }));
+  const handlePhoneChange = (value) => {
+    const digits = (value || "").toString().replace(/\D/g, "").slice(0, 8);
+    setUser((prev) => ({ ...prev, phone: digits }));
   };
 
   const handlePasswordChange = (field, value) => {
     setPasswords((current) => ({ ...current, [field]: value }));
   };
 
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
   const handleSaveProfile = async () => {
+    setSavingProfile(true);
     try {
-      await updateProfile({
+      const response = await updateProfile({
         username: user.username,
         phone: user.phone,
-        address: user.address || ''
+        address: user.address,
       });
-      toast.success("Profil mis à jour avec succès");
-      // Mettre à jour localStorage
-      const updatedUser = { ...JSON.parse(localStorage.getItem('user')), ...user };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      toast.success(response.message || "Profil mis à jour avec succès");
+      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      const updatedUser = {
+        ...storedUser,
+        username: response.user?.username || user.username,
+        phone: response.user?.phone || user.phone,
+        address: response.user?.address || user.address,
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     } catch (error) {
-      toast.error("Erreur lors de la mise à jour du profil");
+      toast.error(error.response?.data?.error || "Erreur lors de la mise à jour du profil");
+    } finally {
+      setSavingProfile(false);
     }
   };
 
   const handleSavePassword = async () => {
+    if (!passwords.current) {
+      toast.error("Veuillez saisir le mot de passe actuel");
+      return;
+    }
+    if (!passwords.next) {
+      toast.error("Veuillez saisir le nouveau mot de passe");
+      return;
+    }
     if (passwords.next !== passwords.confirm) {
-      toast.error("Les nouveaux mots de passe doivent correspondre");
+      toast.error("La confirmation du nouveau mot de passe ne correspond pas");
       return;
     }
-    if (!passwords.current || !passwords.next) {
-      toast.error("Veuillez compléter tous les champs de sécurité");
-      return;
-    }
+    setPasswordUpdating(true);
     try {
-      await changePassword({
+      const response = await changePassword({
         currentPassword: passwords.current,
         newPassword: passwords.next,
         confirmPassword: passwords.confirm,
       });
-      toast.success("Mot de passe modifié avec succès");
+      toast.success(response.message || "Mot de passe modifié avec succès");
       setPasswords({ current: "", next: "", confirm: "" });
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors du changement de mot de passe");
+    } finally {
+      setPasswordUpdating(false);
     }
   };
 
@@ -88,34 +117,60 @@ export default function EmployeeProfile() {
       <main className="employee-main sm-internal-main" style={styles.main}>
         <div style={styles.header}>
           <div>
-            <p style={styles.breadcrumb}>Employé / Profil</p>
+            <p style={styles.breadcrumb}>Employe / Profil</p>
             <h1 style={styles.title}>Mon profil</h1>
-            <p style={styles.subtitle}>Gérez vos informations de contact et changez votre mot de passe en toute sécurité.</p>
+            <p style={styles.subtitle}>Nom, email, téléphone, adresse et mot de passe</p>
           </div>
         </div>
 
         <div style={styles.grid}>
           <section style={styles.card}>
-            <h2 style={styles.sectionTitle}>Informations personnelles</h2>
-            <label style={styles.label}>Nom</label>
-            <input style={styles.input} value={user.username} onChange={(e) => handleChange("username", e.target.value)} />
+            <h2 style={styles.sectionTitle}>Informations</h2>
+            <label style={styles.label}>Nom complet</label>
+            <input
+              style={styles.input}
+              type="text"
+              value={user.username}
+              onChange={(e) => setUser((prev) => ({ ...prev, username: e.target.value }))}
+            />
             <label style={styles.label}>Email</label>
-            <input style={styles.input} value={user.email} onChange={(e) => handleChange("email", e.target.value)} />
-            <label style={styles.label}>Téléphone</label>
-            <input style={styles.input} value={user.phone} onChange={(e) => handleChange("phone", e.target.value)} />
-            <button style={styles.actionButton} onClick={handleSaveProfile}>Enregistrer mes informations</button>
+            <input style={styles.input} type="email" value={user.email} disabled />
+            <label style={styles.label}>Telephone</label>
+            <input style={styles.input} type="tel" inputMode="numeric" pattern="\\d{8}" maxLength={8} value={user.phone} onChange={(e) => handlePhoneChange(e.target.value)} />
+            <label style={styles.label}>Adresse</label>
+            <input
+              style={styles.input}
+              type="text"
+              value={user.address}
+              onChange={(e) => setUser((prev) => ({ ...prev, address: e.target.value }))}
+            />
+            <label style={styles.label}>Role</label>
+            <input style={styles.input} type="text" value={user.role} disabled />
+            <button style={styles.actionButton} type="button" onClick={handleSaveProfile} disabled={savingProfile}>
+              {savingProfile ? "Enregistrement..." : "Enregistrer"}
+            </button>
           </section>
 
           <section style={styles.card}>
-            <h2 style={styles.sectionTitle}>Sécurité</h2>
-            <p style={styles.helperText}>Changez votre mot de passe après la création du compte par l’administrateur.</p>
+            <h2 style={styles.sectionTitle}>Mot de passe</h2>
             <label style={styles.label}>Mot de passe actuel</label>
-            <input style={styles.input} type="password" value={passwords.current} onChange={(e) => handlePasswordChange("current", e.target.value)} />
+            <div style={styles.passwordContainer}>
+              <input style={styles.input} type={showPasswords.current ? "text" : "password"} value={passwords.current} onChange={(e) => handlePasswordChange("current", e.target.value)} />
+              <button style={styles.toggleButton} onClick={() => togglePasswordVisibility("current")} type="button">{showPasswords.current ? "👁️" : "🔒"}</button>
+            </div>
             <label style={styles.label}>Nouveau mot de passe</label>
-            <input style={styles.input} type="password" value={passwords.next} onChange={(e) => handlePasswordChange("next", e.target.value)} />
-            <label style={styles.label}>Confirmer le mot de passe</label>
-            <input style={styles.input} type="password" value={passwords.confirm} onChange={(e) => handlePasswordChange("confirm", e.target.value)} />
-            <button style={styles.actionButton} onClick={handleSavePassword}>Mettre à jour le mot de passe</button>
+            <div style={styles.passwordContainer}>
+              <input style={styles.input} type={showPasswords.next ? "text" : "password"} value={passwords.next} onChange={(e) => handlePasswordChange("next", e.target.value)} />
+              <button style={styles.toggleButton} onClick={() => togglePasswordVisibility("next")} type="button">{showPasswords.next ? "👁️" : "🔒"}</button>
+            </div>
+            <label style={styles.label}>Confirmer mot de passe</label>
+            <div style={styles.passwordContainer}>
+              <input style={styles.input} type={showPasswords.confirm ? "text" : "password"} value={passwords.confirm} onChange={(e) => handlePasswordChange("confirm", e.target.value)} />
+              <button style={styles.toggleButton} onClick={() => togglePasswordVisibility("confirm")} type="button">{showPasswords.confirm ? "👁️" : "🔒"}</button>
+            </div>
+            <button style={styles.actionButton} onClick={handleSavePassword} type="button" disabled={passwordUpdating}>
+              {passwordUpdating ? "Mise a jour..." : "Mettre a jour mot de passe"}
+            </button>
           </section>
         </div>
       </main>
@@ -135,6 +190,8 @@ const styles = {
   sectionTitle: { fontSize: 18, marginBottom: 16, color: "#3f352e" },
   label: { display: "block", marginBottom: 8, fontSize: 12, textTransform: "uppercase", color: "#8f7a63", letterSpacing: ".08em" },
   input: { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #d6c9b7", marginBottom: 18, fontSize: 14, color: "#3f352e" },
+  passwordContainer: { position: "relative", marginBottom: 18 },
+  toggleButton: { position: "absolute", right: 12, top: 12, background: "none", border: "none", cursor: "pointer", fontSize: 18, padding: "4px 8px", color: "#8f7a63", transition: "color 0.2s" },
   helperText: { margin: "0 0 18px", color: "#7a6956", fontSize: 13, lineHeight: 1.6 },
   actionButton: { width: "100%", marginTop: 4, background: "#c8651a", border: "none", color: "#fff", borderRadius: 14, padding: "14px 16px", cursor: "pointer", fontWeight: 700 },
   loading: { minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#6e5f52" },

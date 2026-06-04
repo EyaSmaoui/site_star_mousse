@@ -5,7 +5,6 @@ var path = require('path');
 var morgan = require('morgan');
 const helmet = require('helmet');
 const compression = require('compression');
-const rateLimit = require('express-rate-limit');
 const logger = require('./logger');
 const Sentry = require('@sentry/node');
 const http = require('http');
@@ -14,6 +13,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const { connectToMongoDB } = require('./config/mongo.connection');
+const { globalSanitization } = require('./middleware/inputValidation');
+const { globalLimiter } = require('./middleware/rateLimiters');
 
 var app = express();
 
@@ -26,6 +27,8 @@ const defaultOrigins = [
   'http://127.0.0.1:5175',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3001',
 ];
 const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
@@ -46,22 +49,28 @@ if (process.env.SENTRY_DSN) {
 }
 
 // Security & performance middlewares
-app.use(helmet());
+app.use(helmet({
+  crossOriginOpenerPolicy: false,
+  crossOriginResourcePolicy: false,
+}));
 app.use(compression());
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
 // Rate limiting
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
+app.use(globalLimiter);
 // Logging: use morgan stream -> winston in production
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined', { stream: logger.stream }));
 } else {
   app.use(morgan('dev', { stream: logger.stream }));
 }
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+// Reduce body size limit from 50mb to 5mb for security
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: false, limit: '5mb' }));
+// Input sanitization and validation middleware (MUST come after express.json)
+app.use(globalSanitization);
 app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'star_mousse_backend_session_secret_2026',
@@ -96,11 +105,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Frontend React en production
-if (process.env.NODE_ENV === 'production') {
-  const distPath = process.env.FRONTEND_BUILD_PATH
-    ? path.resolve(process.env.FRONTEND_BUILD_PATH)
-    : path.join(__dirname, '..', 'frontend', 'build');
+// Frontend React: serve the built app whenever it exists, so direct links work.
+const distPath = process.env.FRONTEND_BUILD_PATH
+  ? path.resolve(process.env.FRONTEND_BUILD_PATH)
+  : path.join(__dirname, '..', 'frontend', 'build');
+const hasFrontendBuild = require('fs').existsSync(path.join(distPath, 'index.html'));
+
+if (process.env.NODE_ENV === 'production' || hasFrontendBuild) {
   app.use(express.static(distPath));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
@@ -111,7 +122,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // SERVEUR
-const PORT = process.env.PORT || 3000;
+// Use port 5000 by default for the API to avoid colliding with frontend dev server on 3000
+const PORT = process.env.PORT || 5000;
 const server = http.createServer({
   maxHeaderSize: 32768,
 }, app);

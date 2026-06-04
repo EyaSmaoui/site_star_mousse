@@ -1,12 +1,37 @@
 import httpClient from './httpClient';
 
 const PENDING_ORDER_KEY = 'pendingOrder';
+const PENDING_REVIEW_KEY = 'pendingReviewOrder';
 
 const getStoredUser = () => {
   try {
     return JSON.parse(localStorage.getItem('user') || '{}');
   } catch {
     return {};
+  }
+};
+
+export const savePendingReviewOrder = ({ orderId, productName }) => {
+  try {
+    sessionStorage.setItem(PENDING_REVIEW_KEY, JSON.stringify({ orderId, productName, createdAt: Date.now() }));
+  } catch {
+    // ignore storage errors
+  }
+};
+
+export const getPendingReviewOrder = () => {
+  try {
+    return JSON.parse(sessionStorage.getItem(PENDING_REVIEW_KEY) || 'null');
+  } catch {
+    return null;
+  }
+};
+
+export const clearPendingReviewOrder = () => {
+  try {
+    sessionStorage.removeItem(PENDING_REVIEW_KEY);
+  } catch {
+    // ignore storage errors
   }
 };
 
@@ -57,8 +82,19 @@ export const submitPendingOrder = async () => {
     return null;
   }
 
-  clearPendingOrder();
-  return submitOrder(pendingOrder);
+  try {
+    const savedOrder = await submitOrder(pendingOrder);
+    savePendingReviewOrder({
+      orderId: savedOrder._id || savedOrder.data?._id,
+      productName: Array.isArray(pendingOrder.products) ? pendingOrder.products[0]?.name : '',
+    });
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('star-mousse:pending-review-ready'));
+    }
+    return savedOrder;
+  } finally {
+    clearPendingOrder();
+  }
 };
 
 export const submitOrder = async (orderPayload) => {
@@ -67,8 +103,8 @@ export const submitOrder = async (orderPayload) => {
     savePendingOrder(orderPayload);
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams();
-      const name = orderPayload.customerName || orderPayload.name || '';
-      const email = orderPayload.customerEmail || orderPayload.email || '';
+      const name = orderPayload.customerName || '';
+      const email = orderPayload.customerEmail || '';
       const phone = orderPayload.phone || '';
 
       if (name.trim()) params.set('username', name.trim());
@@ -89,8 +125,8 @@ export const submitOrder = async (orderPayload) => {
   );
 
   const payload = {
-    customerName: orderPayload.customerName || orderPayload.name || user.name || user.username || 'Client',
-    customerEmail: orderPayload.customerEmail || orderPayload.email || user.email || 'client@starmousse.tn',
+    customerName: orderPayload.customerName || user.username || 'Client',
+    customerEmail: orderPayload.customerEmail || user.email || 'client@starmousse.tn',
     phone: orderPayload.phone,
     address: orderPayload.address,
     products,
@@ -101,18 +137,6 @@ export const submitOrder = async (orderPayload) => {
   try {
     const response = await httpClient.post('/api/orders/addOrder', payload);
     const savedOrder = response.data;
-
-    try {
-      const firstProduct = products[0] || {};
-      sessionStorage.setItem('pendingReviewOrder', JSON.stringify({
-        orderId: savedOrder?._id,
-        productName: firstProduct.name || '',
-        createdAt: Date.now(),
-      }));
-      await waitForInlineReviewPrompt(savedOrder, firstProduct);
-    } catch {
-      // Ignore storage errors; the order itself was saved successfully.
-    }
 
     // Some product pages read response._id, others read response.data._id.
     return { ...savedOrder, data: savedOrder };
@@ -131,36 +155,31 @@ export const submitOrder = async (orderPayload) => {
   }
 };
 
-const waitForInlineReviewPrompt = (order, product) => {
-  if (typeof window === 'undefined') return Promise.resolve();
-
-  return new Promise((resolve) => {
-    let settled = false;
-    const detail = {
-      order,
-      product,
-      opened: false,
-      complete: () => {
-        if (settled) return;
-        settled = true;
-        resolve();
-      },
-    };
-
-    window.dispatchEvent(new CustomEvent('star-mousse:order-saved', { detail }));
-
-    if (!detail.opened) {
-      detail.complete();
-      return;
-    }
-
-    window.setTimeout(detail.complete, 5 * 60 * 1000);
-  });
-};
-
 export const submitProductOrder = submitOrder;
 
-export const getMyOrders = async () => {
-  const response = await httpClient.get('orders/my-orders');
-  return response.data;
+export const getMyOrders = async (forceRefresh = false) => {
+  console.log('📥 getMyOrders() appelé - forceRefresh:', forceRefresh);
+  try {
+    // Ajouter un paramètre cache-busting pour forcer le rafraîchissement
+    const url = forceRefresh 
+      ? `/api/orders/my-orders?_t=${Date.now()}` 
+      : '/api/orders/my-orders';
+    
+    const response = await httpClient.get(url);
+    console.log('✅ Commandes récupérées du serveur:', response.data.length, 'commandes');
+    
+    // Vérifier que les données contiennent bien les nouvelles infos
+    if (response.data.length > 0) {
+      console.log('📋 Première commande:', {
+        customerName: response.data[0].customerName,
+        phone: response.data[0].phone,
+        address: response.data[0].address
+      });
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('❌ Erreur getMyOrders:', error);
+    throw error;
+  }
 };

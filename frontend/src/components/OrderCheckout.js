@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { addReview } from "../services/apiReview";
 import { addCartItem } from "../utils/cartUtils";
 import { login, register } from "../services/apiAuth";
+import { PROFILE_CHANGED_EVENT } from "../services/profileSyncService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -30,6 +31,7 @@ export default function OrderCheckout({
   loading = false,
   onSubmit,
   buttonLabel = "Commander maintenant",
+  hideCheckout = false,
 }) {
   const formFields = { ...defaultFields, ...fields };
   const format = fmt || ((value) => `${Number(value || 0).toFixed(2)} DT`);
@@ -56,13 +58,47 @@ export default function OrderCheckout({
     }
   }, [user]);
 
+  useEffect(() => {
+    const syncProfile = (event) => {
+      const updatedUser = event?.detail || JSON.parse(localStorage.getItem('user') || 'null');
+      if (!updatedUser) return;
+
+      setUser(updatedUser);
+      setForm((current) => ({
+        ...current,
+        [formFields.name]: updatedUser.username || updatedUser.name || "",
+        [formFields.email]: updatedUser.email || "",
+        [formFields.phone]: updatedUser.phone || "",
+        [formFields.address]: updatedUser.address || "",
+      }));
+    };
+
+    window.addEventListener(PROFILE_CHANGED_EVENT, syncProfile);
+    window.addEventListener('user-logged-in', syncProfile);
+    return () => {
+      window.removeEventListener(PROFILE_CHANGED_EVENT, syncProfile);
+      window.removeEventListener('user-logged-in', syncProfile);
+    };
+  }, [setForm]);
+
   const updateField = (key, value) => {
     const field = formFields[key];
+    // sanitize phone to digits and limit to 8 characters
+    if (key === "phone") {
+      const digits = (value || "").toString().replace(/\D/g, "").slice(0, 8);
+      setForm((current) => ({ ...current, [field]: digits }));
+      return;
+    }
     setForm((current) => ({ ...current, [field]: value }));
   };
 
   const handleAuthChange = (e) => {
     const { name, value } = e.target;
+    if (name === "phone") {
+      const digits = value.replace(/\D/g, "").slice(0, 8);
+      setAuthData((current) => ({ ...current, [name]: digits }));
+      return;
+    }
     setAuthData((current) => ({ ...current, [name]: value }));
   };
 
@@ -206,7 +242,8 @@ export default function OrderCheckout({
       closeReviewPrompt();
     } catch (error) {
       console.error("Erreur avis apres commande:", error);
-      setReviewError("Impossible d'envoyer l'avis pour le moment.");
+      const backendMessage = error.response?.data?.message || error.response?.data?.error;
+      setReviewError(backendMessage || "Impossible d'envoyer l'avis pour le moment.");
     } finally {
       setReviewSaving(false);
     }
@@ -216,9 +253,10 @@ export default function OrderCheckout({
     <>
       <ToastContainer position="top-right" theme="light" />
 
-      <div className="sm-order-checkout">
-        {/* Auth Section - shown if not logged in and user chooses to auth */}
-        {!user && authMode && (
+      {!hideCheckout && (
+        <div className="sm-order-checkout">
+          {/* Auth Section - shown if not logged in and user chooses to auth */}
+          {!user && authMode && (
           <div style={styles.authSection}>
             <div style={styles.authHeader}>
               <h3 style={styles.authTitle}>
@@ -304,17 +342,6 @@ export default function OrderCheckout({
               <button type="submit" style={styles.authSubmit} disabled={authLoading}>
                 {authLoading ? "Envoi..." : (authMode === "login" ? "Se connecter" : "Créer un compte")}
               </button>
-
-              <button
-                type="button"
-                style={styles.authToggle}
-                onClick={() => {
-                  setAuthMode(authMode === "login" ? "register" : "login");
-                  setAuthData({ email: "", password: "", name: "", phone: "", confirm: "" });
-                }}
-              >
-                {authMode === "login" ? "Créer un compte" : "J'ai un compte"}
-              </button>
             </form>
           </div>
         )}
@@ -326,9 +353,6 @@ export default function OrderCheckout({
             <div style={styles.authButtons}>
               <button type="button" style={styles.loginBtn} onClick={() => setAuthMode("login")}>
                 Se connecter
-              </button>
-              <button type="button" style={styles.registerBtn} onClick={() => setAuthMode("register")}>
-                Créer un compte
               </button>
             </div>
           </div>
@@ -405,9 +429,6 @@ export default function OrderCheckout({
           <button type="button" className="sm-order-submit" onClick={handleButtonClick} disabled={loading}>
             {loading ? "Envoi en cours..." : buttonLabel}
           </button>
-          <button type="button" className="sm-order-submit sm-order-cart" onClick={handleAddToCart} disabled={loading}>
-            Ajouter au panier
-          </button>
           <div className="sm-order-qty" aria-label="Quantite">
             <button type="button" onClick={() => setQty(Math.max(1, Number(qty || 1) - 1))}>
               -
@@ -419,6 +440,7 @@ export default function OrderCheckout({
           </div>
         </div>
       </div>
+      )}
 
       {reviewPrompt && (
         <div style={styles.backdrop} role="presentation" onClick={closeReviewPrompt}>

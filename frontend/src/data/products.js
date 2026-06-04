@@ -22,6 +22,7 @@ export const PRODUCTS = [
       "Réversible pour une utilisation été/hiver",
       "Garantie 10 ans",
     ],
+    guarantee: "10 ans",
     description: "Un matelas ergonomique haut de gamme conçu pour offrir un soutien ferme et un confort durable.",
     details: "Idéal pour ceux qui recherchent un sommeil sans bruit et sans transfert de mouvement.",
     defaultSizeIndex: 1,
@@ -48,6 +49,7 @@ export const PRODUCTS = [
       "Tissu anti-acarien et résistant au feu",
       "Garantie 9 ans",
     ],
+    guarantee: "9 ans",
     description: "Matelas orthopédique conçu pour maintenir une posture de sommeil saine et limiter les points de pression.",
     details: "Un choix médicalement recommandé pour un soutien de qualité et une durabilité renforcée.",
     defaultSizeIndex: 1,
@@ -73,6 +75,7 @@ export const PRODUCTS = [
       "Tissu haute couture anti-acarien",
       "Garantie 11 ans",
     ],
+    guarantee: "11 ans",
     description: "Un matelas luxueux qui combine confort enveloppant et soutien avancé.",
     details: "Parfait pour les dormeurs exigeants qui veulent une expérience premium.",
     defaultSizeIndex: 1,
@@ -84,7 +87,8 @@ export const PRODUCTS = [
     tag: "ORTHOPÉDIQUE",
     tagColor: "#1a1a2e",
     images: ["/venise.jpg", "/venise2.png", "/venise2.png"],
-    delivery: 3,
+    delivery: 0,
+    guarantee: "5 ans",
     sizes: [
       { label: "80×190", price: 300 },
       { label: "90×190", price: 320 },
@@ -112,6 +116,7 @@ export const PRODUCTS = [
     tagColor: "#1a1a2e",
     images: ["/venise.jpg", "/venise2.png", "/venise.jpg", "/venise2.png"],
     delivery: 0,
+    guarantee: "3 ans",
     sizes: [
       { label: "90×190", price: 260 },
       { label: "120×190", price: 360 },
@@ -137,6 +142,7 @@ export const PRODUCTS = [
     tagColor: "#e63946",
     images: ["/confort.png", "/confort.png", "/confort.png"],
     delivery: 8,
+    guarantee: "3 ans",
     sizes: [
       { label: "80*190", price: 219, oldPrice: 322 },
       { label: "90*190", price: 231, oldPrice: 340 },
@@ -161,6 +167,7 @@ export const PRODUCTS = [
     tagColor: "#ec4899",
     images: ["/relax_pillow.png", "/relax_pillow1.png", "/relax_pillow.png"],
     delivery: 0,
+    guarantee: "10 ans",
     sizes: [
       { label: "90*190", price: 950, oldPrice: 1180 },
       { label: "140*190", price: 1350, oldPrice: 1680 },
@@ -185,6 +192,7 @@ export const PRODUCTS = [
     tagColor: "#8e44ad",
     images: ["/tendresse_pillow.png", "/tendresse_pillow.png", "/tendresse_pillow.png"],
     delivery: 0,
+    guarantee: "10 ans",
     sizes: [
       { label: "90*190", price: 1160, oldPrice: 1450 },
       { label: "140*190", price: 1780, oldPrice: 2225 },
@@ -209,6 +217,7 @@ export const PRODUCTS = [
     tagColor: "#3498db",
     images: ["/medico_pillow.png", "/medico_pillow.png", "/medico_pillow.png"],
     delivery: 0,
+    guarantee: "9 ans",
     sizes: [
       { label: "90*190", price: 800, oldPrice: 995 },
       { label: "140*190", price: 1150, oldPrice: 1440 },
@@ -233,6 +242,7 @@ export const PRODUCTS = [
     tagColor: "#b52f2f",
     images: ["/venise_pillow.png", "/venise_pillow.png", "/venise_pillow.png"],
     delivery: 0,
+    guarantee: "8 ans",
     sizes: [
       { label: "90*190", price: 650, oldPrice: 800 },
       { label: "140*190", price: 1200, oldPrice: 1500 },
@@ -249,6 +259,26 @@ export const PRODUCTS = [
     details: "Parfait pour ceux qui veulent une finition élégante et un confort durable.",
   },
   {
+    slug: "oreillers",
+    name: "Collection Oreillers Star Mousse",
+    category: "Oreillers",
+    tag: "OREILLERS",
+    tagColor: "#3b82f6",
+    images: ["/oreiller_gel_pillow.jpg", "/oreiller_lavande.png", "/oreiller_menthe.png"],
+    delivery: 0,
+    price: 189,
+    oldPrice: 229,
+    guarantee: "2 ans",
+    features: [
+      "Oreillers médicaux ergonomiques",
+      "Support cervical et nuque renforcé",
+      "Tissus respirants et anti-acariens",
+      "Options aromathérapie Lavande, Menthe, Océan",
+    ],
+    description: "Découvrez notre collection d'oreillers médicaux conçus pour un sommeil réparateur et un maintien cervical optimal.",
+    details: "Choisissez l'oreiller qui correspond à votre position de sommeil et profitez d'une sensation de fraîcheur et de soutien durable.",
+  },
+  {
     slug: "gel-pillow",
     name: "Oreiller Gel Pillow",
     category: "Oreillers",
@@ -256,6 +286,7 @@ export const PRODUCTS = [
     tagColor: "#3b82f6",
     images: ["/oreiller_gel_pillow.jpg", "/oreiller_gel_pillow.jpg"],
     delivery: 0,
+    guarantee: "2 ans",
     price: 209,
     oldPrice: 279,
     features: [
@@ -275,6 +306,7 @@ export const PRODUCTS = [
     tagColor: "#a78bfa",
     images: ["/oreiller_lavande.png", "/oreiller_lavande.png"],
     delivery: 0,
+    guarantee: "2 ans",
     price: 175,
     features: [
       "Huiles naturelles de lavande",
@@ -293,6 +325,7 @@ export const PRODUCTS = [
     tagColor: "#2a7a2a",
     images: ["/oreiller_menthe.png", "/oreiller_menthe.png"],
     delivery: 0,
+    guarantee: "2 ans",
     price: 175,
     features: [
       "Extrait naturel de menthe",
@@ -311,6 +344,7 @@ export const PRODUCTS = [
     tagColor: "#0ea5e9",
     images: ["/oreiller_puff.png", "/oreiller_puff.png"],
     delivery: 0,
+    guarantee: "2 ans",
     price: 175,
     features: [
       "Airflow optimisé pour une fraîcheur marine",
@@ -329,6 +363,7 @@ export const PRODUCTS = [
     tagColor: "#00b4d8",
     images: ["/oreiller_forme_gel.jpg", "/oreiller_forme_gel.jpg"],
     delivery: 0,
+    guarantee: "2 ans",
     price: 220,
     oldPrice: 270,
     features: [
@@ -348,6 +383,7 @@ export const PRODUCTS = [
     tagColor: "#3bc9db",
     images: ["/bebe_confort.jpg", "/bebe_confort.jpg"],
     delivery: 0,
+    guarantee: "3 ans",
     price: 180,
     oldPrice: 215,
     features: [
@@ -367,6 +403,7 @@ export const PRODUCTS = [
     tagColor: "#48bb78",
     images: ["/bebe_soft.jpg", "/bebe_soft.jpg"],
     delivery: 0,
+    guarantee: "3 ans",
     price: 200,
     oldPrice: 250,
     features: [
@@ -386,6 +423,7 @@ export const PRODUCTS = [
     tagColor: "#f59e0b",
     images: ["/bebe_venise.jpg", "/bebe_venise.jpg"],
     delivery: 0,
+    guarantee: "3 ans",
     price: 240,
     oldPrice: 297,
     features: [

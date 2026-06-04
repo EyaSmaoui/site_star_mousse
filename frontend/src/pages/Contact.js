@@ -14,14 +14,21 @@ export default function Contact() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (name === 'phone') {
+      const digits = value.replace(/\D/g, '').slice(0,8);
+      setFormData(prev => ({ ...prev, [name]: digits }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Validate phone if provided
+    if (formData.phone && formData.phone.toString().replace(/\D/g, '').length !== 8) {
+      alert('Le numéro de téléphone doit contenir exactement 8 chiffres.');
+      return;
+    }
     // For now, just show success message
     // In production, this would send to backend
     setSubmitted(true);

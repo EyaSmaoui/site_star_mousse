@@ -206,7 +206,7 @@ export default function EmployeeDashboard() {
 
     if (q) {
       result = result.filter((order) =>
-        [order._id, order.id, order.customerName, order.name, order.address, order.phone]
+        [order._id, order.id, order.customerName, order.address, order.phone]
           .filter(Boolean)
           .join(" ")
           .toLowerCase()
@@ -292,8 +292,8 @@ export default function EmployeeDashboard() {
       <main className="employee-main" style={S.main}>
         <div style={S.topbar}>
           <div>
-            <h1 style={S.title}>Bienvenue{employeeName ? `, ${employeeName}` : ""}</h1>
-            <div style={S.subtitle}>Tableau de bord employé</div>
+            <h1 style={S.title}>Star Mousse • Espace Employé</h1>
+            <div style={S.subtitle}>Gestion & Suivi des Commandes</div>
           </div>
 
           <div style={S.topbarRight}>
@@ -513,7 +513,7 @@ function OrdersTable({ orders }) {
           {orders.length ? orders.map((order, i) => (
             <tr key={order._id || order.id || i} style={{ borderBottom: "1px solid #f3f4f6" }}>
               <td style={S.tdStrong}>{orderId(order)}</td>
-              <td style={S.td}>{order.customerName || order.name || "Client inconnu"}</td>
+              <td style={S.td}>{order.customerName || "Client inconnu"}</td>
               <td style={S.tdAmount}>{orderAmount(order)}</td>
               <td style={S.tdMuted}>{fmtDate(order.createdAt || order.date)}</td>
               <td style={S.td}><StatusBadge status={order.status} /></td>

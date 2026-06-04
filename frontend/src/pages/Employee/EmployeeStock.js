@@ -19,6 +19,7 @@ export default function EmployeeStock() {
       sidebarWidth={220}
       sidebarProps={{ user, badges: {} }}
       allowedRoles={[ROLES.MANAGER, ROLES.EMPLOYEE, "employeur"]}
+      defaultStock={0}
       loginPath="/login/employee"
       unauthorizedMessage="Accès non autorisé"
       unauthorizedRedirect="/employer/dashboard"

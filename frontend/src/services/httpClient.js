@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_API_URL || 'https://starmousse-backend.onrender.com';
+const defaultLocalApi = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:5000'
+  : 'https://starmousse-backend.onrender.com';
+const baseURL = (process.env.REACT_APP_API_URL || defaultLocalApi).replace(/\/api$/, '');
 
 const httpClient = axios.create({
   baseURL,

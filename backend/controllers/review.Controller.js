@@ -7,6 +7,7 @@ const {
     processReviewSentimentInBackground,
     updateProductRecommendation
 } = require('../services/sentimentRecommendation.service');
+const { rebuildRecommendations: rebuildProductRecommendations } = require('../services/productRecommendation.service');
 
 const normalizeName = (value = '') =>
     String(value)
@@ -148,6 +149,9 @@ module.exports.addReview = async (req, res) => {
         });
 
         await newReview.save();
+        if (newReview.product) {
+            updateProductRecommendation(newReview.product);
+        }
         processReviewSentimentInBackground(newReview._id);
         res.status(201).json({
             ...newReview.toObject(),
@@ -178,6 +182,9 @@ module.exports.updateReview = async (req, res) => {
         const updatedReview = await Review.findByIdAndUpdate(req.params.id, updates, { new: true });
         if (!updatedReview) {
             return res.status(404).json({ message: 'Review not found' });
+        }
+        if (updatedReview.product) {
+            updateProductRecommendation(updatedReview.product);
         }
         processReviewSentimentInBackground(updatedReview._id);
         res.status(200).json({
@@ -216,19 +223,12 @@ module.exports.deleteReview = async (req, res) => {
 
 module.exports.rebuildRecommendations = async (req, res) => {
     try {
-        const reviews = await Review.find({ isDeleted: { $ne: true } });
-        let processed = 0;
-
-        for (const review of reviews) {
-            if (review.product) {
-                await processReviewSentiment(review._id);
-                processed += 1;
-            }
-        }
+        const recommendations = await rebuildProductRecommendations();
 
         res.status(200).json({
             message: 'Recommendations rebuilt successfully',
-            processed
+            processed: recommendations.length,
+            recommendations
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

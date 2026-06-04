@@ -18,6 +18,10 @@ export const invalidateOrdersCache = () => {
 };
 
 export const getAllOrders = async ({ force = false, limit = 300 } = {}) => {
+  if (force) {
+    invalidateOrdersCache();
+  }
+
   const now = Date.now();
   const cacheKey = `limit:${limit}`;
   if (!force && ordersCache.data && ordersCache.key === cacheKey && now - ordersCache.timestamp < ORDERS_CACHE_TTL) {
@@ -30,10 +34,14 @@ export const getAllOrders = async ({ force = false, limit = 300 } = {}) => {
 
   ordersCache.key = cacheKey;
   ordersCache.promise = httpClient.get('/api/orders/getAllOrders', {
-    params: { limit },
-    timeout: 10000,
+    params: force ? { limit, _t: Date.now() } : { limit },
+    timeout: 20000,
   }).then((response) => {
-    ordersCache.data = Array.isArray(response.data) ? response.data : [];
+    ordersCache.data = Array.isArray(response.data)
+      ? response.data
+      : Array.isArray(response.data?.orders)
+        ? response.data.orders
+        : [];
     ordersCache.timestamp = Date.now();
     return ordersCache.data;
   }).finally(() => {
@@ -44,6 +52,11 @@ export const getAllOrders = async ({ force = false, limit = 300 } = {}) => {
 };
 
 export const getCachedOrders = () => ordersCache.data || [];
+
+export const checkOrdersConnection = async () => {
+  const response = await httpClient.get('/api/orders/ping', { timeout: 8000 });
+  return response.data;
+};
 
 export const updateOrder = async (orderId, updateData) => {
   const response = await httpClient.put(`/api/orders/updateOrder/${orderId}`, updateData);

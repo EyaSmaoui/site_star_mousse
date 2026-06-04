@@ -8,11 +8,16 @@ const clientSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    lowercase: true,
+    trim: true,
+     match: [/^\S+@\S+\.\S+$/, 'Veuillez entrer un email valide']
   },
   phone: {
     type: String,
-    required: true
+    required: true,
+    trim: true
+  
   },
   orders: {
     type: Number,

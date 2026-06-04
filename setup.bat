@@ -1,86 +1,79 @@
 @echo off
-REM 🚀 Star Mousse - Setup & Diagnostic Script
-REM This script helps diagnose and setup your environment
+setlocal
 
 echo ======================================
-echo   STAR MOUSSE - SETUP & DIAGNOSTICS
+echo   STAR MOUSSE - SETUP ET DIAGNOSTIC
 echo ======================================
 echo.
 
-REM Check Node.js
-echo [1/5] Checking Node.js...
+echo [1/5] Verification de Node.js...
 node --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Node.js NOT FOUND - Install from nodejs.org
+    echo ERREUR: Node.js est introuvable. Installe Node.js 18 ou plus.
     pause
     exit /b 1
 ) else (
-    echo ✅ Node.js: 
-    node --version
+    for /f "delims=" %%v in ('node --version') do echo Node.js: %%v
 )
 echo.
 
-REM Check npm
-echo [2/5] Checking npm...
+echo [2/5] Verification de npm...
 npm --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ npm NOT FOUND
+    echo ERREUR: npm est introuvable.
     pause
     exit /b 1
 ) else (
-    echo ✅ npm:
-    npm --version
+    for /f "delims=" %%v in ('npm --version') do echo npm: %%v
 )
 echo.
 
-REM Check MongoDB local
-echo [3/5] Checking MongoDB local...
+echo [3/5] Verification de MongoDB local...
 mongod --version >nul 2>&1
 if errorlevel 1 (
-    echo ⚠️  MongoDB NOT installed locally
-    echo    → Use MongoDB Atlas (Cloud) OR
-    echo    → Use Docker: docker run -d -p 27017:27017 mongo:latest
+    echo INFO: MongoDB local n'est pas installe.
+    echo Utilise MongoDB Atlas ou Docker si tu n'as pas MongoDB local.
 ) else (
-    echo ✅ MongoDB:
-    mongod --version | findstr /C:"mongod version"
+    mongod --version | findstr /C:"db version" /C:"mongod version"
 )
 echo.
 
-REM Check ports
-echo [4/5] Checking available ports...
+echo [4/5] Verification des ports...
 netstat -ano | findstr ":3000" >nul 2>&1
 if not errorlevel 1 (
-    echo ⚠️  Port 3000 is in use
+    echo Port 3000: occupe
 ) else (
-    echo ✅ Port 3000 available
+    echo Port 3000: libre
 )
 
 netstat -ano | findstr ":5000" >nul 2>&1
 if not errorlevel 1 (
-    echo ⚠️  Port 5000 is in use
+    echo Port 5000: occupe
 ) else (
-    echo ✅ Port 5000 available
+    echo Port 5000: libre
 )
 echo.
 
-REM Check environment file
-echo [5/5] Checking environment files...
+echo [5/5] Verification des fichiers environnement...
+if exist "backend\.env" (
+    echo backend\.env: trouve
+) else (
+    echo backend\.env: manquant, copie backend\.env.example puis configure-le.
+)
 if exist ".env" (
-    echo ✅ .env found
+    echo .env racine: trouve
 ) else (
-    echo ❌ .env NOT found - copy .env.example or create one
+    echo .env racine: optionnel/manquant
 )
 echo.
 
 echo ======================================
-echo  NEXT STEPS:
+echo   COMMANDES UTILES
 echo ======================================
-echo 1. Configure MongoDB (see SETUP_GUIDE.md)
-echo 2. Run: npm install --prefix backend
-echo 3. Run: npm install --prefix frontend
-echo 4. Run: npm run dev
-echo 5. In another terminal: npm start --prefix frontend
-echo.
-echo For more help, see README.md and SETUP_GUIDE.md
+echo Installer tout: npm run install:all
+echo Lancer backend + frontend: npm run dev:all
+echo Build production: npm run build
+echo Backend seul: npm start
+echo Frontend seul: npm start --prefix frontend
 echo.
 pause

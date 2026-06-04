@@ -7,8 +7,7 @@ import { createProduct, deleteProduct, getAll, updateProduct } from "../../servi
 import { getAllCategories } from "../../services/apiCategory";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 
-const EMPTY_FORM = { name: "", size: "", price: "", stock: "100", category: "" };
-const PERIOD_OPTIONS = ["7 derniers jours", "30 derniers jours", "Ce mois-ci", "Ce trimestre", "Cette année"];
+const EMPTY_FORM = { name: "", size: "", price: "", stock: "0", category: "" };
 
 const getDimension = (product) => {
   if (product.size) return product.size;
@@ -18,7 +17,9 @@ const getDimension = (product) => {
 
 const getDisplayName = (product) => {
   if (!product.name) return "-";
-  return product.name.replace(/\s+\d+x\d+$/i, "").trim() || product.name;
+  // Remove dimension from name (e.g., "soft 190/100" -> "soft")
+  const cleaned = product.name.replace(/\s+(\d+x\d+|\d+\/\d+)$/i, "").trim();
+  return cleaned || product.name;
 };
 
 const stockBadge = (stock) => {
@@ -41,16 +42,16 @@ export default function Stock({
   loginPath = "/login/admin",
   unauthorizedMessage = "Accès réservé à l'administrateur",
   unauthorizedRedirect = "/",
+  defaultStock = 0,
 }) {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
-  const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [time, setTime] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState(EMPTY_FORM);
+  const [form, setForm] = useState({ ...EMPTY_FORM, stock: String(defaultStock) });
   const [confirmId, setConfirmId] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -58,7 +59,17 @@ export default function Stock({
     setLoading(true);
     try {
       const [productsData, categoriesData] = await Promise.all([getAll(), getAllCategories()]);
-      setProducts(Array.isArray(productsData) ? productsData : []);
+      const categoryMap = {};
+      if (Array.isArray(categoriesData)) {
+        categoriesData.forEach(cat => {
+          categoryMap[cat._id] = cat.name;
+        });
+      }
+      const enrichedProducts = (Array.isArray(productsData) ? productsData : []).map(product => ({
+        ...product,
+        category: typeof product.category === "string" ? categoryMap[product.category] || product.category : product.category?.name || product.category
+      }));
+      setProducts(enrichedProducts);
       setCategories(Array.isArray(categoriesData) ? categoriesData : []);
     } catch (error) {
       toast.error("Impossible de charger le stock");
@@ -119,7 +130,7 @@ export default function Stock({
   }, [products]);
 
   const openAdd = () => {
-    setForm({ ...EMPTY_FORM, category: defaultCategoryId });
+    setForm({ ...EMPTY_FORM, stock: String(defaultStock), category: defaultCategoryId });
     setModal("add");
   };
 
@@ -136,11 +147,11 @@ export default function Stock({
 
   const closeModal = () => {
     setModal(null);
-    setForm(EMPTY_FORM);
+    setForm({ ...EMPTY_FORM, stock: String(defaultStock) });
   };
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.price || !form.stock || !form.category) {
+    if (!form.name.trim() || form.price === "" || form.stock === "" || !form.category) {
       toast.warning("Remplissez tous les champs obligatoires");
       return;
     }
@@ -208,34 +219,23 @@ export default function Stock({
         </div>
 
         <div style={S.periodRow}>
-          {PERIOD_OPTIONS.map((period) => (
-            <button
-              key={period}
-              type="button"
-              onClick={() => setSelectedPeriod(period)}
-              style={{ ...S.periodBtn, ...(selectedPeriod === period ? S.periodBtnActive : S.periodBtnInactive) }}
-            >
-              {period}
-            </button>
-          ))}
-
-          <div className="dashboard-search" style={S.searchWrap}>
-            <div className="fancy-bg" />
-            <label>
-              <svg className="search" viewBox="0 0 24 24" fill="none" stroke="#949faa" strokeWidth="2">
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 260 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, padding: "9px 14px", flex: 1 }}>
+              <svg className="search" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21l-4.35-4.35" />
               </svg>
               <input
                 type="search"
-                required
-                className="input"
-                placeholder="Rechercher..."
+                placeholder="Rechercher produit, catégorie…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                style={{ border: "none", outline: "none", background: "transparent", fontSize: 13, color: "#1f2937", flex: 1, fontFamily: "inherit" }}
               />
-              <button type="button" className="close-btn" onClick={() => setSearch("")}>×</button>
-            </label>
+              {search && (
+                <button onClick={() => setSearch("")} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16, padding: 2 }}>×</button>
+              )}
+            </div>
           </div>
 
           <button type="button" onClick={fetchData} style={S.allOrdersBtn}>

@@ -6,6 +6,7 @@ import { getMyOrders } from '../../services/orderService';
 import { hasAccess, ROLES } from '../../utils/authUtils';
 import AdvancedFilters from '../../components/AdvancedFilters';
 import ClientSidebar from './ClientSidebar';
+import { notifyProfileChanged } from '../../services/profileSyncService';
 
 const KPI_CONFIG = [
   {
@@ -161,9 +162,13 @@ const ClientDashboard = () => {
   }, [isAuthorized]);
 
   useEffect(() => {
-    const tab = new URLSearchParams(location.search).get('tab');
-    if (tab === 'profile' || tab === 'overview') {
-      setActiveTab(tab);
+    // Support both 'tab' and 'section' parameters for flexibility
+    let tabParam = new URLSearchParams(location.search).get('tab');
+    if (!tabParam) {
+      tabParam = new URLSearchParams(location.search).get('section');
+    }
+    if (tabParam === 'profile' || tabParam === 'overview') {
+      setActiveTab(tabParam);
     }
   }, [location.search]);
 
@@ -228,29 +233,90 @@ const ClientDashboard = () => {
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
-    setEditedProfile(current => ({ ...current, [name]: value }));
+    if (name === 'phone') {
+      const digits = value.replace(/\D/g, '').slice(0,8);
+      setEditedProfile(current => ({ ...current, [name]: digits }));
+    } else {
+      setEditedProfile(current => ({ ...current, [name]: value }));
+    }
   };
 
   const handleSaveProfile = async () => {
     try {
+      // Validations
+      if (!editedProfile.username || !editedProfile.username.trim()) {
+        toast.error('❌ Le nom d\'utilisateur est requis');
+        return;
+      }
+      if (!editedProfile.phone || !editedProfile.phone.trim()) {
+        toast.error('❌ Le numéro de téléphone est requis');
+        return;
+      }
+      if ((editedProfile.phone || '').toString().replace(/\D/g, '').length !== 8) {
+        toast.error('❌ Le numéro de téléphone doit contenir exactement 8 chiffres');
+        return;
+      }
+
       setIsSaving(true);
-      await updateProfile({
+      console.log('📤 Envoi des données:', {
         username: editedProfile.username,
         phone: editedProfile.phone,
         address: editedProfile.address
       });
 
-      setProfile(current => ({
-        ...current,
+      const result = await updateProfile({
         username: editedProfile.username,
         phone: editedProfile.phone,
         address: editedProfile.address
-      }));
+      });
 
-      toast.success('Profil mis à jour avec succès !');
+      console.log('✅ Réponse du serveur:', result);
+
+      const updatedProfile = result?.user || {
+        id: profile.id || profile._id,
+        username: editedProfile.username,
+        email: profile.email,
+        phone: editedProfile.phone,
+        address: editedProfile.address,
+        role: profile.role
+      };
+      setProfile(updatedProfile);
+      localStorage.setItem('user', JSON.stringify(updatedProfile));
+
+      // 🔔 IMPORTANT: Notifier TOUTE l'application que le profil a changé
+      notifyProfileChanged(updatedProfile);
+      console.log('🔔 Notification globale envoyée - Le profil a changé partout dans l\'app');
+
+      // 🔄 IMPORTANT: Rafraîchir les commandes après la mise à jour du profil
+      console.log('🔄 Rafraîchissement des commandes...');
+      try {
+        const updatedOrders = await getMyOrders();
+        setOrders(Array.isArray(updatedOrders) ? updatedOrders : []);
+        setFilterConfig({ search: '', status: [], sort: '' }); // Réinitialiser les filtres
+        console.log('✅ Commandes rafraîchies! Nombre:', updatedOrders.length);
+        
+        // Afficher les commandes avec les nouvelles infos
+        if (updatedOrders.length > 0) {
+          console.log('📋 Première commande mise à jour:', {
+            customerName: updatedOrders[0].customerName,
+            phone: updatedOrders[0].phone,
+            address: updatedOrders[0].address
+          });
+        }
+      } catch (error) {
+        console.error('⚠️ Erreur lors du rafraîchissement des commandes:', error);
+      }
+
+      toast.success('✅ Profil enregistré! Les commandes sont maintenant à jour.');
+      
+      // 🔄 Passer automatiquement à l'onglet Aperçu pour voir les changements
+      setTimeout(() => {
+        setActiveTab('overview');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1000);
     } catch (error) {
-      console.error('Erreur:', error);
-      toast.error('Erreur lors de la mise à jour');
+      console.error('❌ Erreur lors de l\'enregistrement:', error);
+      toast.error(`❌ Erreur: ${error.message || 'Impossible de mettre à jour le profil'}`);
     } finally {
       setIsSaving(false);
     }
@@ -418,6 +484,9 @@ const ClientDashboard = () => {
                       <input
                         type="tel"
                         name="phone"
+                        inputMode="numeric"
+                        pattern="\\d{8}"
+                        maxLength={8}
                         value={editedProfile.phone}
                         onChange={handleProfileChange}
                         style={S.input}
@@ -442,8 +511,7 @@ const ClientDashboard = () => {
 
                   <div style={S.buttonGroup}>
                     <button
-                      type="submit"
-                      disabled={isSaving}
+                      type="button" disabled={isSaving} onClick={(e) => { e.preventDefault(); handleSaveProfile(); }}
                       style={{
                         ...S.submitButton,
                         opacity: isSaving ? 0.6 : 1,
@@ -781,3 +849,4 @@ const S = {
 };
 
 export default ClientDashboard;
+

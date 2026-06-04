@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CART_UPDATED_EVENT, getCartCount } from "../utils/cartUtils";
+import { PROFILE_CHANGED_EVENT } from "../services/profileSyncService";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,7 +18,7 @@ function NavBar() {
 
   const dropdownProducts = useMemo(
     () => [
-      { to: "/nos-matelas", label: "Relax Plus - PHARE", desc: "⭐ Matelas Ergonomique Premium" },
+      { to: "/nos-matelas", label: "Relax Elu produit", desc: "⭐ Matelas Ergonomique Premium" },
       { to: "/product/confort-plus", label: "Confort Plus", desc: "Soutien quotidien renforcé" },     
       { to: "/product/soft-plus", label: "Soft Plus", desc: "Matelas Orthopédique " },
       { to: "/product/venise-plus", label: "Venise Plus", desc: "Matelas Super Orthopédique " },
@@ -48,20 +49,33 @@ function NavBar() {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-    setIsLoggedIn(Boolean(token));
+    const syncUser = (event) => {
+      const token = localStorage.getItem("token");
+      const userData = event?.detail ? JSON.stringify(event.detail) : localStorage.getItem("user");
+      setIsLoggedIn(Boolean(token));
 
-    if (!userData) {
-      setUserRole(null);
-      return;
-    }
+      if (!userData) {
+        setUserRole(null);
+        return;
+      }
 
-    try {
-      setUserRole(JSON.parse(userData).role);
-    } catch {
-      setUserRole(null);
-    }
+      try {
+        setUserRole(JSON.parse(userData).role);
+      } catch {
+        setUserRole(null);
+      }
+    };
+
+    syncUser();
+    window.addEventListener(PROFILE_CHANGED_EVENT, syncUser);
+    window.addEventListener("user-logged-in", syncUser);
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener(PROFILE_CHANGED_EVENT, syncUser);
+      window.removeEventListener("user-logged-in", syncUser);
+      window.removeEventListener("storage", syncUser);
+    };
   }, []);
 
   useEffect(() => {
@@ -624,11 +638,12 @@ function NavBar() {
                 to="/products"
                 className={`ssn-dropdown-trigger ${isActive("/products") ? "active" : ""}`}
                 onFocus={() => setDropdownOpen(true)}
+                onMouseEnter={(e) => e.preventDefault()}
               >
                 Produits <span className={`ssn-chevron ${dropdownOpen ? "open" : ""}`}></span>
               </Link>
               {dropdownOpen && (
-                <ul className="ssn-dropdown-menu">
+                <ul className="ssn-dropdown-menu" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
                   {dropdownProducts.map((product, index) => (
                     <li key={product.to}>
                       <Link to={product.to} onClick={closeMenu}>

@@ -12,11 +12,15 @@ const orderSchema = new mongoose.Schema({
   },
   customerEmail: {
     type: String,
-    default: "client@starmousse.tn"
+    default: ""
+    
+
   },
   phone: {
     type: String,
-    required: true
+    required: [true, 'Le numéro de téléphone est requis'],
+    trim: true
+
   },
   address: {
     type: String,
@@ -25,6 +29,7 @@ const orderSchema = new mongoose.Schema({
   products: [{
     name: String,
     quantity: { type: Number, default: 1 },
+    dimension: String,
     price: Number
   }],
   total: {
@@ -34,7 +39,7 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     default: "en attente",
-    enum: ["Pending", "en attente", "en cours", "expédié", "livré", "annulé"]
+    enum: ["en attente", "en cours", "expédié", "livré", "annulé"]
   },
   createdAt: {
     type: Date,

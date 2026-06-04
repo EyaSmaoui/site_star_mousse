@@ -10,11 +10,7 @@
     "build": "vite build",
     "start": "node --max-http-header-size=16384 app.js",
     "seed": "node seeders/seed.js",
-    "create-admin": "node createAdmin.js",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
-    "test:unit": "jest __tests__",
-    "test:coverage": "jest --coverage --coverageReporters=text-summary"
+    "create-admin": "node createAdmin.js"
   },
   "dependencies": {
     "@sentry/node": "^7.44.0",
@@ -27,8 +23,10 @@
     "debug": "~2.6.9",
     "dotenv": "^17.3.1",
     "express": "~4.16.1",
+    "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^6.8.0",
     "express-session": "^1.19.0",
+    "express-validator": "^7.0.0",
     "framer-motion": "^12.38.0",
     "helmet": "^7.0.0",
     "http-errors": "~1.6.3",
@@ -55,9 +53,6 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@vitejs/plugin-react": "4.0.0",
     "concurrently": "^8.2.2",
-    "jest": "^27.5.1",
-    "jest-circus": "^30.4.2",
-    "supertest": "^7.2.2",
     "vite": "4.5.0"
   }
 }

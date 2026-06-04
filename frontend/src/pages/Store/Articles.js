@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
+import formatPrice from '../../utils/formatPrice';
 
 const Products = () => {
   const [filter, setFilter] = useState("Tous");
@@ -12,20 +13,21 @@ const Products = () => {
   const getProductRoute = (productName) => {
     const routeMap = {
       "Matelas Relax Plus": "/product/relax-plus",
-      "Matelas Medico plus": "/product/medico-plus",
+      "Matelas Medico Plus": "/product/medico-plus",
       "Matelas Tendresse": "/product/tendresse",
       "Matelas orthopédique Venise Plus": "/product/venise-plus",
       "Matelas orthopédique Soft Plus": "/product/soft-plus",
       "Matelas ressort Confort Plus": "/product/confort-plus",
-      "Matelas Relax pillow": "/product/relax-pillow",
-      "Matelas Tendresse pillow": "/product/tendresse-pillow",
-      "Matelas Medico pillow": "/product/medico-pillow",
-      "Matelas Venise pillow": "/product/venise-pillow",
+      "Matelas Relax Pillow": "/product/relax-pillow",
+      "Matelas Tendresse Pillow": "/product/tendresse-pillow",
+      "Matelas Medico Pillow": "/product/medico-pillow",
+      "Matelas Venise Pillow": "/product/venise-pillow",
       "Oreiller Gel Pillow": "/product/gel-pillow",
       "Oreiller Médical Aroma Lavande": "/product/aroma-lavande",
       "Oreiller Médical Aroma Menthe": "/product/aroma-menthe",
       "Oreiller Médical Aroma Océan Puff": "/product/ocean-puff",
       "Oreiller Pillow Anatolia Gel": "/product/anatolia-gel",
+      "Collection Oreillers Star Mousse": "/product/oreillers",
       "Matelas bébé Confort plus": "/product/bebe-confort-plus",
       "Matelas bébé Soft": "/product/bebe-soft",
       "Matelas bébé Venise": "/product/bebe-venise"
@@ -49,32 +51,33 @@ const Products = () => {
 
   const allProducts = [
     // ── ERGONOMIQUE ──
-    { id: 1, name: "Matelas Relax Plus", category: "Ergonomique", price: "530,00 د.ت – 1 850,00 د.ت", img: "/relax1.png", tag: "POPULAIRE", tagColor: "#2a7a2a", discount: "-19%" },
-    { id: 2, name: "Matelas Medico plus", category: "Orthomédicale", price: "440,00 د.ت – 1 530,00 د.ت", img: "/medico.jpg", tag: "POPULAIRE", tagColor: "#2a7a2a", discount: "-18%" },
-    { id: 3, name: "Matelas Tendresse", category: "Ergonomique", price: "730,00 د.ت – 2 555,00 د.ت", img: "/tendresse.jpg", tag: "POPULAIRE", tagColor: "#2a7a2a", discount: "-19%" },
+    { id: 1, name: "Matelas Relax Plus", category: "Ergonomique", guarantee: "10 ans", price: "530,00 د.ت – 1 850,00 د.ت", img: "/relax1.png", tag: "POPULAIRE", tagColor: "#2a7a2a", discount: "-19%" },
+    { id: 2, name: "Matelas Medico Plus", category: "Orthomédicale", guarantee: "9 ans", price: "440,00 د.ت – 1 530,00 د.ت", img: "/medico.jpg", tag: "POPULAIRE", tagColor: "#2a7a2a", discount: "-18%" },
+    { id: 3, name: "Matelas Tendresse", category: "Ergonomique", guarantee: "11 ans", price: "730,00 د.ت – 2 555,00 د.ت", img: "/tendresse.jpg", tag: "POPULAIRE", tagColor: "#2a7a2a", discount: "-19%" },
 
     // ── ORTHOPÉDIQUE ──
-    { id: 4, name: "Matelas orthopédique Venise Plus", category: "Orthopédique", price: "310,00 د.ت – 935,00 د.ت", img: "/venise.jpg", tag: "ORTHOPÉDIQUE", tagColor: "#1a1a2e", discount: null },
-    { id: 5, name: "Matelas orthopédique Soft Plus", category: "Orthopédique", price: "260,00 د.ت – 620,00 د.ت", img: "/venise.jpg", tag: "ORTHOPÉDIQUE", tagColor: "#1a1a2e", discount: null },
-    { id: 6, name: "Matelas ressort Confort Plus", category: "Orthopédique", price: "219,00 د.ت – 349,00 د.ت", img: "/confort.png", tag: "À RESSORT", tagColor: "#4a4ade", discount: null },
+    { id: 4, name: "Matelas orthopédique Venise Plus", category: "Orthopédique", guarantee: "5 ans", price: "310,00 د.ت – 935,00 د.ت", img: "/venise.jpg", tag: "ORTHOPÉDIQUE", tagColor: "#1a1a2e", discount: null },
+    { id: 5, name: "Matelas orthopédique Soft Plus", category: "Orthopédique", guarantee: "3 ans", price: "260,00 د.ت – 620,00 د.ت", img: "/venise.jpg", tag: "ORTHOPÉDIQUE", tagColor: "#1a1a2e", discount: null },
+    { id: 6, name: "Matelas ressort Confort Plus", category: "Orthopédique", guarantee: "3 ans", price: "219,00 د.ت – 349,00 د.ت", img: "/confort.png", tag: "À RESSORT", tagColor: "#4a4ade", discount: null },
 
     // ── PILLOW TOP ──
-    { id: 7, name: "Matelas Relax pillow", category: "Pillow Top", price: "950,00 د.ت – 2 030,00 د.ت", img: "/relax_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-19%" },
-    { id: 8, name: "Matelas Tendresse pillow", category: "Pillow Top", price: "1 160,00 د.ت – 2 630,00 د.ت", img: "/tendresse_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-21%" },
-    { id: 9, name: "Matelas Medico pillow", category: "Pillow Top", price: "800,00 د.ت – 1 810,00 د.ت", img: "/medico_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-20%" },
-    { id: 10, name: "Matelas Venise pillow", category: "Pillow Top", price: "650,00 د.ت – 1 400,00 د.ت", img: "/venise_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-20%" },
+    { id: 7, name: "Matelas Relax Pillow", category: "Pillow Top", guarantee: "10 ans", price: "950,00 د.ت – 2 030,00 د.ت", img: "/relax_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-19%" },
+    { id: 8, name: "Matelas Tendresse Pillow", category: "Pillow Top", guarantee: "10 ans", price: "1 160,00 د.ت – 2 630,00 د.ت", img: "/tendresse_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-21%" },
+    { id: 9, name: "Matelas Medico Pillow", category: "Pillow Top", guarantee: "9 ans", price: "800,00 د.ت – 1 810,00 د.ت", img: "/medico_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-20%" },
+    { id: 10, name: "Matelas Venise Pillow", category: "Pillow Top", guarantee: "8 ans", price: "650,00 د.ت – 1 400,00 د.ت", img: "/venise_pillow.png", tag: "PILLOW TOP", tagColor: "#b52f2f", discount: "-20%" },
 
     // ── OREILLERS ──
-    { id: 11, name: "Oreiller Gel Pillow", category: "Oreillers", price: "209,00 د.ت", img: "/oreiller_gel_pillow.jpg", tag: "PROMO", tagColor: "#b52f2f", discount: "-25%" },
-    { id: 12, name: "Oreiller Médical Aroma Lavande", category: "Oreillers", price: "175,00 د.ت", img: "/oreiller_lavande.png", tag: "OREILLER", tagColor: "#7a2fb5", discount: null },
-    { id: 13, name: "Oreiller Médical Aroma Menthe", category: "Oreillers", price: "175,00 د.ت", img: "/oreiller_menthe.png", tag: "OREILLER", tagColor: "#2a7a2a", discount: null },
-    { id: 14, name: "Oreiller Médical Aroma Océan Puff", category: "Oreillers", price: "175,00 د.ت", img: "/oreiller_puff.png", tag: "OREILLER", tagColor: "#2f7ab5", discount: "-19%" },
-    { id: 15, name: "Oreiller Pillow Anatolia Gel", category: "Oreillers", price: "220,00 د.ت", img: "/oreiller_forme_gel.jpg", tag: "OREILLER", tagColor: "#2f7ab5", discount: "-19%" },
+    { id: 11, name: "Collection Oreillers Star Mousse", category: "Oreillers", guarantee: "2 ans", price: "175,00 د.ت – 220,00 د.ت", img: "/oreiller_gel_pillow.jpg", tag: "OREILLERS", tagColor: "#3b82f6", discount: null },
+    { id: 12, name: "Oreiller Gel Pillow", category: "Oreillers", guarantee: "2 ans", price: "209,00 د.ت", img: "/oreiller_gel_pillow.jpg", tag: "PROMO", tagColor: "#b52f2f", discount: "-25%" },
+    { id: 13, name: "Oreiller Médical Aroma Lavande", category: "Oreillers", guarantee: "2 ans", price: "175,00 د.ت", img: "/oreiller_lavande.png", tag: "OREILLER", tagColor: "#7a2fb5", discount: null },
+    { id: 14, name: "Oreiller Médical Aroma Menthe", category: "Oreillers", guarantee: "2 ans", price: "175,00 د.ت", img: "/oreiller_menthe.png", tag: "OREILLER", tagColor: "#2a7a2a", discount: null },
+    { id: 15, name: "Oreiller Médical Aroma Océan Puff", category: "Oreillers", guarantee: "2 ans", price: "175,00 د.ت", img: "/oreiller_puff.png", tag: "OREILLER", tagColor: "#2f7ab5", discount: "-19%" },
+    { id: 16, name: "Oreiller Pillow Anatolia Gel", category: "Oreillers", guarantee: "2 ans", price: "220,00 د.ت", img: "/oreiller_forme_gel.jpg", tag: "OREILLER", tagColor: "#2f7ab5", discount: "-19%" },
 
     // ── BÉBÉ ──
-    { id: 16, name: "Matelas bébé Confort plus", category: "Bébé", price: "180,00 د.ت", img: "/bebe_confort.jpg", tag: "BÉBÉ", tagColor: "#e07b2a", discount: "-16%" },
-    { id: 17, name: "Matelas bébé Soft", category: "Bébé", price: "200,00 د.ت", img: "/bebe_soft.jpg", tag: "BÉBÉ", tagColor: "#e07b2a", discount: "-20%" },
-    { id: 18, name: "Matelas bébé Venise", category: "Bébé", price: "240,00 د.ت", img: "/bebe_venise.jpg", tag: "BÉBÉ", tagColor: "#e07b2a", discount: "-13%" },
+    { id: 17, name: "Matelas bébé Confort plus", category: "Bébé", guarantee: "3 ans", price: "180,00 د.ت", img: "/bebe_confort.jpg", tag: "BÉBÉ", tagColor: "#e07b2a", discount: "-16%" },
+    { id: 18, name: "Matelas bébé Soft", category: "Bébé", guarantee: "3 ans", price: "200,00 د.ت", img: "/bebe_soft.jpg", tag: "BÉBÉ", tagColor: "#e07b2a", discount: "-20%" },
+    { id: 19, name: "Matelas bébé Venise", category: "Bébé", guarantee: "3 ans", price: "240,00 د.ت", img: "/bebe_venise.jpg", tag: "BÉBÉ", tagColor: "#e07b2a", discount: "-13%" },
   ];
 
   const categories = ["Tous", "Ergonomique", "Orthopédique", "Pillow Top", "Oreillers", "Bébé"];
@@ -258,7 +261,8 @@ const Products = () => {
           color: #fff;
           text-transform: uppercase;
         }
-        .ssn-rating { font-size: 12px; color: #9090b0; }
+        .ssn-product-tag-popular { background: #e63946 !important; }
+        .ssn-product-tag-muted { background: #94a3b8 !important; }
         .ssn-card-body h3 {
           font-size: 15.5px;
           font-weight: 600;
@@ -334,7 +338,10 @@ const Products = () => {
         <section className="ssn-section-products">
           <div className="ssn-container">
             <div className="ssn-product-grid">
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product) => {
+                const isPopular = product.tag?.trim().toUpperCase() === "POPULAIRE";
+
+                return (
                 <div className="ssn-card ssn-fade" key={product.id}>
                   <div className="ssn-card-img">
                     {product.discount && (
@@ -342,16 +349,23 @@ const Products = () => {
                     )}
                     <img src={product.img} alt={product.name} />
                   </div>
-                  <div className="ssn-card-body">
-                    <div className="ssn-card-top">
-                      <span className="ssn-tag" style={{ backgroundColor: product.tagColor }}>
-                        {product.tag}
-                      </span>
-                      <span className="ssn-rating">⭐ 4.9</span>
-                    </div>
+<div className="ssn-card-body">
+                     <div className="ssn-card-top">
+                       {isPopular && (
+                         <span
+                           className="ssn-tag ssn-product-tag-popular"
+                         >
+                           {product.tag}
+                         </span>
+                       )}
+                     </div>
                     <h3>{product.name}</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', marginBottom: '12px', color: '#64748b', fontSize: '13px' }}>
+                      <span>{product.category}</span>
+                      <span>{product.guarantee || "Garantie incluse"}</span>
+                    </div>
                     <div className="ssn-card-footer">
-                      <span className="ssn-price">{product.price}</span>
+                      <span className="ssn-price">{formatPrice(product.price)}</span>
                       <button 
                         className="ssn-btn-card"
                         onClick={() => navigate(getProductRoute(product.name))}
@@ -361,7 +375,8 @@ const Products = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>

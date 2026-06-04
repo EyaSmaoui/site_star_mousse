@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import AdminSidebar from "./AdminSidebar";
-// Imports alignés avec ton fichier services/apiUser.js
-import { getAllUsers, updateProfile } from "../../services/apiUser"; 
+import SuccessModal from "../../components/SuccessModal";
+import { useSuccessAlert } from "../../hooks/useSuccessAlert";
+import { getAllUsers, updateProfile, changePassword } from "../../services/apiUser";
 
 /* ─── StatCard ───────────────────────────────────────────────────────────── */
 const StatCard = ({ icon, value, label, iconBg }) => (
@@ -58,13 +59,17 @@ const icons = {
 
 /* ─── Profile ────────────────────────────────────────────────────────────── */
 export default function Profile() {
-  const [editing, setEditing] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const { isOpen, message, title, showSuccess, closeSuccess } = useSuccessAlert();
   
   // États locaux pour gérer la session et le chargement
   const [userData, setUserData] = useState(null);
   const [nameInput, setNameInput] = useState("");
   const [loading, setLoading] = useState(true);
+  const [phoneInput, setPhoneInput] = useState("");
+  const [addressInput, setAddressInput] = useState("");
+  const [passwords, setPasswords] = useState({ current: "", next: "", confirm: "" });
+  const [showPasswords, setShowPasswords] = useState({ current: false, next: false, confirm: false });
+  const [passwordUpdating, setPasswordUpdating] = useState(false);
 
   // useEffect : Récupération des données utilisateur
   useEffect(() => {
@@ -75,11 +80,15 @@ export default function Profile() {
         if (localUser) {
           setUserData(localUser);
           setNameInput(localUser.username || "Admin Star Mousse");
+          setPhoneInput(localUser.phone || "");
+          setAddressInput(localUser.address || "");
         } else {
           const data = await getAllUsers();
           if (data && data.length > 0) {
             setUserData(data[0]);
             setNameInput(data[0].username);
+            setPhoneInput(data[0].phone || "");
+            setAddressInput(data[0].address || "");
           }
         }
       } catch (error) {
@@ -95,23 +104,50 @@ export default function Profile() {
   // handleSave corrigé (évite l'erreur 431 en nettoyant le payload)
   const handleSave = async () => {
     try {
-      // On envoie UNIQUEMENT le champ attendu et léger
-      const payload = { username: nameInput };
+      const payload = {
+        username: nameInput,
+        phone: phoneInput,
+        address: addressInput,
+      };
 
-      // Requête HTTP PUT via ton service apiUser
       await updateProfile(payload);
       
-      // Mise à jour locale après succès de la requête
-      const updatedUser = { ...userData, username: nameInput };
+      const updatedUser = { ...userData, username: nameInput, phone: phoneInput, address: addressInput };
       setUserData(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
-      
-      setEditing(false);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
+      showSuccess('Profil mis à jour avec succès!', 'Enregistré!');
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
       alert("Erreur lors de la sauvegarde.");
+    }
+  };
+
+  const handlePasswordFieldChange = (field, value) => {
+    setPasswords(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handlePasswordUpdate = async () => {
+    if (!passwords.current || !passwords.next || !passwords.confirm) {
+      alert("Veuillez remplir tous les champs du mot de passe.");
+      return;
+    }
+
+    if (passwords.next !== passwords.confirm) {
+      alert("Le nouveau mot de passe et la confirmation ne correspondent pas.");
+      return;
+    }
+
+    setPasswordUpdating(true);
+    try {
+      await changePassword({ currentPassword: passwords.current, newPassword: passwords.next, confirmPassword: passwords.confirm });
+      setPasswords({ current: "", next: "", confirm: "" });
+      setShowPasswords({ current: false, next: false, confirm: false });
+      showSuccess('Mot de passe mis à jour avec succès!', 'Enregistré!');
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du mot de passe:", error);
+      alert("Impossible de mettre à jour le mot de passe.");
+    } finally {
+      setPasswordUpdating(false);
     }
   };
 
@@ -134,12 +170,11 @@ export default function Profile() {
       <AdminSidebar />
 
       <main className="admin-main sm-internal-main" style={S.main}>
-
-        {/* ── Topbar ── */}
-        <div style={S.topbar}>
+        <div style={S.header}>
           <div>
-            <p style={S.topbarSub}>Star Mousse · Administration</p>
-            <h1 style={S.topbarTitle}>Mon Profil</h1>
+            <p style={S.breadcrumb}>Administration / Profil</p>
+            <h1 style={S.title}>Mon profil</h1>
+            <p style={S.subtitle}>Nom, email, téléphone, adresse et mot de passe</p>
           </div>
           <button onClick={handleLogout} style={S.logoutBtn}
             onMouseEnter={e => { e.currentTarget.style.background = "#fef2f2"; e.currentTarget.style.borderColor = "#fecaca"; }}
@@ -149,124 +184,87 @@ export default function Profile() {
           </button>
         </div>
 
-        {/* ── Hero + Stats row ── */}
-        <div style={S.heroRow}>
+        <div style={S.grid}>
+          <section style={S.card}>
+            <h2 style={S.sectionTitle}>Informations</h2>
+            <label style={S.label}>Nom complet</label>
+            <input
+              style={S.input}
+              type="text"
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+            />
+            <label style={S.label}>Email</label>
+            <input style={S.input} type="email" value={userData?.email || ""} disabled />
+            <label style={S.label}>Téléphone</label>
+            <input
+              style={S.input}
+              type="tel"
+              inputMode="numeric"
+              pattern="\\d{8}"
+              maxLength={8}
+              value={phoneInput}
+              onChange={(e) => setPhoneInput(e.target.value.replace(/\D/g, "").slice(0, 8))}
+            />
+            <label style={S.label}>Adresse</label>
+            <input
+              style={S.input}
+              type="text"
+              value={addressInput}
+              onChange={(e) => setAddressInput(e.target.value)}
+            />
+            <label style={S.label}>Rôle</label>
+            <input style={S.input} type="text" value={userData?.role || "Administrateur"} disabled />
+            <button style={S.actionButton} type="button" onClick={handleSave}>
+              Enregistrer
+            </button>
+          </section>
 
-          {/* Hero Card */}
-          <div style={S.heroCard}>
-            <div style={S.heroAccent} />
-
-            <div style={S.heroBody}>
-              {/* Avatar dynamique */}
-              <div style={S.avatarWrap}>
-                <div style={S.avatar}>
-                  {userData?.username ? userData.username.charAt(0).toUpperCase() : "A"}
-                </div>
-                <div style={S.avatarOnline} />
-                <button style={S.avatarCam}
-                  onMouseEnter={e => e.currentTarget.style.background = "#ea580c"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#f97316"}>
-                  <Icon d={icons.camera} size={12} color="#fff" />
-                </button>
-              </div>
-
-              {/* Nom Dynamique / Input d'édition */}
-              {editing ? (
-                <div style={S.editRow}>
-                  <input
-                    autoFocus
-                    value={nameInput}
-                    onChange={e => setNameInput(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && handleSave()}
-                    style={S.nameInput}
-                  />
-                  <button onClick={handleSave} style={S.saveBtn}>
-                    <Icon d={icons.check} size={14} color="#fff" /> Sauvegarder
-                  </button>
-                </div>
-              ) : (
-                <h2 style={S.heroName}>{userData?.username || "Admin Star Mousse"}</h2>
-              )}
-
-              {/* Badges */}
-              <div style={S.badgeRow}>
-                <span style={S.badgeAdmin}>
-                  <Icon d={icons.shield} size={11} color="#f97316" /> {userData?.role || "Administrateur"}
-                </span>
-                <span style={S.badgeOnline}>
-                  <span style={S.onlineDot} /> En ligne
-                </span>
-              </div>
-
-              {!editing && (
-                <button onClick={() => setEditing(true)} style={S.btnEdit}
-                  onMouseEnter={e => e.currentTarget.style.background = "#fff7ed"}
-                  onMouseLeave={e => { e.currentTarget.style.background = "#fff"; }}>
-                  <Icon d={icons.edit} size={13} color="#f97316" /> Modifier le profil
-                </button>
-              )}
-
-              {saved && (
-                <div style={S.savedToast}>
-                  <Icon d={icons.check} size={13} color="#10b981" /> Profil mis à jour
-                </div>
-              )}
+          <section style={S.card}>
+            <h2 style={S.sectionTitle}>Mot de passe</h2>
+            <label style={S.label}>Mot de passe actuel</label>
+            <div style={S.passwordContainer}>
+              <input
+                style={S.input}
+                type={showPasswords.current ? "text" : "password"}
+                value={passwords.current}
+                onChange={(e) => handlePasswordFieldChange("current", e.target.value)}
+              />
+              <button style={S.toggleButton} onClick={() => setShowPasswords((prev) => ({ ...prev, current: !prev.current }))} type="button">
+                {showPasswords.current ? "👁️" : "🔒"}
+              </button>
             </div>
-          </div>
-
-          {/* Stats column */}
-          <div style={S.statsCol}>
-            <StatCard
-              icon={<Icon d={icons.package} size={20} color="#fff" />}
-              value="6" label="Matelas"
-              iconBg="#3b82f6"
-            />
-            <StatCard
-              icon={<Icon d={icons.users} size={20} color="#fff" />}
-              value="4" label="Clients"
-              iconBg="#10b981"
-            />
-            <StatCard
-              icon={<Icon d={icons.activity} size={20} color="#fff" />}
-              value="14" label="Commandes"
-              iconBg="#f97316"
-            />
-          </div>
+            <label style={S.label}>Nouveau mot de passe</label>
+            <div style={S.passwordContainer}>
+              <input
+                style={S.input}
+                type={showPasswords.next ? "text" : "password"}
+                value={passwords.next}
+                onChange={(e) => handlePasswordFieldChange("next", e.target.value)}
+              />
+              <button style={S.toggleButton} onClick={() => setShowPasswords((prev) => ({ ...prev, next: !prev.next }))} type="button">
+                {showPasswords.next ? "👁️" : "🔒"}
+              </button>
+            </div>
+            <label style={S.label}>Confirmer le nouveau mot de passe</label>
+            <div style={S.passwordContainer}>
+              <input
+                style={S.input}
+                type={showPasswords.confirm ? "text" : "password"}
+                value={passwords.confirm}
+                onChange={(e) => handlePasswordFieldChange("confirm", e.target.value)}
+              />
+              <button style={S.toggleButton} onClick={() => setShowPasswords((prev) => ({ ...prev, confirm: !prev.confirm }))} type="button">
+                {showPasswords.confirm ? "👁️" : "🔒"}
+              </button>
+            </div>
+            <button style={S.actionButton} onClick={handlePasswordUpdate} type="button" disabled={passwordUpdating}>
+              {passwordUpdating ? "Mise à jour…" : "Mettre à jour le mot de passe"}
+            </button>
+          </section>
         </div>
 
-        {/* ── Bottom Grid ── */}
-        <div style={S.bottomGrid}>
-
-          {/* Informations Dynamiques */}
-          <div style={S.card}>
-            <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>Informations</h2>
-              <span style={S.cardBadge}>Profil complet</span>
-            </div>
-            <div style={{ padding: "4px 20px 16px" }}>
-              <InfoRow icon={<Icon d={icons.user}   size={14} color="#f97316" />} label="Rôle"           value={userData?.role || "Gestionnaire"} />
-              <InfoRow icon={<Icon d={icons.mail}   size={14} color="#f97316" />} label="Email"          value={userData?.email || "contact@starmousse.tn"} accent />
-              <InfoRow icon={<Icon d={icons.pin}    size={14} color="#f97316" />} label="Localisation"   value="Showroom Tunis, Tunisie" />
-              <InfoRow icon={<Icon d={icons.shield} size={14} color="#f97316" />} label="Niveau d'accès" value="Accès total" accent />
-            </div>
-          </div>
-
-          {/* Activité récente */}
-          <div style={S.card}>
-            <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>Activité récente</h2>
-              <span style={{ fontSize: 12, color: "#9ca3af" }}>5 événements</span>
-            </div>
-            <div style={{ padding: "4px 20px 16px" }}>
-              <ActivityRow action="Commande #7841 confirmée"     time="Il y a 2h"  type="success" />
-              <ActivityRow action="Stock Néo Mémoire mis à jour" time="Il y a 5h"  type="warning" />
-              <ActivityRow action="Nouveau client enregistré"    time="Hier"       type="info"    />
-              <ActivityRow action="Promotion Ergo Luxe activée"  time="Hier"       type="warning" />
-              <ActivityRow action="Rapport mensuel exporté"      time="30/04"      type="success" />
-            </div>
-          </div>
-
-        </div>
+        <SuccessModal isOpen={isOpen} title={title} message={message} onClose={closeSuccess} />
       </main>
     </div>
   );
@@ -275,27 +273,21 @@ export default function Profile() {
 /* ─── Styles ─────────────────────────────────────────────────────────────── */
 const S = {
   root: { display: "flex", minHeight: "100vh", background: "#fdf6ef", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1f2937" },
-  main: { marginLeft: 220, flex: 1, padding: "28px 32px" },
-  topbar: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 28 },
-  topbarSub: { fontSize: 13, color: "#9ca3af", margin: "0 0 4px" },
-  topbarTitle: { fontSize: 22, fontWeight: 700, color: "#1f2937", margin: 0 },
-  logoutBtn: { display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, fontSize: 13, fontWeight: 500, color: "#dc2626", cursor: "pointer", fontFamily: "inherit", transition: "all .15s" },
-  heroRow: { display: "grid", gridTemplateColumns: "1fr 220px", gap: 20, marginBottom: 20, alignItems: "start" },
-  heroCard: { background: "#fff", border: "1px solid #f0e8df", borderRadius: 16, overflow: "hidden" },
-  heroAccent: { height: 6, background: "linear-gradient(90deg, #f97316, #fb923c, #fdba74)", borderRadius: "16px 16px 0 0" },
-  heroBody: { padding: "28px 32px 28px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" },
-  avatarWrap: { position: "relative", marginBottom: 18 },
-  avatar: { width: 84, height: 84, borderRadius: "50%", background: "linear-gradient(135deg, #f97316, #ea580c)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, fontWeight: 800, color: "#fff", boxShadow: "0 0 0 4px #fff, 0 0 0 6px #f0e8df" },
-  avatarOnline: { position: "absolute", bottom: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#10b981", border: "2.5px solid #fff" },
-  avatarCam: { position: "absolute", bottom: 0, right: -4, width: 26, height: 26, borderRadius: "50%", background: "#f97316", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "background .15s" },
-  heroName: { fontSize: 22, fontWeight: 700, margin: "0 0 12px", color: "#1f2937", letterSpacing: "-0.02em" },
-  editRow: { display: "flex", flexDirection: "column", alignItems: "center", gap: 10, width: "100%", maxWidth: 340, marginBottom: 12 },
-  nameInput: { width: "100%", padding: "8px 16px", border: "1.5px solid #f97316", borderRadius: 10, fontSize: 18, fontWeight: 700, textAlign: "center", outline: "none", color: "#1f2937", fontFamily: "inherit", background: "#fff7ed" },
-  saveBtn: { display: "flex", alignItems: "center", gap: 6, padding: "8px 20px", background: "#f97316", color: "#fff", border: "none", borderRadius: 9, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
-  badgeRow: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 20 },
-  badgeAdmin: { display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 12px", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 999, fontSize: 12, fontWeight: 600, color: "#c2410c" },
-  badgeOnline: { display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 12px", background: "#dcfce7", border: "1px solid #86efac", borderRadius: 999, fontSize: 12, fontWeight: 600, color: "#16a34a" },
-  onlineDot: { width: 7, height: 7, borderRadius: "50%", background: "#16a34a", display: "inline-block" },
+  main: { marginLeft: 220, flex: 1, padding: "32px 34px 48px" },
+  header: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, marginBottom: 28, flexWrap: "wrap" },
+  breadcrumb: { margin: 0, fontSize: 12, color: "#8f7a63", textTransform: "uppercase", letterSpacing: ".12em" },
+  title: { margin: "8px 0 8px", fontSize: 32, fontWeight: 800, color: "#1a1714" },
+  subtitle: { margin: 0, fontSize: 14, color: "#5f5246", maxWidth: 620 },
+  logoutBtn: { display: "flex", alignItems: "center", gap: 7, padding: "10px 18px", background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, fontSize: 13, fontWeight: 500, color: "#dc2626", cursor: "pointer", fontFamily: "inherit", transition: "all .15s" },
+  grid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 },
+  card: { background: "#fff", borderRadius: 20, border: "1px solid #e7ddd1", padding: 24, boxShadow: "0 10px 35px rgba(0,0,0,0.03)" },
+  sectionTitle: { fontSize: 18, marginBottom: 16, color: "#3f352e" },
+  label: { display: "block", marginBottom: 8, fontSize: 12, textTransform: "uppercase", color: "#8f7a63", letterSpacing: ".08em" },
+  input: { width: "100%", padding: "12px 14px", borderRadius: 12, border: "1px solid #d6c9b7", marginBottom: 18, fontSize: 14, color: "#3f352e", fontFamily: "inherit" },
+  passwordContainer: { position: "relative", marginBottom: 18 },
+  toggleButton: { position: "absolute", right: 12, top: 12, background: "none", border: "none", cursor: "pointer", fontSize: 18, padding: "4px 8px", color: "#8f7a63", transition: "color 0.2s" },
+  actionButton: { width: "100%", marginTop: 4, background: "#c8651a", border: "none", color: "#fff", borderRadius: 14, padding: "14px 16px", cursor: "pointer", fontWeight: 700, fontFamily: "inherit" },
+  loading: { minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#6e5f52" },
   btnEdit: { display: "inline-flex", alignItems: "center", gap: 7, padding: "9px 22px", background: "#fff", border: "1.5px solid #f0e8df", borderRadius: 10, fontSize: 13, fontWeight: 600, color: "#f97316", cursor: "pointer", fontFamily: "inherit", transition: "background .15s" },
   savedToast: { marginTop: 12, display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 16px", background: "#dcfce7", border: "1px solid #86efac", borderRadius: 8, fontSize: 13, fontWeight: 500, color: "#15803d" },
   statsCol: { display: "flex", flexDirection: "column", gap: 14 },

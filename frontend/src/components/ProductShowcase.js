@@ -1,5 +1,19 @@
 import React from 'react';
+import formatPrice from '../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
+import { getProductBySlug } from '../data/products';
+
+const getSizePrice = (slug) => {
+  const product = getProductBySlug(slug);
+  const size = product?.sizes?.find((item) =>
+    String(item.label).replace(/[×*]/g, 'x').toLowerCase() === '90x190'
+  );
+
+  return {
+    price: size?.price ?? product?.price,
+    oldPrice: size?.oldPrice ?? product?.oldPrice,
+  };
+};
 
 export default function ProductShowcase() {
   const navigate = useNavigate();
@@ -12,8 +26,8 @@ export default function ProductShowcase() {
       description: 'Ergonomique et soutien optimal',
       image: '/relax_eluproduit.jpg',
       altText: 'Matelas Relax Plus - Matelas ergonomique mousse HR 18cm avec soutien optimal pour le confort quotidien',
-      price: '999 TND',
-      specs: ['18cm', 'Mousse HR', 'Fermeté moyenne'],
+      ...getSizePrice('relax-plus'),
+      specs: ['28 cm', 'Ressorts ensachés', 'Réversible été/hiver'],
       badge: '⭐ BEST SELLER',
       route: '/product/relax-plus'
     },
@@ -22,9 +36,9 @@ export default function ProductShowcase() {
       name: 'Matelas Medico Plus',
       description: 'Spécialement conçu pour le mal de dos',
       image: '/medico.jpg',
-      altText: 'Matelas Medico Plus - Matelas orthopédique 20cm avec soutien ferme conçu pour soulager les douleurs dorsales',
-      price: '1,199 TND',
-      specs: ['20cm', 'Soutien ferme', 'Orthopédique'],
+      altText: 'Matelas Medico Plus - Matelas orthopédique 25cm avec soutien ferme conçu pour soulager les douleurs dorsales',
+      ...getSizePrice('medico-plus'),
+      specs: ['25 cm', 'Ressorts Bonnell', 'Double face mi-ferme'],
       route: '/product/medico-plus'
     },
     {
@@ -32,9 +46,9 @@ export default function ProductShowcase() {
       name: 'Matelas Tendresse',
       description: 'Confort enveloppant et moelleux',
       image: '/tendresse.jpg',
-      altText: 'Matelas Tendresse - Matelas ultra confortable mousse HR 16cm avec confort enveloppant et moelleux',
-      price: '799 TND',
-      specs: ['16cm', 'Mousse HR', 'Ultra confortable'],
+      altText: 'Matelas Tendresse - Matelas ultra confortable mousse HR 30cm avec confort enveloppant et moelleux',
+      ...getSizePrice('tendresse'),
+      specs: ['30 cm', 'Tissu couture anti-acarien', 'Confort enveloppant'],
       route: '/product/tendresse'
     },
     {
@@ -42,9 +56,9 @@ export default function ProductShowcase() {
       name: 'Matelas Venise Plus',
       description: 'Ressorts ensachés premium',
       image: '/venise.jpg',
-      altText: 'Matelas Venise Plus - Matelas premium 22cm avec ressorts ensachés pour durabilité maximale et confort',
-      price: '1,499 TND',
-      specs: ['22cm', 'Ressorts ensachés', 'Durabilité maximale'],
+      altText: 'Matelas Venise Plus - Matelas premium 23cm avec ressorts ensachés pour durabilité maximale et confort',
+      ...getSizePrice('venise-plus'),
+      specs: ['23 cm', 'Coton anti-acarien', 'Soutien orthopédique'],
       route: '/product/venise-plus'
     }
   ];
@@ -52,7 +66,7 @@ export default function ProductShowcase() {
   const styles = `
     .ssn-showcase-section {
       padding: 60px 20px;
-      background: linear-gradient(180deg, #fbfaf8 0%, #ffffff 100%);
+      background: #f7f7f7;
       text-align: center;
     }
 
@@ -102,7 +116,7 @@ export default function ProductShowcase() {
       position: absolute;
       top: 12px;
       right: 12px;
-      background: linear-gradient(135deg, #b52f2f 0%, #8f2424 100%);
+      background: #b52f2f;
       color: white;
       padding: 6px 12px;
       border-radius: 20px;
@@ -158,11 +172,39 @@ export default function ProductShowcase() {
     }
 
     .ssn-product-price {
-      font-size: 1.4em;
-      font-weight: 700;
-      color: #b52f2f;
       margin-bottom: 16px;
       text-align: left;
+      min-height: 54px;
+    }
+
+    .ssn-product-price-label {
+      display: block;
+      margin-bottom: 3px;
+      color: #777;
+      font-size: 0.78em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .ssn-product-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ssn-product-price-new {
+      font-size: 1.4em;
+      font-weight: 800;
+      color: #b52f2f;
+    }
+
+    .ssn-product-price-old {
+      color: #9ca3af;
+      font-size: 0.95em;
+      font-weight: 700;
+      text-decoration: line-through;
     }
 
     .ssn-product-buttons {
@@ -187,18 +229,18 @@ export default function ProductShowcase() {
     }
 
     .ssn-product-btn-primary {
-      background: linear-gradient(135deg, #b52f2f 0%, #8f2424 100%);
+      background: #b52f2f;
       color: white;
     }
 
     .ssn-product-btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(181, 47, 47, 0.3);
+      box-shadow: 0 6px 16px rgba(181, 47, 47, 0.28);
     }
 
     .ssn-product-btn-secondary {
       background: white;
-      color: #b52f2f;
+      color: #6f6f6f;
       border: 2px solid #b52f2f;
     }
 
@@ -214,7 +256,7 @@ export default function ProductShowcase() {
     .ssn-showcase-cta-btn {
       display: inline-block;
       padding: 16px 40px;
-      background: linear-gradient(135deg, #b52f2f 0%, #8f2424 100%);
+      background: #7f7f7f;
       color: white;
       border: none;
       border-radius: 8px;
@@ -226,7 +268,7 @@ export default function ProductShowcase() {
 
     .ssn-showcase-cta-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(181, 47, 47, 0.3);
+      box-shadow: 0 8px 20px rgba(119, 119, 119, 0.25);
     }
 
     @media (max-width: 768px) {
@@ -292,7 +334,7 @@ export default function ProductShowcase() {
       <section className="ssn-showcase-section">
         <div className="ssn-showcase-header">
           <h2>Nos Matelas Star Mousse</h2>
-          <p>Choisissez le confort qui vous convient — Tous garantis 10 ans</p>
+          <p>Choisissez le confort qui vous convient — Garantie jusqu'à 10 ans selon le modèle</p>
         </div>
 
         <div className="ssn-showcase-grid">
@@ -313,7 +355,15 @@ export default function ProductShowcase() {
                     <span key={idx} className="ssn-product-spec">{spec}</span>
                   ))}
                 </div>
-                <div className="ssn-product-price">{product.price}</div>
+                <div className="ssn-product-price">
+                  <span className="ssn-product-price-label">À partir de 190x90</span>
+                  <div className="ssn-product-price-row">
+                    <span className="ssn-product-price-new">{formatPrice(product.price)}</span>
+                    {product.oldPrice && (
+                      <span className="ssn-product-price-old">{formatPrice(product.oldPrice)}</span>
+                    )}
+                  </div>
+                </div>
                 <div className="ssn-product-buttons">
                   <button 
                     className="ssn-product-btn ssn-product-btn-primary"
@@ -322,19 +372,6 @@ export default function ProductShowcase() {
                     title={`Voir les détails du ${product.name}`}
                   >
                     Voir détails →
-                  </button>
-                  <button 
-                    className="ssn-product-btn ssn-product-btn-secondary"
-                    onClick={() => {
-                      if (window.trackWhatsApp) {
-                        window.trackWhatsApp(product.name, 'ProductShowcase');
-                      }
-                      window.open(whatsappLink, '_blank');
-                    }}
-                    aria-label={`Envoyer un message WhatsApp concernant le ${product.name}`}
-                    title={`Envoyer un message WhatsApp concernant le ${product.name}`}
-                  >
-                    💬 Info rapide
                   </button>
                 </div>
               </div>

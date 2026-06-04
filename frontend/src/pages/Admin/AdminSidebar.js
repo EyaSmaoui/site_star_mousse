@@ -45,6 +45,18 @@ const NAV_ITEMS = [
     ),
   },
   {
+    id: "employees",
+    label: "Ajouter employé",
+    path: "/add-employer",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
+        <path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
+        <path d="M19 9h2m-1-1v2" />
+      </svg>
+    ),
+  },
+  {
     id: "Profile",
     label: "Profil",
     path: "/profile",

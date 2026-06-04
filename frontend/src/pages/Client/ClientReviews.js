@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientSidebar from "./ClientSidebar";
+import SearchBar from "../../components/SearchBar";
 import { getMyReviews } from "../../services/apiReview";
 import { getProfile } from "../../services/apiAuth";
 import { hasAccess, ROLES } from "../../utils/authUtils";
+import { subscribeToProfileChanges } from "../../services/profileSyncService";
 import "./ClientDashboard.css";
 
 export default function ClientReviews() {
@@ -50,6 +52,14 @@ export default function ClientReviews() {
 
     fetchData();
   }, [navigate]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToProfileChanges((updatedProfile) => {
+      setProfile((current) => ({ ...current, ...updatedProfile }));
+    });
+
+    return unsubscribe;
+  }, []);
 
   const formatDate = (date) => {
     if (!date) return "-";
@@ -100,12 +110,10 @@ export default function ClientReviews() {
         ) : (
           <>
             <div className="reviews-filter">
-              <input
-                type="text"
-                className="filter-input"
+              <SearchBar
                 placeholder="Rechercher par produit ou contenu..."
                 value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
+                onChange={setSearchTerm}
               />
               <select
                 className="filter-select"

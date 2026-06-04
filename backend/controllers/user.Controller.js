@@ -10,6 +10,9 @@ const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT_SECRET_KEY;
 const getResetTokenHash = (token) =>
     crypto.createHash('sha256').update(token).digest('hex');
 
+const escapeRegex = (value = '') =>
+    String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const getFrontendUrl = () =>
     (process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:3000').replace(/\/$/, '');
 
@@ -77,18 +80,13 @@ exports.addUser = async (req, res) => {
     try {
         const { username, email, password, phone } = req.body;
 
-        // Validations supplémentaires
-        if (!username || !username.trim()) {
-            return res.status(400).json({ error: "Le nom d'utilisateur est requis." });
-        }
-        if (!email || !email.trim()) {
-            return res.status(400).json({ error: "L'email est requis." });
-        }
-        if (!password || password.length < 6) {
-            return res.status(400).json({ error: "Le mot de passe doit contenir au moins 6 caractères." });
-        }
-        if (!phone || !phone.trim()) {
-            return res.status(400).json({ error: "Le numéro de téléphone est requis." });
+        // Validations ont été effectuées par express-validator dans les middlewares
+        // Double check pour password strength
+        const passwordRegex = /^.{6,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({ 
+                error: "Le mot de passe doit contenir au moins 6 caractères." 
+            });
         }
 
         const newUser = new User({
@@ -376,21 +374,91 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const { username, phone, address } = req.body;
+        const userId = req.user._id;
+        const userEmail = req.user.email;
         
-        const user = await User.findById(req.user._id);
+        console.log(`[UPDATE PROFILE] Début mise à jour pour utilisateur: ${userId} (${userEmail})`);
+        
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: 'Utilisateur non trouvé' });
         }
 
-        // Mise à jour des champs
+        // Mise à jour des champs utilisateur
         if (username && username.trim()) user.username = username.trim();
         if (phone && phone.trim()) user.phone = phone.trim();
-        if (address !== undefined && address.trim()) user.address = address.trim();
+        if (address !== undefined) user.address = address.trim();
 
+        // SAUVEGARDE en base de données
         await user.save();
+        console.log(`[UPDATE PROFILE] ✅ User enregistré en BD: ${JSON.stringify({username: user.username, phone: user.phone, address: user.address})}`);
+
+        // IMPORTANT: Propager les modifications à TOUS les documents liés dans la BD
+        const updateData = {};
+        if (username) updateData.customerName = username.trim();
+        if (phone) updateData.phone = phone.trim();
+        if (address !== undefined) updateData.address = address.trim();
+        const emailMatch = new RegExp(`^${escapeRegex(userEmail)}$`, 'i');
+
+        if (Object.keys(updateData).length > 0) {
+            // 🔗 ÉTAPE 1: Lier les commandes par email qui n'ont pas userId
+            const linkResult = await Order.updateMany(
+                { customerEmail: emailMatch, $or: [{ userId: null }, { userId: { $exists: false } }] },
+                { $set: { userId: userId } }
+            );
+            console.log(`[UPDATE PROFILE] 🔗 LIAISON: ${linkResult.modifiedCount} commandes liées au userId`);
+            
+            // ✏️ ÉTAPE 2: Mettre à jour TOUTES les commandes (par userId OU par email)
+            const orderResult = await Order.updateMany(
+                { $or: [{ userId: userId }, { customerEmail: emailMatch }] },
+                { $set: { ...updateData, userId: userId } }
+            );
+            console.log(`[UPDATE PROFILE] ✅ ${orderResult.modifiedCount} commandes mises à jour`);
+            
+            // 🔍 VÉRIFICATION: Afficher les données après update
+            const ordersAfterUpdate = await Order.find({ 
+                $or: [
+                    { userId: userId },
+                    { customerEmail: emailMatch }
+                ]
+            }).lean();
+            console.log(`[UPDATE PROFILE] 📊 Total commandes du client: ${ordersAfterUpdate.length}`);
+            if (ordersAfterUpdate.length > 0) {
+                console.log(`[UPDATE PROFILE] 📝 Première commande APRÈS update:`, {
+                    _id: ordersAfterUpdate[0]._id,
+                    customerName: ordersAfterUpdate[0].customerName,
+                    phone: ordersAfterUpdate[0].phone,
+                    address: ordersAfterUpdate[0].address,
+                    customerEmail: ordersAfterUpdate[0].customerEmail,
+                    userId: ordersAfterUpdate[0].userId
+                });
+            }
+        }
+
+        // Mise à jour du Client model si existant
+        const Client = require('../models/client.model');
+        const clientUpdate = {};
+        if (username) clientUpdate.name = username.trim();
+        if (phone) clientUpdate.phone = phone.trim();
+        
+        if (Object.keys(clientUpdate).length > 0) {
+            const clientResult = await Client.findOneAndUpdate(
+                { email: emailMatch },
+                { $set: clientUpdate },
+                { new: true }
+            ).catch(() => null);
+            if (clientResult) {
+                console.log(`[UPDATE PROFILE] ✅ Client model enregistré en BD`);
+            } else {
+                console.log(`[UPDATE PROFILE] ℹ️ Aucun Client model trouvé pour ${userEmail}`);
+            }
+        }
+
+        console.log(`[UPDATE PROFILE] ✅ TOUTES les modifications ont été enregistrées en BD`);
 
         res.status(200).json({
-            message: 'Profil mis à jour avec succès',
+            message: 'Profil mis à jour avec succès dans toute la base de données',
+            success: true,
             user: {
                 id: user._id,
                 username: user.username,
@@ -401,6 +469,7 @@ exports.updateProfile = async (req, res) => {
             }
         });
     } catch (error) {
+        console.error(`[UPDATE PROFILE] ❌ Erreur: ${error.message}`);
         res.status(500).json({ error: error.message });
     }
 };

@@ -8,6 +8,7 @@ import { getAllOrders } from "../../services/apiOrder";
 import { getAll as getAllProducts } from "../../services/apiProduct";
 import { getAllUsers } from "../../services/apiUser";
 import { deleteReview, getAllReviews } from "../../services/apiReview";
+import SearchBar from "../../components/SearchBar";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,14 +35,6 @@ ChartJS.register(
 );
 
 /* ─── Constantes ──────────────────────────────────────────────────────────── */
-const PERIOD_OPTIONS = [
-  "7 derniers jours",
-  "30 derniers jours",
-  "Ce mois-ci",
-  "Ce trimestre",
-  "Cette année",
-];
-const TABS = ["Aperçu", "Statistiques", "Commandes", "Matelas", "Clients", "Avis"];
 
 const MOCK_ORDERS = [
   {
@@ -244,7 +237,6 @@ const donutOptions = {
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Aperçu");
-  const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [time, setTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 900 : false);
   const [statsSummary, setStatsSummary] = useState({
@@ -527,53 +519,13 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* ── Period selector + Search ── */}
+        {/* ── Search + action bouton ── */}
         <div style={S.periodRow}>
-          {PERIOD_OPTIONS.map((p) => (
-            <button
-              key={p}
-              onClick={() => setSelectedPeriod(p)}
-              style={{
-                ...S.periodBtn,
-                ...(selectedPeriod === p
-                  ? S.periodBtnActive
-                  : S.periodBtnInactive),
-              }}
-            >
-              {p}
-            </button>
-          ))}
-
-          <div className="dashboard-search" style={S.searchWrap}>
-            <div className="fancy-bg" />
-            <label>
-              <svg
-                className="search"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#949faa"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-              </svg>
-              <input
-                type="search"
-                required
-                className="input"
-                placeholder="Rechercher..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <button
-                type="button"
-                className="close-btn"
-                onClick={() => setSearchTerm("")}
-              >
-                ×
-              </button>
-            </label>
-          </div>
+          <SearchBar 
+            placeholder="Rechercher avis, clients, produits..." 
+            value={searchTerm} 
+            onChange={setSearchTerm} 
+          />
 
           <button
             onClick={() => setActiveTab("Commandes")}
@@ -617,22 +569,6 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* ── Tabs ── */}
-        <div style={S.tabsRow}>
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                ...S.tabBtn,
-                ...(activeTab === tab ? S.tabBtnActive : S.tabBtnInactive),
-              }}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
         {/* ══ Aperçu ══ */}
         {activeTab === "Aperçu" && (
           <div style={S.overviewGrid}>
@@ -665,7 +601,7 @@ export default function AdminDashboard() {
                 <table style={S.table}>
                   <thead>
                     <tr style={{ background: "#f9fafb" }}>
-                      {["ID", "Client", "Montant", "Date", "Statut"].map(
+                      {["Client", "Montant", "Date", "Statut"].map(
                         (h) => (
                           <th key={h} style={S.th}>
                             {h}
@@ -809,7 +745,7 @@ export default function AdminDashboard() {
             <table style={S.table}>
               <thead>
                 <tr style={{ background: "#f9fafb" }}>
-                  {["ID", "Client", "Montant", "Date", "Statut"].map((h) => (
+                  {["Client", "Montant", "Date", "Statut"].map((h) => (
                     <th key={h} style={S.th}>
                       {h}
                     </th>
@@ -824,7 +760,7 @@ export default function AdminDashboard() {
                 ) : (
                   <tr>
                     <td
-                      colSpan="5"
+                      colSpan="4"
                       style={{
                         padding: 20,
                         textAlign: "center",
@@ -852,7 +788,7 @@ export default function AdminDashboard() {
               <thead>
                 <tr style={{ background: "#f9fafb" }}>
                   {[
-                    "SKU / ID",
+                    "SKU",
                     "Nom du Produit",
                     "Prix Unitaire",
                     "Stock Disponible",
@@ -877,7 +813,7 @@ export default function AdminDashboard() {
                           color: "#6b7280",
                         }}
                       >
-                        {p.productId || p._id}
+                        {p.productId || "-"}
                       </td>
                       <td
                         style={{
@@ -1116,7 +1052,6 @@ export default function AdminDashboard() {
 
 /* ─── Sous-composants ─────────────────────────────────────────────────────── */
 function OrderRow({ order }) {
-  const id = order._id || order.id || "N/A";
   const name = order.customerName || order.name || "Client inconnu";
   const amount =
     order.total != null
@@ -1143,16 +1078,6 @@ function OrderRow({ order }) {
 
   return (
     <tr style={{ borderBottom: "1px solid #f3f4f6" }}>
-      <td
-        style={{
-          padding: "13px 20px",
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#374151",
-        }}
-      >
-        {id}
-      </td>
       <td style={{ padding: "13px 20px", fontSize: 13, color: "#374151" }}>
         {name}
       </td>
@@ -1209,12 +1134,10 @@ function AlertItem({ alert }) {
             fontSize: 13,
             fontWeight: 500,
             color: "#111827",
-            marginBottom: 2,
           }}
         >
           {alert.name}
         </div>
-        <div style={{ fontSize: 12, color: "#9ca3af" }}>{alert.sku}</div>
       </div>
       <span
         style={{

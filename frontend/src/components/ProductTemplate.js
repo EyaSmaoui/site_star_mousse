@@ -7,11 +7,7 @@ import Footer from "./Footer";
 import OrderCheckout from "./OrderCheckout";
 import { getProductBySlug } from "../data/products";
 
-function formatPrice(amount) {
-  return typeof amount === "number"
-    ? amount.toLocaleString("fr-TN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " DT"
-    : "0,00 DT";
-}
+import formatPrice from '../utils/formatPrice';
 
 function ProductTemplate({ product: fallbackProduct }) {
   const { slug } = useParams();
@@ -132,17 +128,19 @@ function ProductTemplate({ product: fallbackProduct }) {
     setLoading(true);
     const productLabel = product.name + (hasSizes && selectedSize?.label ? ` (${selectedSize.label})` : "");
     const orderData = {
-      name: form.name.trim(),
-      email: form.email.trim(),
+      customerName: form.name.trim(),
+      customerEmail: form.email.trim(),
       phone: form.phone.trim(),
       address: form.address.trim(),
       products: [{ name: productLabel, quantity: qty, price: unitPrice ?? 0 }],
       total,
     };
 
+
     try {
       const { submitProductOrder } = await import("../services/orderService");
       await submitProductOrder(orderData);
+
       toast.success("Commande envoyée avec succès !");
       setForm({ name: "", phone: "", address: "", email: "" });
       setQty(1);
@@ -157,7 +155,8 @@ function ProductTemplate({ product: fallbackProduct }) {
   };
 
   const hasOldPrice = hasSizes ? selectedSize?.oldPrice : product.oldPrice;
-  const accent = product.tagColor || "#b52f2f";
+  const badgeIsPopular = product.tag?.trim().toUpperCase() === "POPULAIRE";
+  const accent = badgeIsPopular ? "#e63946" : "#94a3b8";
 
   return (
     <>
@@ -175,6 +174,7 @@ function ProductTemplate({ product: fallbackProduct }) {
         .ssn-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .ssn-thumb.active { border-color: ${accent}; }
         .ssn-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: ${accent}; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.2px; margin-bottom: 14px; }
+        .ssn-product-badge { background: ${accent} !important; border-color: transparent !important; color: #fff !important; }
         .ssn-title { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 3.8vw, 4.5rem); line-height: 1.02; margin-bottom: 14px; color: #1b1b33; }
         .ssn-subtitle { font-size: 1rem; line-height: 1.8; color: #4f5668; max-width: 680px; margin-bottom: 24px; }
         .ssn-price-block { display: flex; align-items: center; gap: 18px; margin-bottom: 26px; flex-wrap: wrap; }
@@ -230,7 +230,9 @@ function ProductTemplate({ product: fallbackProduct }) {
             </div>
 
             <div className="ssn-fade" style={{ transitionDelay: "0.08s" }}>
-              <span className="ssn-badge">{product.tag}</span>
+              {badgeIsPopular && (
+                <span className="ssn-badge ssn-product-badge">{product.tag}</span>
+              )}
               <h1 className="ssn-title">{product.name}</h1>
               <div className="ssn-subtitle">{product.description}</div>
 

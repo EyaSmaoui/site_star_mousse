@@ -1,8 +1,8 @@
 const Product = require('../models/product.model');
-const Recommendation = require('../models/recommendation.model');
 const { PRODUCT_CATALOG } = require('../services/recommendationEngine');
 const { inferProductImage, withProductImage } = require('../services/productImages');
 const { extractBudget, extractDimension } = require('../services/chatbot.utils');
+const { getProductRecommendations } = require('../services/productRecommendation.service');
 
 const normalizeQuery = (query) =>
     String(query || '')
@@ -102,27 +102,9 @@ const fetchRecommendedProducts = async ({ q = '', limit = 6 }) => {
         }
     }
 
-    const recommendations = await Recommendation.find()
-        .populate('product')
-        .sort({ rank: -1, averageRating: -1, reviewCount: -1 })
-        .limit(limit);
-
-    const activeRecommendations = recommendations
-        .filter((item) => item.product && item.product.isAvctive !== false)
-        .map((item) => ({
-            ...withProductImage(item.product),
-            recommendation: {
-                averageRating: item.averageRating,
-                reviewCount: item.reviewCount,
-                sentimentScore: item.sentimentScore,
-                rank: item.rank,
-                reason: item.reason,
-                updatedAt: item.updatedAt,
-            },
-        }));
-
-    if (activeRecommendations.length) {
-        return activeRecommendations;
+    const liveRecommendations = await getProductRecommendations({ limit, query: cleanQuery });
+    if (liveRecommendations.length) {
+        return liveRecommendations;
     }
 
     const fallbackProducts = await Product.find({ isAvctive: { $ne: false } })

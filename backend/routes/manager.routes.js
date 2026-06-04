@@ -3,6 +3,7 @@ const router = express.Router();
 const managerController = require('../controllers/manager.Controller');
 const { requireAuthUser, requireAdmin } = require('../middleware/authMiddlewares');
 
+router.post('/login', managerController.login);
 router.get('/getAllManagers', requireAuthUser, requireAdmin, managerController.getAllManagers);
 router.post('/addManager', requireAuthUser, requireAdmin, managerController.addManager);
 router.put('/updateManager/:id', requireAuthUser, requireAdmin, managerController.updateManager);

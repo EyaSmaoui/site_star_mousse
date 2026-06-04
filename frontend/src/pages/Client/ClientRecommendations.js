@@ -5,6 +5,56 @@ import ClientSidebar from "./ClientSidebar";
 import { getRecommended } from "../../services/apiProduct";
 import { getProfile } from "../../services/apiAuth";
 import { hasAccess, ROLES } from "../../utils/authUtils";
+import { subscribeToProfileChanges } from "../../services/profileSyncService";
+import { PRODUCTS } from "../../data/products";
+import formatPrice from "../../utils/formatPrice";
+
+const normalizeName = (value = "") =>
+  String(value)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const featuredProducts = PRODUCTS.slice(0, 6).map((product, index) => ({
+  ...product,
+  recommendation: {
+    averageRating: 4.8 - Math.min(index, 3) * 0.1,
+    reviewCount: 12 - index,
+    reason: "Selection confort recommandee pour mieux dormir et profiter d'un soutien adapte.",
+  },
+}));
+
+const getLocalProductMatch = (product) => {
+  const productName = normalizeName(product?.name);
+  return PRODUCTS.find((localProduct) => {
+    const localName = normalizeName(localProduct.name);
+    return localName === productName || localName.includes(productName) || productName.includes(localName);
+  });
+};
+
+const normalizeProduct = (product, index) => {
+  const localProduct = getLocalProductMatch(product) || PRODUCTS[index % PRODUCTS.length];
+  const sizes = Array.isArray(localProduct.sizes) ? localProduct.sizes : [];
+  const defaultSize = sizes[localProduct.defaultSizeIndex ?? 0] || sizes[0];
+
+  return {
+    ...localProduct,
+    ...product,
+    slug: product.slug || localProduct.slug,
+    image: product.image || product.img || product.images?.[0] || localProduct.images?.[0] || "/relax1.png",
+    category: product.category?.name || product.categoryName || product.category || localProduct.category || "Produit",
+    description: product.description || product.desc || localProduct.description || "Un produit recommande pour ameliorer votre confort de sommeil.",
+    displayPrice: Number(product.price ?? defaultSize?.price ?? localProduct.price ?? 0),
+    recommendation: product.recommendation || localProduct.recommendation || {
+      averageRating: product.averageRating || 4.6,
+      reviewCount: product.reviewCount || 0,
+      reason: "Selection catalogue adaptee au confort et au sommeil.",
+    },
+  };
+};
 
 export default function ClientRecommendations() {
   const navigate = useNavigate();
@@ -34,12 +84,24 @@ export default function ClientRecommendations() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [profileData, recommended] = await Promise.all([getProfile(), getRecommended(6)]);
+        const profileData = await getProfile();
         setProfile(profileData);
-        setRecommendations(Array.isArray(recommended) ? recommended : []);
+
+        try {
+          const recommended = await getRecommended(6);
+          const normalizedRecommendations = Array.isArray(recommended)
+            ? recommended.map(normalizeProduct)
+            : [];
+          setRecommendations(normalizedRecommendations.length ? normalizedRecommendations : featuredProducts.map(normalizeProduct));
+        } catch (recommendationError) {
+          console.error(recommendationError);
+          setRecommendations(featuredProducts.map(normalizeProduct));
+          toast.warning("Recommandations catalogue affichees en attendant le serveur.");
+        }
       } catch (error) {
         console.error(error);
-        toast.error("Impossible de charger les recommandations.");
+        setRecommendations(featuredProducts.map(normalizeProduct));
+        toast.error("Impossible de charger votre profil. Recommandations catalogue affichees.");
       } finally {
         setLoading(false);
       }
@@ -47,6 +109,14 @@ export default function ClientRecommendations() {
 
     fetchData();
   }, [navigate]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToProfileChanges((updatedProfile) => {
+      setProfile((current) => ({ ...current, ...updatedProfile }));
+    });
+
+    return unsubscribe;
+  }, []);
 
   const avatarLetters = profile.username
     ? profile.username
@@ -83,20 +153,26 @@ export default function ClientRecommendations() {
             {recommendations.map((product) => (
               <article key={product._id || product.id || product.name} style={S.card}>
                 <img
-                  src={product.image || product.img || "/relax1.png"}
+                  src={product.image || "/relax1.png"}
                   alt={product.name}
                   style={S.cardImage}
                 />
                 <div style={S.cardBody}>
-                  <div style={S.badge}>{product.category || (product.categoryName || "Produit")}</div>
+                  <div style={S.badge}>{product.category || "Produit"}</div>
                   <h2 style={S.cardTitle}>{product.name}</h2>
                   <p style={S.cardDesc}>{product.description || product.desc || "Un produit recommandé par notre système d'avis."}</p>
                   <div style={S.cardMeta}>
-                    <span style={S.price}>{Number(product.price || 0).toLocaleString("fr-FR")} DT</span>
-                    <span style={S.rating}>⭐ {product.recommendation?.averageRating || product.averageRating || 4.5}</span>
+                    <span style={S.price}>{formatPrice(product.displayPrice)}</span>
+                    {(product.recommendation?.reviewCount || product.reviewCount) ? (
+                      <span style={S.rating}>
+                        ⭐ {Number(product.recommendation?.averageRating || product.averageRating || 0).toFixed(1)} · {product.recommendation?.reviewCount || product.reviewCount} avis
+                      </span>
+                    ) : (
+                      <span style={S.ratingMuted}>Sélection catalogue</span>
+                    )}
                   </div>
                   {product.recommendation?.reason && <p style={S.reason}>{product.recommendation.reason}</p>}
-                  <a href={product.path || `/product/${product._id || product.id}` } style={S.cta}>Voir le produit</a>
+                  <a href={product.path || `/product/${product.slug}` } style={S.cta}>Voir le produit</a>
                 </div>
               </article>
             ))}
@@ -237,6 +313,11 @@ const S = {
   rating: {
     fontSize: 14,
     color: "#f97316",
+    fontWeight: 700,
+  },
+  ratingMuted: {
+    fontSize: 13,
+    color: "#6b7280",
     fontWeight: 700,
   },
   reason: {

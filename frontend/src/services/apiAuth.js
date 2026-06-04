@@ -10,6 +10,11 @@ export const login = async (credentials) => {
   return response.data;
 };
 
+export const managerLogin = async (credentials) => {
+  const response = await httpClient.post('/api/managers/login', credentials, { timeout: 6000 });
+  return response.data;
+};
+
 export const forgotPassword = async (email) => {
   const response = await httpClient.post('/api/users/forgot-password', { email });
   return response.data;

@@ -4,6 +4,7 @@ export const redirectByRole = (user, navigate) => {
     case 'admin':
       navigate('/admin-dashboard');
       break;
+    case 'gestionnaire':
     case 'manager':
     case 'employee':
     case 'employeur':
@@ -27,6 +28,7 @@ export const hasAccess = (user, requiredRoles) => {
 export const ROLES = {
   ADMIN: 'admin',
   MANAGER: 'manager',
+  GESTIONNAIRE: 'gestionnaire',
   EMPLOYEE: 'employee',
   CLIENT: 'client',
   USER: 'user'
