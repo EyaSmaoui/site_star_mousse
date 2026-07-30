@@ -3,7 +3,7 @@
   "version": "2.2.0",
   "main": "backend/app.js",
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "scripts": {
     "start": "node backend/app.js",
