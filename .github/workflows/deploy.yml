@@ -60,4 +60,6 @@ jobs:
           working-directory: ${{ env.FRONTEND_DIR }}
           prod: true
           envs: |
-            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
+            VITE_API_URL=${{ secrets.REACT_APP_API_URL }}
+            VITE_CHATBOT_API_URL=${{ secrets.VITE_CHATBOT_API_URL }}
+            VITE_SITE_URL=${{ secrets.VITE_SITE_URL }}

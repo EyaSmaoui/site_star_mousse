@@ -7,9 +7,40 @@ export const registerServiceWorker = async () => {
       type: 'module',
     });
 
+    const sendSkipWaiting = (worker) => {
+      if (!worker) return;
+      try {
+        worker.postMessage({ type: 'SKIP_WAITING' });
+      } catch (err) {
+        console.warn('[PWA] Failed to send SKIP_WAITING to service worker:', err);
+      }
+    };
+
     if (registration.waiting) {
-      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      sendSkipWaiting(registration.waiting);
     }
+
+    const onInstallingStateChange = (worker) => {
+      worker.addEventListener('statechange', () => {
+        if (worker.state === 'installed') {
+          sendSkipWaiting(registration.waiting || worker);
+        }
+      });
+    };
+
+    if (registration.installing) {
+      onInstallingStateChange(registration.installing);
+    }
+
+    registration.addEventListener('updatefound', () => {
+      if (registration.installing) {
+        onInstallingStateChange(registration.installing);
+      }
+    });
+
+    registration.update().catch(() => {
+      // Ignore update failures; the service worker will refresh on next load.
+    });
 
     if ('SyncManager' in window && registration.sync) {
       await registration.sync.register('sync-orders');

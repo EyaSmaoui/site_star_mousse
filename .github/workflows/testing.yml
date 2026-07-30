@@ -62,7 +62,10 @@ jobs:
         node-version: '18'
 
     - name: Install frontend dependencies
-      run: npm install --prefix frontend
+      run: npm install --prefix frontend --legacy-peer-deps
+
+    - name: Run frontend lint
+      run: npm run lint --prefix frontend
 
     - name: Run frontend tests
       run: npm run test --prefix frontend

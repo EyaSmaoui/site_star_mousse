@@ -3,8 +3,11 @@ node_modules
 .env*
 build/
 frontend/build/
+frontend/dist/
 *.log
 logs/
 *.tmp
 *.bak
 __pycache__/
+
+.vercel

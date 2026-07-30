@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = 'star-mousse-v2.2.1';
-const RUNTIME_CACHE = 'star-mousse-runtime-v3';
+const CACHE_NAME = 'star-mousse-v2.2.2';
+const RUNTIME_CACHE = 'star-mousse-runtime-v4';
 const MAX_CACHE_ENTRIES = 120;
 const MAX_CACHE_BYTES = 50 * 1024 * 1024;
 
