@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SearchBar from "../../components/SearchBar";
+import SearchBar from "../../components/store/SearchBar";
 import { getAllManagers, createManager, updateManager, deleteManager } from "../../services/staffService";
 
 /* ─── Constantes ─────────────────────────────────────────────────────────── */

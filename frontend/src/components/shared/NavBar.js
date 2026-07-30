@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaFacebookF, FaHeart, FaInstagram, FaRegUser, FaRetweet, FaWhatsapp } from "react-icons/fa";
 import { FiHome, FiMoreHorizontal, FiSearch, FiShoppingBag, FiX } from "react-icons/fi";
-import { CART_UPDATED_EVENT, getCartCount } from "../utils/cartUtils";
-import { PROFILE_CHANGED_EVENT } from "../services/profileSyncService";
+import { CART_UPDATED_EVENT, getCartCount } from "../../utils/cartUtils";
+import { PROFILE_CHANGED_EVENT } from "../../services/profileSyncService";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);

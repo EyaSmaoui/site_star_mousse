@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { getProductBySlug } from "../data/products";
-import { SITE_URL } from "../utils/env";
+import { getProductBySlug } from "../../data/products";
+import { SITE_URL } from "../../utils/env";
 
 const DEFAULT_IMAGE = `${SITE_URL}/relax_eluproduit-card.jpg`;
 

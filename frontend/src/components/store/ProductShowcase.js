@@ -1,5 +1,5 @@
 import React from 'react';
-import formatPrice from '../utils/formatPrice';
+import formatPrice from '../../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
 import { getProductBySlug } from '../data/products';
 

@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import OrderCheckout from "./OrderCheckout";
 import { getProductBySlug } from "../data/products";
 
-import formatPrice from '../utils/formatPrice';
+import formatPrice from '../../utils/formatPrice';
 
 function ProductTemplate({ product: fallbackProduct }) {
   const { slug } = useParams();

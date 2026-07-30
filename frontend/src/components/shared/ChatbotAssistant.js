@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { sendChatMessage, getRecommendations } from "../services/chatbotService";
 import "../styles/chatbot.css";
-import formatPrice from '../utils/formatPrice';
+import formatPrice from '../../utils/formatPrice';
 
 const QUICK_PROMPTS = [
   "Je cherche un matelas pour le dos",
