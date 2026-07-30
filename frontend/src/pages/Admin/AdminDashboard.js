@@ -8,7 +8,7 @@ import { getAllOrders } from "../../services/orderApiService";
 import { getAll as getAllProducts } from "../../services/productService";
 import { getAllUsers } from "../../services/userService";
 import { deleteReview, getAllReviews } from "../../services/reviewService";
-import SearchBar from "../.@@components/store/SearchBar";
+import SearchBar from "@components/store/SearchBar";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -41,7 +41,7 @@ const MOCK_ORDERS = [
     id: "#7841",
     name: "Amira Ben Salah",
     amount: "1 890 DT",
-    status: "livrÃ©",
+    status: "livré",
     date: "18/05/2024",
   },
   {
@@ -55,7 +55,7 @@ const MOCK_ORDERS = [
     id: "#7839",
     name: "Sonia Mejri",
     amount: "1 290 DT",
-    status: "livrÃ©",
+    status: "livré",
     date: "17/05/2024",
   },
 ];
@@ -78,19 +78,19 @@ const STOCK_ALERTS = [
 ];
 
 const STATUS_STYLES = {
-  livrÃ©: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  livré: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   "en transit": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
-  confirmÃ©: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
-  annulÃ©: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+  confirmé: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+  annulé: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
 const STATUS_COLORS = {
-  livrÃ©: "#10b981",
+  livré: "#10b981",
   "en transit": "#f97316",
-  confirmÃ©: "#3b82f6",
-  annulÃ©: "#ef4444",
+  confirmé: "#3b82f6",
+  annulé: "#ef4444",
   "en attente": "#fb923c",
-  expÃ©diÃ©: "#8b5cf6",
+  expédié: "#8b5cf6",
   inconnu: "#94a3b8",
 };
 
@@ -100,7 +100,7 @@ const KPI_CONFIG = [
     valueKey: "totalRevenue",
     format: (v) => `${Number(v || 0).toLocaleString("fr-TN")} DT`,
     change: "+55%",
-    changeLabel: "mois prÃ©cÃ©dent",
+    changeLabel: "mois précédent",
     trend: "up",
     iconColor: "#10b981",
     icon: (
@@ -124,7 +124,7 @@ const KPI_CONFIG = [
     valueKey: "totalOrders",
     format: (v) => String(v || 0),
     change: "+12%",
-    changeLabel: "mois prÃ©cÃ©dent",
+    changeLabel: "mois précédent",
     trend: "up",
     iconColor: "#3b82f6",
     icon: (
@@ -149,7 +149,7 @@ const KPI_CONFIG = [
     valueKey: "clientsActifs",
     format: (v) => String(v || 0),
     change: "+8%",
-    changeLabel: "mois prÃ©cÃ©dent",
+    changeLabel: "mois précédent",
     trend: "up",
     iconColor: "#7c3aed",
     icon: (
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
   const ordersDonutData = {
     labels: orderStatusLabels.length
       ? orderStatusLabels.map((l) => l.charAt(0).toUpperCase() + l.slice(1))
-      : ["LivrÃ©", "En transit", "ConfirmÃ©", "AnnulÃ©"],
+      : ["livré", "En transit", "confirmé", "annulé"],
     datasets: [
       {
         data: orderStatusLabels.length
@@ -634,10 +634,10 @@ export default function AdminDashboard() {
                   {(orderStatusLabels.length
                     ? orderStatusLegend
                     : [
-                        { label: "LivrÃ©", count: 38, color: "#f97316" },
+                        { label: "livré", count: 38, color: "#f97316" },
                         { label: "En transit", count: 22, color: "#10b981" },
-                        { label: "ConfirmÃ©", count: 12, color: "#06b6d4" },
-                        { label: "AnnulÃ©", count: 28, color: "#ef4444" },
+                        { label: "confirmé", count: 12, color: "#06b6d4" },
+                        { label: "annulé", count: 28, color: "#ef4444" },
                       ]
                   ).map((item) => (
                     <div key={item.label} style={S.donutRow}>
@@ -1475,4 +1475,6 @@ const S = {
     color: "#374151",
   },
 };
+
+
 

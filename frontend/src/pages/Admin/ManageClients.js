@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SearchBar from "../.@@components/store/SearchBar";
+import SearchBar from "@components/store/SearchBar";
 import { createClient, deleteClient, getAllClients, updateClient } from "../../services/clientService";
 import { getAllOrders } from "../../services/orderApiService";
 
@@ -568,4 +568,5 @@ const S = {
   btnDanger: { padding: "9px 20px", border: 0, borderRadius: 9, background: "#dc2626", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
   confirmText: { margin: 0, color: "#374151", lineHeight: 1.6, fontSize: 14 },
 };
+
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+﻿import React, { useEffect, useRef } from "react";
 
 const Promos = () => {
   const observerRef = useRef(null);
@@ -28,10 +28,10 @@ const Promos = () => {
   const promoItems = [
     {
       id: 1,
-      name: "Matelas Relax Plus (élu produit de l'année 2026)",
+      name: "Matelas Relax Plus (Ã©lu produit de l'annÃ©e 2026)",
       discount: "-40%",
-      oldPrice: "550,00 د.ت",
-      newPrice: "330,00 د.ت",
+      oldPrice: "550,00 Ø¯.Øª",
+      newPrice: "330,00 Ø¯.Øª",
       img: "/relax_eluproduit-card.jpg",
       timeLeft: "Plus que 2 jours",
       tag: "VENTE FLASH",
@@ -39,10 +39,10 @@ const Promos = () => {
     },
     {
       id: 2,
-      name: "Oreiller à Mémoire de Forme",
+      name: "Oreiller Ã  MÃ©moire de Forme",
       discount: "-50%",
-      oldPrice: "90,00 د.ت",
-      newPrice: "75,00 د.ت",
+      oldPrice: "90,00 Ø¯.Øª",
+      newPrice: "75,00 Ø¯.Øª",
       img: "/oreiller_gel_pillow.jpg",
       timeLeft: "Vente Flash",
       tag: "VENTE FLASH",
@@ -53,37 +53,37 @@ const Promos = () => {
   const packs = [
     {
       id: "pack-mariage",
-      badge: "💍 PACK MARIAGE",
+      badge: "ðŸ’ PACK MARIAGE",
       badgeColor: "#c9963a",
       title: "Pack Mariage",
-      subtitle: "Le duo parfait pour bien commencer votre vie à deux",
+      subtitle: "Le duo parfait pour bien commencer votre vie Ã  deux",
       discount: "-25%",
-      oldPrice: "1 200,00 د.ت",
-      newPrice: "900,00 د.ت",
+      oldPrice: "1 200,00 Ø¯.Øª",
+      newPrice: "900,00 Ø¯.Øª",
       img: "/relax_eluproduit-card.jpg",
       items: [
-        { icon: "🛏️", label: "Matelas Relax Plus", desc: "Confort ergonomique pour deux" },
-        { icon: "🪶", label: "Oreiller Médical x2", desc: "Soutien optimal de la nuque" },
-        { icon: "🛡️", label: "Protège-matelas", desc: "Protection imperméable premium" },
+        { icon: "ðŸ›ï¸", label: "Matelas Relax Plus", desc: "Confort ergonomique pour deux" },
+        { icon: "ðŸª¶", label: "Oreiller MÃ©dical x2", desc: "Soutien optimal de la nuque" },
+        { icon: "ðŸ›¡ï¸", label: "ProtÃ¨ge-matelas", desc: "Protection impermÃ©able premium" },
       ],
       cta: "Choisir ce pack",
       highlight: true,
     },
     {
       id: "pack-extra-confort",
-      badge: "✨ PACK EXTRA CONFORT",
+      badge: "âœ¨ PACK EXTRA CONFORT",
       badgeColor: "#4a4ade",
       title: "Pack Extra Confort",
-      subtitle: "L'expérience sommeil ultime pour un repos absolu",
+      subtitle: "L'expÃ©rience sommeil ultime pour un repos absolu",
       discount: "-30%",
-      oldPrice: "1 550,00 د.ت",
-      newPrice: "1 085,00 د.ت",
+      oldPrice: "1 550,00 Ø¯.Øª",
+      newPrice: "1 085,00 Ø¯.Øª",
       img: "/tendresse.jpg",
       items: [
-        { icon: "🛏️", label: "Matelas Tendresse", desc: "Douceur et maintien parfait" },
-        { icon: "🌿", label: "Oreiller Aroma Menthe", desc: "Aromathérapie pour un sommeil frais" },
-        { icon: "💧", label: "Oreiller Gel Pillow", desc: "Régulation thermique avancée" },
-        { icon: "🛡️", label: "Protège-matelas", desc: "Protection imperméable premium" },
+        { icon: "ðŸ›ï¸", label: "Matelas Tendresse", desc: "Douceur et maintien parfait" },
+        { icon: "ðŸŒ¿", label: "Oreiller Aroma Menthe", desc: "AromathÃ©rapie pour un sommeil frais" },
+        { icon: "ðŸ’§", label: "Oreiller Gel Pillow", desc: "RÃ©gulation thermique avancÃ©e" },
+        { icon: "ðŸ›¡ï¸", label: "ProtÃ¨ge-matelas", desc: "Protection impermÃ©able premium" },
       ],
       cta: "Choisir ce pack",
       highlight: false,
@@ -110,7 +110,7 @@ const Promos = () => {
           color: #2a2a3d;
         }
 
-        /* ── FADE ── */
+        /* â”€â”€ FADE â”€â”€ */
         .ssn-fade {
           opacity: 0;
           transform: translateY(28px);
@@ -118,7 +118,7 @@ const Promos = () => {
         }
         .ssn-fade.visible { opacity: 1; transform: translateY(0); }
 
-        /* ── HERO ── */
+        /* â”€â”€ HERO â”€â”€ */
         .ssn-promo-hero {
           padding: 100px 40px 60px;
           text-align: center;
@@ -159,7 +159,7 @@ const Promos = () => {
           margin: 0 auto;
         }
 
-        /* ── SECTION TITLES ── */
+        /* â”€â”€ SECTION TITLES â”€â”€ */
         .ssn-section-title {
           font-family: 'Playfair Display', serif;
           font-size: clamp(1.6rem, 3vw, 2.2rem);
@@ -174,7 +174,7 @@ const Promos = () => {
           margin-bottom: 40px;
         }
 
-        /* ── VENTES FLASH ── */
+        /* â”€â”€ VENTES FLASH â”€â”€ */
         .ssn-section-flash {
           background: #fff8f8 !important;
           border-top: 1px solid #f5e0e0;
@@ -277,7 +277,7 @@ const Promos = () => {
           letter-spacing: -0.5px;
           white-space: nowrap;
         }
-        /* ── PACKS ── */
+        /* â”€â”€ PACKS â”€â”€ */
         .ssn-section-packs {
           padding: 80px 40px;
           background: #ffffff !important;
@@ -401,7 +401,7 @@ const Promos = () => {
           letter-spacing: -0.5px;
           white-space: nowrap;
         }
-        /* ── RESPONSIVE ── */
+        /* â”€â”€ RESPONSIVE â”€â”€ */
         @media (max-width: 1000px) {
           .ssn-packs-grid { grid-template-columns: 1fr; }
         }
@@ -417,31 +417,31 @@ const Promos = () => {
 
       <div className="ssn-page">
 
-        {/* ── HERO ── */}
+        {/* â”€â”€ HERO â”€â”€ */}
         <div className="ssn-promo-hero ssn-fade">
-          <div className="ssn-badge">🔥 Ventes Flash de la Semaine</div>
+          <div className="ssn-badge">ðŸ”¥ Ventes Flash de la Semaine</div>
           <h1 className="ssn-hero-title">
-            Nos Offres <span className="accent">Irrésistibles</span>
+            Nos Offres <span className="accent">IrrÃ©sistibles</span>
           </h1>
           <p className="ssn-hero-desc">
-            Des remises exceptionnelles sur une sélection de produits pour une durée limitée.
-            Premier arrivé, premier servi dans votre showroom Super Siesta !
+            Des remises exceptionnelles sur une sÃ©lection de produits pour une durÃ©e limitÃ©e.
+            Premier arrivÃ©, premier servi dans votre showroom Super Siesta !
           </p>
         </div>
 
-        {/* ── VENTES FLASH ── */}
+        {/* â”€â”€ VENTES FLASH â”€â”€ */}
         <section className="ssn-section-flash">
           <div className="ssn-container">
             <div className="ssn-fade" style={{ marginBottom: "40px" }}>
-              <h2 className="ssn-section-title">⚡ Ventes Flash</h2>
-              <p className="ssn-section-sub">Offres limitées — ne ratez pas ces prix exceptionnels</p>
+              <h2 className="ssn-section-title">âš¡ Ventes Flash</h2>
+              <p className="ssn-section-sub">Offres limitÃ©es â€” ne ratez pas ces prix exceptionnels</p>
             </div>
             <div className="ssn-flash-grid">
               {promoItems.map((item) => (
                 <div className="ssn-flash-card ssn-fade" key={item.id}>
                   <div className="ssn-flash-card-img">
                     <span className="ssn-flash-discount">{item.discount}</span>
-                    <span className="ssn-flash-time">⏳ {item.timeLeft}</span>
+                    <span className="ssn-flash-time">â³ {item.timeLeft}</span>
                     <img src={item.img} alt={item.name} />
                   </div>
                   <div className="ssn-flash-body">
@@ -462,12 +462,12 @@ const Promos = () => {
           </div>
         </section>
 
-        {/* ── PACKS ── */}
+        {/* â”€â”€ PACKS â”€â”€ */}
         <section className="ssn-section-packs">
           <div className="ssn-container">
             <div className="ssn-fade" style={{ marginBottom: "40px" }}>
-              <h2 className="ssn-section-title">🎁 Nos Packs Exclusifs</h2>
-              <p className="ssn-section-sub">Tout ce qu'il vous faut en un seul pack — livré chez vous</p>
+              <h2 className="ssn-section-title">ðŸŽ Nos Packs Exclusifs</h2>
+              <p className="ssn-section-sub">Tout ce qu'il vous faut en un seul pack â€” livré chez vous</p>
             </div>
             <div className="ssn-packs-grid">
               {packs.map((pack) => (
@@ -519,4 +519,5 @@ const Promos = () => {
 };
 
 export default Promos;
+
 

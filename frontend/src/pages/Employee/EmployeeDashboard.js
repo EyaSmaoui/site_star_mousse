@@ -14,7 +14,7 @@ import {
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
 import EmployeeSidebar from "./EmployeeSidebar";
-import AdvancedFilters from "../.@@components/shared/AdvancedFilters";
+import AdvancedFilters from "@components/shared/AdvancedFilters";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { getAllOrders } from "../../services/orderApiService";
 import { getAll as getAllProducts } from "../../services/productService";
@@ -26,21 +26,21 @@ const PERIOD_OPTIONS = ["7 derniers jours", "30 derniers jours", "Ce mois-ci", "
 const TABS = ["AperÃ§u", "Commandes", "Stock"];
 
 const STATUS_STYLES = {
-  livrÃ©: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  livré: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   "en transit": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
-  confirmÃ©: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+  confirmé: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
   "en attente": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
   "en cours": { bg: "#ede9fe", color: "#6d28d9", border: "#c4b5fd" },
-  expÃ©diÃ©: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
-  annulÃ©: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+  expédié: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
+  annulé: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
 const STATUS_COLORS = {
-  livrÃ©: "#10b981",
+  livré: "#10b981",
   "en attente": "#fb923c",
   "en cours": "#8b5cf6",
-  expÃ©diÃ©: "#3b82f6",
-  annulÃ©: "#ef4444",
+  expédié: "#3b82f6",
+  annulé: "#ef4444",
   inconnu: "#94a3b8",
 };
 
@@ -50,7 +50,7 @@ const KPI_CONFIG = [
     valueKey: "totalRevenue",
     format: (v) => `${Number(v || 0).toLocaleString("fr-TN")} DT`,
     change: "+55%",
-    changeLabel: "mois prÃ©cÃ©dent",
+    changeLabel: "mois précédent",
     iconColor: "#10b981",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -188,7 +188,7 @@ export default function EmployeeDashboard() {
     const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total || order.amount || 0), 0);
     const avgBasket = totalOrders ? totalRevenue / totalOrders : 0;
     const activeOrders = orders.filter((order) =>
-      ["en attente", "en cours", "confirmÃ©", "expÃ©diÃ©", "pending"].includes(String(order.status || "").toLowerCase())
+      ["en attente", "en cours", "confirmé", "expédié", "pending"].includes(String(order.status || "").toLowerCase())
     ).length;
     return { totalOrders, totalRevenue, avgBasket, activeOrders };
   }, [orders]);
@@ -443,7 +443,7 @@ export default function EmployeeDashboard() {
                   key: 'status',
                   label: 'Statut',
                   type: 'checkbox',
-                  options: ['en attente', 'en cours', 'expÃ©diÃ©', 'livrÃ©', 'annulÃ©', 'confirmÃ©']
+                  options: ['en attente', 'en cours', 'expédié', 'livré', 'annulé', 'confirmé']
                 }
               ]}
               sortOptions={[
@@ -617,4 +617,6 @@ const S = {
   donutPct: { fontWeight: 600, color: "#374151" },
   actionItem: { width: "100%", padding: "14px 20px", border: "none", borderBottom: "1px solid #f3f4f6", background: "#fff", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, color: "#374151", cursor: "pointer", fontFamily: "inherit", textAlign: "left" },
 };
+
+
 

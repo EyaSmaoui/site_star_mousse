@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+﻿import React, { useCallback, useEffect, useState } from 'react';
 import { FiPackage, FiTruck, FiCheckCircle, FiClock, FiArrowLeft, FiDownload } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
@@ -37,7 +37,7 @@ const OrderTracking = () => {
       if (response.ok) {
         setSearchResult(await response.json());
       } else {
-        toast.error('Commande non trouvée');
+        toast.error('Commande non trouvÃ©e');
       }
     } catch (err) {
       console.error('Error searching order:', err);
@@ -67,10 +67,10 @@ const OrderTracking = () => {
   const getStatusLabel = (status) => {
     const labels = {
       pending: 'En attente',
-      processing: 'En préparation',
-      shipped: 'Expédié',
-      delivered: 'Livré',
-      cancelled: 'Annulé'
+      processing: 'En prÃ©paration',
+      shipped: 'expédié',
+      delivered: 'livré',
+      cancelled: 'annulé'
     };
     return labels[status] || status;
   };
@@ -94,10 +94,10 @@ const OrderTracking = () => {
 
   const renderTimeline = (order) => {
     const timeline = [
-      { label: 'Commande passée', status: 'pending', date: order.createdAt },
-      { label: 'En préparation', status: 'processing', date: order.processingDate },
-      { label: 'Expédié', status: 'shipped', date: order.shippedDate },
-      { label: 'Livré', status: 'delivered', date: order.deliveredDate }
+      { label: 'Commande passÃ©e', status: 'pending', date: order.createdAt },
+      { label: 'En prÃ©paration', status: 'processing', date: order.processingDate },
+      { label: 'expédié', status: 'shipped', date: order.shippedDate },
+      { label: 'livré', status: 'delivered', date: order.deliveredDate }
     ];
 
     return (
@@ -153,7 +153,7 @@ const OrderTracking = () => {
             <span>Retour</span>
           </a>
           <h1 className="font-serif text-4xl text-ink">Suivi de Commande</h1>
-          <p className="text-muted mt-2">Suivez l'état de vos commandes en temps réel</p>
+          <p className="text-muted mt-2">Suivez l'Ã©tat de vos commandes en temps rÃ©el</p>
         </div>
       </div>
 
@@ -163,7 +163,7 @@ const OrderTracking = () => {
           <form onSubmit={handleSearch} className="flex gap-2">
             <input
               type="text"
-              placeholder="Entrez votre numéro de commande..."
+              placeholder="Entrez votre numÃ©ro de commande..."
               value={trackingCode}
               onChange={(e) => setTrackingCode(e.target.value)}
               className="flex-1 px-4 py-3 bg-white border border-hairline text-ink rounded-none focus:outline-none focus:border-ink transition-colors"
@@ -186,7 +186,7 @@ const OrderTracking = () => {
               </h2>
               <button className="flex items-center gap-2 py-2 px-4 border border-hairline text-ink hover:bg-paper transition-colors rounded-none">
                 <FiDownload className="w-4 h-4" />
-                Télécharger la facture
+                TÃ©lÃ©charger la facture
               </button>
             </div>
 
@@ -223,7 +223,7 @@ const OrderTracking = () => {
                   <div key={idx} className="flex justify-between items-center py-3 border-b border-hairline">
                     <div>
                       <p className="text-ink font-sans font-500">{item.name}</p>
-                      <p className="text-sm text-muted">Quantité: {item.quantity}</p>
+                      <p className="text-sm text-muted">QuantitÃ©: {item.quantity}</p>
                     </div>
                     <p className="text-ink font-sans font-600">
                       {(item.price * item.quantity).toLocaleString('fr-TN')} TND
@@ -300,7 +300,7 @@ const OrderTracking = () => {
                         className="px-3 py-1 bg-paper border border-hairline text-sm text-ink rounded-none"
                       >
                         {item.name}
-                        {item.quantity > 1 && ` (×${item.quantity})`}
+                        {item.quantity > 1 && ` (Ã—${item.quantity})`}
                       </span>
                     ))}
                     {order.items?.length > 3 && (
@@ -323,7 +323,7 @@ const OrderTracking = () => {
                     return (
                       <div key={status} className="flex items-center gap-1">
                         <div className={`w-2 h-2 rounded-full ${isCompleted ? 'bg-ink' : 'bg-hairline'}`} />
-                        {idx !== 3 && <span className="text-hairline">•</span>}
+                        {idx !== 3 && <span className="text-hairline">â€¢</span>}
                       </div>
                     );
                   })}
@@ -337,17 +337,17 @@ const OrderTracking = () => {
         {!loading && filteredOrders.length === 0 && (
           <div className="text-center py-12 animate-fade">
             <FiPackage className="w-16 h-16 mx-auto text-hairline mb-4" />
-            <p className="font-serif text-2xl text-ink mb-2">Aucune commande trouvée</p>
+            <p className="font-serif text-2xl text-ink mb-2">Aucune commande trouvÃ©e</p>
             <p className="text-muted mb-6">
               {filter === 'all'
-                ? 'Vous n\'avez pas encore passé de commande.'
+                ? 'Vous n\'avez pas encore passÃ© de commande.'
                 : `Aucune commande avec le statut "${getStatusLabel(filter)}".`}
             </p>
             <a
               href="/store"
               className="btn-minimal inline-block"
             >
-              Découvrir nos produits
+              DÃ©couvrir nos produits
             </a>
           </div>
         )}
@@ -357,3 +357,4 @@ const OrderTracking = () => {
 };
 
 export default OrderTracking;
+

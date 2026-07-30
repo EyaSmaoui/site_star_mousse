@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { forgotPassword } from "../../services/authService";
-import Footer from "../.@@components/shared/Footer";
+import Footer from "@components/shared/Footer";
 import "../../App.css";
 
 export default function ForgotPassword() {
@@ -122,4 +122,5 @@ export default function ForgotPassword() {
     </>
   );
 }
+
 

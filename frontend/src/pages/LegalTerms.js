@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import Breadcrumbs from '.@@components/shared/Breadcrumbs';
+import Breadcrumbs from '@components/shared/Breadcrumbs';
 
 const LegalTerms = () => {
 
@@ -349,5 +349,6 @@ const styles = {
 };
 
 export default LegalTerms;
+
 
 

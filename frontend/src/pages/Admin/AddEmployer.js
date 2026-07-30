@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { createEmployer } from '../../services/staffService';
 import { createManager } from '../../services/staffService';
 import AdminSidebar from './AdminSidebar';
-import SuccessModal from '../.@@components/shared/SuccessModal';
+import SuccessModal from '@components/shared/SuccessModal';
 import { useSuccessAlert } from '../../hooks/useSuccessAlert';
 
 const FONT_HEAD = "'Syne', sans-serif";
@@ -308,4 +308,5 @@ const s = {
     transition: "all 0.2s",
   },
 };
+
 

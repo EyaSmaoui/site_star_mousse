@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEdit, FaFlag, FaTrash } from "react-icons/fa";
@@ -6,20 +6,20 @@ import EmployeeSidebar from "./EmployeeSidebar";
 import { addOrder, checkOrdersConnection, deleteOrder as removeOrder, getAllOrders, getCachedOrders, invalidateOrdersCache, updateOrder } from "../../services/orderApiService";
 import { PROFILE_CHANGED_EVENT, PROFILE_SYNC_KEY } from "../../services/profileSyncService";
 
-// ─── Config ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const STATUS_CONFIG = {
   "en attente": { label: "En attente", color: "#b45309", bg: "#fef3c7", border: "#fcd34d" },
   "en cours":   { label: "En cours",   color: "#6d28d9", bg: "#ede9fe", border: "#c4b5fd" },
-  "expédié":    { label: "Expédié",    color: "#1d4ed8", bg: "#dbeafe", border: "#93c5fd" },
-  "livré":      { label: "Livré",      color: "#15803d", bg: "#dcfce7", border: "#86efac" },
-  "annulé":     { label: "Annulé",     color: "#b91c1c", bg: "#fee2e2", border: "#fca5a5" },
+  "expédié":    { label: "expédié",    color: "#1d4ed8", bg: "#dbeafe", border: "#93c5fd" },
+  "livré":      { label: "livré",      color: "#15803d", bg: "#dcfce7", border: "#86efac" },
+  "annulé":     { label: "annulé",     color: "#b91c1c", bg: "#fee2e2", border: "#fca5a5" },
 };
 const DEFAULT_STATUS = { label: "Inconnu", color: "#374151", bg: "#f3f4f6", border: "#d1d5db" };
 const STATUS_KEYS    = Object.keys(STATUS_CONFIG);
 const STATUS_FILTERS = ["Tous", ...STATUS_KEYS];
 
-const DIMENSIONS   = ["80×190", "90×190", "120×190", "140×190", "160×190"];
+const DIMENSIONS   = ["80Ã—190", "90Ã—190", "120Ã—190", "140Ã—190", "160Ã—190"];
 const EMPTY_PRODUCT = { name: "", quantity: 1, dimension: DIMENSIONS[0] };
 const EMPTY_FORM = {
   customerName:  "",
@@ -31,11 +31,11 @@ const EMPTY_FORM = {
   products:      [{ ...EMPTY_PRODUCT }],
 };
 
-// ─── Helpers ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const fmtId   = (id)   => (id ? id.slice(-6).toUpperCase() : "TEMP");
 const fmtDate = (date) => {
-  if (!date) return "—";
+  if (!date) return "â€”";
   return new Date(date).toLocaleDateString("fr-FR", {
     day: "2-digit", month: "short", year: "numeric",
   });
@@ -54,24 +54,24 @@ const getOrderCustomerPhone = (order) => {
 };
 
 const getOrderDimensions = (order) => {
-  if (!order?.products?.length) return "—";
+  if (!order?.products?.length) return "â€”";
   const dimensions = order.products
     .map(p => normalizeProduct(p).dimension)
     .filter(Boolean);
-  return dimensions.length > 0 ? dimensions.join(", ") : "—";
+  return dimensions.length > 0 ? dimensions.join(", ") : "â€”";
 };
 
 const getOrderErrorMessage = (err) => {
   const status = err?.response?.status;
   const apiMessage = err?.response?.data?.error || err?.response?.data?.message || err?.message;
 
-  if (status === 401) return "Session expirée ou token absent. Reconnectez-vous pour charger les commandes.";
-  if (status === 403) return "Votre compte n'a pas les droits employé/admin pour lire les commandes.";
-  if (status === 503) return "La base de données est lente ou indisponible pour le moment.";
-  if (err?.code === "ECONNABORTED") return "Le serveur met trop de temps à répondre. Vérifiez que le backend et MongoDB sont démarrés.";
-  if (err?.code === "ERR_NETWORK") return "Impossible de joindre l'API. Vérifiez l'URL backend, CORS et la connexion serveur.";
+  if (status === 401) return "Session expirÃ©e ou token absent. Reconnectez-vous pour charger les commandes.";
+  if (status === 403) return "Votre compte n'a pas les droits employÃ©/admin pour lire les commandes.";
+  if (status === 503) return "La base de donnÃ©es est lente ou indisponible pour le moment.";
+  if (err?.code === "ECONNABORTED") return "Le serveur met trop de temps Ã  rÃ©pondre. VÃ©rifiez que le backend et MongoDB sont dÃ©marrÃ©s.";
+  if (err?.code === "ERR_NETWORK") return "Impossible de joindre l'API. VÃ©rifiez l'URL backend, CORS et la connexion serveur.";
 
-  return apiMessage || "Impossible de récupérer les commandes depuis la base de données.";
+  return apiMessage || "Impossible de rÃ©cupÃ©rer les commandes depuis la base de donnÃ©es.";
 };
 
 const normalizeProduct = (product = {}) => {
@@ -85,7 +85,7 @@ const normalizeProduct = (product = {}) => {
   return { name, dimension, quantity, price };
 };
 
-// ─── SVG Icon ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ SVG Icon â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const Ico = ({ d, size = 16, color = "currentColor", sw = 2 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
@@ -110,7 +110,7 @@ const ICO = {
   tag:      ["M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z", "M7 7h.01"],
 };
 
-// ─── Styles ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const S = {
   root:       { display: "flex", minHeight: "100vh", background: "#fdf6ef", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1f2937" },
@@ -318,7 +318,7 @@ const S = {
   },
 };
 
-// ─── Sub-components ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function StatusBadge({ status }) {
   const cfg = STATUS_CONFIG[status] || DEFAULT_STATUS;
@@ -331,7 +331,7 @@ function StatusBadge({ status }) {
 }
 
 function ProductTags({ products }) {
-  if (!products?.length) return <span style={{ color: "#9ca3af", fontSize: 12 }}>—</span>;
+  if (!products?.length) return <span style={{ color: "#9ca3af", fontSize: 12 }}>â€”</span>;
   return (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       {products.map((product, i) => {
@@ -339,9 +339,9 @@ function ProductTags({ products }) {
         return (
           <span key={i} style={S.prodTag}>
             <span style={S.prodName}>{p.name}</span>
-            <span style={S.prodQty}>Qté {p.quantity}</span>
+            <span style={S.prodQty}>QtÃ© {p.quantity}</span>
             {p.price > 0 && (
-              <span style={S.prodPrice}>{p.price.toLocaleString('fr-TN')} DT / unité</span>
+              <span style={S.prodPrice}>{p.price.toLocaleString('fr-TN')} DT / unitÃ©</span>
             )}
           </span>
         );
@@ -389,17 +389,17 @@ function Field({ label, value, onChange, placeholder, type = "text", error }) {
   );
 }
 
-// ─── STATUS_VISUAL ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ STATUS_VISUAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const STATUS_VISUAL = [
   { key: "en attente", label: "En attente", color: "#b45309", bg: "#fef3c7", border: "#fcd34d" },
   { key: "en cours",   label: "En cours",   color: "#6d28d9", bg: "#ede9fe", border: "#c4b5fd" },
-  { key: "expédié",    label: "Expédié",    color: "#1d4ed8", bg: "#dbeafe", border: "#93c5fd" },
-  { key: "livré",      label: "Livré",      color: "#15803d", bg: "#dcfce7", border: "#86efac" },
-  { key: "annulé",     label: "Annulé",     color: "#b91c1c", bg: "#fee2e2", border: "#fca5a5" },
+  { key: "expédié",    label: "expédié",    color: "#1d4ed8", bg: "#dbeafe", border: "#93c5fd" },
+  { key: "livré",      label: "livré",      color: "#15803d", bg: "#dcfce7", border: "#86efac" },
+  { key: "annulé",     label: "annulé",     color: "#b91c1c", bg: "#fee2e2", border: "#fca5a5" },
 ];
 
-// ─── ViewModal ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ ViewModal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function ViewModal({ order, onClose }) {
   if (!order) return null;
@@ -414,7 +414,7 @@ function ViewModal({ order, onClose }) {
           </div>
           <div>
             <div style={S.modalTitle}>Commande #{fmtId(order._id)}</div>
-            <div style={S.modalSub}>Détails complets</div>
+            <div style={S.modalSub}>DÃ©tails complets</div>
           </div>
           <button style={S.modalClose} onClick={onClose}>
             <Ico d={ICO.x} size={16} color="#9ca3af" />
@@ -424,26 +424,26 @@ function ViewModal({ order, onClose }) {
           <Section icon={ICO.user} iconBg="#fff7ed" iconColor="#f97316" title="Informations client">
             <div style={S.formGrid}>
               <div>
-                <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, marginBottom: 3 }}>Nom / Prénom</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerName(order) || "—"}</div>
-                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{getOrderCustomerEmail(order) || "—"}</div>
+                <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, marginBottom: 3 }}>Nom / PrÃ©nom</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerName(order) || "â€”"}</div>
+                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{getOrderCustomerEmail(order) || "â€”"}</div>
               </div>
               <div>
-                <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, marginBottom: 3 }}>Téléphone</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerPhone(order) || "—"}</div>
-                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{order.address || "Adresse non précisée"}</div>
+                <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, marginBottom: 3 }}>TÃ©lÃ©phone</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerPhone(order) || "â€”"}</div>
+                <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{order.address || "Adresse non prÃ©cisÃ©e"}</div>
               </div>
             </div>
           </Section>
 
-          <Section icon={ICO.pkg} iconBg="#fff7ed" iconColor="#f97316" title="Produits commandés">
+          <Section icon={ICO.pkg} iconBg="#fff7ed" iconColor="#f97316" title="Produits commandÃ©s">
             {!order.products?.length ? (
-              <div style={{ color: "#9ca3af", fontSize: 13 }}>Aucun produit enregistré.</div>
+              <div style={{ color: "#9ca3af", fontSize: 13 }}>Aucun produit enregistrÃ©.</div>
             ) : (
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
-                    {["Produit", "Qté", "Dimension", "Prix"].map(h => (
+                    {["Produit", "QtÃ©", "Dimension", "Prix"].map(h => (
                       <th key={h} style={{ textAlign: "left", fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, padding: "6px 0", borderBottom: "1px solid #f0e8df" }}>{h}</th>
                     ))}
                   </tr>
@@ -455,13 +455,13 @@ function ViewModal({ order, onClose }) {
                       <tr key={i}>
                         <td style={{ padding: "8px 0", fontSize: 13, fontWeight: 700, color: "#1f2937", borderBottom: "1px solid #fdf6ef" }}>{p.name}</td>
                         <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
-                          <span style={{ ...S.prodQty, padding: "2px 8px", borderRadius: 6, fontSize: 11 }}>Qté {p.quantity}</span>
+                          <span style={{ ...S.prodQty, padding: "2px 8px", borderRadius: 6, fontSize: 11 }}>QtÃ© {p.quantity}</span>
                         </td>
                         <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
-                          <span style={{ background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 5, padding: "2px 7px", fontSize: 11, color: "#374151" }}>{p.dimension || "—"}</span>
+                          <span style={{ background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 5, padding: "2px 7px", fontSize: 11, color: "#374151" }}>{p.dimension || "â€”"}</span>
                         </td>
                         <td style={{ padding: "8px 0", borderBottom: "1px solid #fdf6ef" }}>
-                          <span style={{ fontSize: 12, color: "#374151", fontWeight: 700 }}>{p.price > 0 ? `${p.price.toLocaleString('fr-TN')} DT` : "—"}</span>
+                          <span style={{ fontSize: 12, color: "#374151", fontWeight: 700 }}>{p.price > 0 ? `${p.price.toLocaleString('fr-TN')} DT` : "â€”"}</span>
                         </td>
                       </tr>
                     );
@@ -486,11 +486,11 @@ function ViewModal({ order, onClose }) {
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: cfg.bg, borderRadius: 10, border: `1px solid ${cfg.border}` }}>
             <div>
-              <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: cfg.color, fontWeight: 700, opacity: 0.7, marginBottom: 4 }}>État actuel</div>
+              <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: cfg.color, fontWeight: 700, opacity: 0.7, marginBottom: 4 }}>Ã‰tat actuel</div>
               <StatusBadge status={order.status} />
             </div>
             <span style={{ fontSize: 28 }}>
-              {order.status === "livré" ? "✅" : order.status === "annulé" ? "❌" : order.status === "expédié" ? "🚚" : order.status === "en cours" ? "⚙️" : "⏳"}
+              {order.status === "livré" ? "âœ…" : order.status === "annulé" ? "âŒ" : order.status === "expédié" ? "ðŸšš" : order.status === "en cours" ? "âš™ï¸" : "â³"}
             </span>
           </div>
         </div>
@@ -502,7 +502,7 @@ function ViewModal({ order, onClose }) {
   );
 }
 
-// ─── AddEditModal ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ AddEditModal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function AddEditModal({ order, onClose, onSave }) {
   const isEdit = Boolean(order);
@@ -543,7 +543,7 @@ function AddEditModal({ order, onClose, onSave }) {
     if (!form.customerName.trim()) e.customerName = "Requis";
     const phoneDigits = (form.phone || "").toString().replace(/\D/g, "");
     if (!phoneDigits)        e.phone = "Requis";
-    else if (phoneDigits.length !== 8) e.phone = "Téléphone invalide";
+    else if (phoneDigits.length !== 8) e.phone = "TÃ©lÃ©phone invalide";
     if (!form.total || isNaN(Number(form.total))) e.total = "Montant invalide";
     form.products.forEach((p, i) => { if (!p.name.trim()) e[`prod_${i}`] = "Nom requis"; });
     setErrors(e);
@@ -594,18 +594,18 @@ function AddEditModal({ order, onClose, onSave }) {
 
             <Section icon={ICO.user} iconBg="#fff7ed" iconColor="#f97316" title="Informations client">
               <div style={S.formGrid}>
-                <Field label="Nom / Prénom *" value={form.customerName} onChange={v => setField("customerName", v)} placeholder="Ex : Yasmine Khelifi" error={touched.customerName && errors.customerName} />
+                <Field label="Nom / PrÃ©nom *" value={form.customerName} onChange={v => setField("customerName", v)} placeholder="Ex : Yasmine Khelifi" error={touched.customerName && errors.customerName} />
                 <Field label="Email" value={form.customerEmail} onChange={v => setField("customerEmail", v)} placeholder="client@email.com" type="email" />
               </div>
               <div style={S.formGrid}>
-                <Field label="Téléphone *" value={form.phone} onChange={v => setField("phone", v)} placeholder="+216 XX XXX XXX" type="tel" error={touched.phone && errors.phone} />
+                <Field label="TÃ©lÃ©phone *" value={form.phone} onChange={v => setField("phone", v)} placeholder="+216 XX XXX XXX" type="tel" error={touched.phone && errors.phone} />
                 <Field label="Adresse" value={form.address} onChange={v => setField("address", v)} placeholder="Rue, Ville, Code postal" />
               </div>
             </Section>
 
-            <Section icon={ICO.pkg} iconBg="#fff7ed" iconColor="#f97316" title="Produits commandés">
+            <Section icon={ICO.pkg} iconBg="#fff7ed" iconColor="#f97316" title="Produits commandÃ©s">
               <div style={{ display: "grid", gridTemplateColumns: "1fr 60px 110px 32px", gap: 6, padding: "0 2px", marginBottom: 4 }}>
-                {["Nom du produit", "Qté", "Dimension", ""].map((h, i) => (
+                {["Nom du produit", "QtÃ©", "Dimension", ""].map((h, i) => (
                   <span key={i} style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700 }}>{h}</span>
                 ))}
               </div>
@@ -642,7 +642,7 @@ function AddEditModal({ order, onClose, onSave }) {
               <div style={S.totalBox}>
                 <div>
                   <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700, marginBottom: 2 }}>
-                    Montant total * {touched.total && errors.total && <span style={{ color: "#ef4444", fontSize: 10, textTransform: "none" }}> — {errors.total}</span>}
+                    Montant total * {touched.total && errors.total && <span style={{ color: "#ef4444", fontSize: 10, textTransform: "none" }}> â€” {errors.total}</span>}
                   </div>
                   <div style={{ fontSize: 11, color: "#9ca3af" }}>En dinars tunisiens</div>
                 </div>
@@ -659,7 +659,7 @@ function AddEditModal({ order, onClose, onSave }) {
               </div>
             </Section>
 
-            <Section icon={ICO.flag} iconBg="#ede9fe" iconColor="#6d28d9" title="État de la commande">
+            <Section icon={ICO.flag} iconBg="#ede9fe" iconColor="#6d28d9" title="Ã‰tat de la commande">
               <div style={S.statusGrid}>
                 {STATUS_VISUAL.map(s => (
                   <button key={s.key} onClick={() => setField("status", s.key)} style={S.statusBtn(form.status === s.key, s)}>
@@ -683,7 +683,7 @@ function AddEditModal({ order, onClose, onSave }) {
               disabled={saving || !isValid}
             >
               <Ico d={ICO.check} size={14} color="#fff" />
-              {saving ? "Enregistrement…" : isEdit ? "Mettre à jour" : "Créer la commande"}
+              {saving ? "Enregistrementâ€¦" : isEdit ? "Mettre Ã  jour" : "CrÃ©er la commande"}
             </button>
           </div>
         </div>
@@ -692,7 +692,7 @@ function AddEditModal({ order, onClose, onSave }) {
   );
 }
 
-// ─── StatusModal ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ StatusModal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function StatusModal({ order, onClose, onSave }) {
   const [newStatus, setNewStatus] = useState(order?.status || "en attente");
@@ -716,7 +716,7 @@ function StatusModal({ order, onClose, onSave }) {
             <Ico d={ICO.refresh} size={17} color="#6d28d9" />
           </div>
           <div>
-            <div style={S.modalTitle}>Changer l'état</div>
+            <div style={S.modalTitle}>Changer l'Ã©tat</div>
             <div style={S.modalSub}>Commande #{fmtId(order._id)}</div>
           </div>
           <button style={S.modalClose} onClick={onClose}>
@@ -725,10 +725,10 @@ function StatusModal({ order, onClose, onSave }) {
         </div>
         <div style={S.modalBody}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", background: "#fdf6ef", borderRadius: 9, border: "1px solid #f0e8df" }}>
-            <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700 }}>État actuel</span>
+            <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700 }}>Ã‰tat actuel</span>
             <StatusBadge status={order.status} />
           </div>
-          <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700 }}>Choisir le nouvel état</div>
+          <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#9ca3af", fontWeight: 700 }}>Choisir le nouvel Ã©tat</div>
           <div>
             {STATUS_VISUAL.map(s => {
               const active = newStatus === s.key;
@@ -738,7 +738,7 @@ function StatusModal({ order, onClose, onSave }) {
                   <span style={{ fontSize: 13, fontWeight: active ? 700 : 400, color: active ? s.color : "#6b7280" }}>{s.label}</span>
                   {active && (
                     <span style={{ marginLeft: "auto", fontSize: 11, color: s.color, background: "#fff", padding: "2px 8px", borderRadius: 999, border: `1px solid ${s.border}`, fontWeight: 600 }}>
-                      Sélectionné
+                      SÃ©lectionnÃ©
                     </span>
                   )}
                 </div>
@@ -749,7 +749,7 @@ function StatusModal({ order, onClose, onSave }) {
         <div style={S.modalFooter}>
           <button style={S.btnCancel} onClick={onClose}>Annuler</button>
           <button style={{ ...S.btnViolet, ...(saving ? S.btnSaveDisabled : {}) }} onClick={handleSave} disabled={saving}>
-            {saving ? "Enregistrement…" : "Enregistrer"}
+            {saving ? "Enregistrementâ€¦" : "Enregistrer"}
           </button>
         </div>
       </div>
@@ -757,7 +757,7 @@ function StatusModal({ order, onClose, onSave }) {
   );
 }
 
-// ─── DeleteModal ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ DeleteModal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function DeleteModal({ order, onClose, onConfirm }) {
   const [deleting, setDeleting] = useState(false);
@@ -779,7 +779,7 @@ function DeleteModal({ order, onClose, onConfirm }) {
           </div>
           <div>
             <div style={S.modalTitle}>Confirmer la suppression</div>
-            <div style={S.modalSub}>Cette action est irréversible</div>
+            <div style={S.modalSub}>Cette action est irrÃ©versible</div>
           </div>
           <button style={S.modalClose} onClick={onClose}>
             <Ico d={ICO.x} size={16} color="#9ca3af" />
@@ -796,12 +796,12 @@ function DeleteModal({ order, onClose, onConfirm }) {
           </p>
           <div style={S.warnBox}>
             <Ico d={ICO.warn} size={15} color="#b91c1c" />
-            <span>Cette action est <strong>irréversible</strong>. Toutes les données seront perdues.</span>
+            <span>Cette action est <strong>irrÃ©versible</strong>. Toutes les donnÃ©es seront perdues.</span>
           </div>
           <div style={{ width: "100%", padding: "10px 14px", background: "#fdf6ef", borderRadius: 9, border: "1px solid #f0e8df" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
               <span style={{ fontSize: 12, color: "#9ca3af" }}>Client</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerName(order) || "—"}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#1f2937" }}>{getOrderCustomerName(order) || "â€”"}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
               <span style={{ fontSize: 12, color: "#9ca3af" }}>Montant</span>
@@ -816,7 +816,7 @@ function DeleteModal({ order, onClose, onConfirm }) {
         <div style={S.modalFooter}>
           <button style={S.btnCancel} onClick={onClose}>Annuler</button>
           <button style={{ ...S.btnDanger, ...(deleting ? S.btnSaveDisabled : {}) }} onClick={handleConfirm} disabled={deleting}>
-            {deleting ? "Suppression…" : "Supprimer définitivement"}
+            {deleting ? "Suppressionâ€¦" : "Supprimer dÃ©finitivement"}
           </button>
         </div>
       </div>
@@ -824,7 +824,7 @@ function DeleteModal({ order, onClose, onConfirm }) {
   );
 }
 
-// ─── OrderRow ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ OrderRow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function OrderRow({ order, onView, onEdit, onStatus, onDelete }) {
   return (
@@ -838,8 +838,8 @@ function OrderRow({ order, onView, onEdit, onStatus, onDelete }) {
       <td style={S.td}>
         <div style={S.tdName}>{getOrderCustomerName(order) || "Client inconnu"}</div>
       </td>
-      <td style={{ ...S.td, fontSize: 12.5, color: "#374151", whiteSpace: "nowrap" }}>{getOrderCustomerPhone(order) || "—"}</td>
-      <td style={S.td}>{order.address || "—"}</td>
+      <td style={{ ...S.td, fontSize: 12.5, color: "#374151", whiteSpace: "nowrap" }}>{getOrderCustomerPhone(order) || "â€”"}</td>
+      <td style={S.td}>{order.address || "â€”"}</td>
       <td style={S.td}><ProductTags products={order.products} /></td>
       <td style={{ ...S.td, fontWeight: 600, fontSize: 12, whiteSpace: "nowrap", color: "#dc2626", background: "#fef2f2", borderRadius: 6, padding: "4px 8px" }}>{getOrderDimensions(order)}</td>
       <td style={{ ...S.td, fontWeight: 700, fontSize: 13, whiteSpace: "nowrap", color: "#1f2937" }}>
@@ -848,13 +848,13 @@ function OrderRow({ order, onView, onEdit, onStatus, onDelete }) {
       <td style={S.td}><StatusBadge status={order.status} /></td>
              <td style={S.td}>
          <div style={{ display: "flex", gap: 8, flexWrap: "nowrap", alignItems: "center" }}>
-           <button style={S.btnView}   onClick={onView} title="Voir les d�tails">
+           <button style={S.btnView}   onClick={onView} title="Voir les dï¿½tails">
              <FaEye size={16} />
            </button>
            <button style={S.btnEdit}   onClick={onEdit} title="Modifier la commande">
              <FaEdit size={16} />
            </button>
-           <button style={S.btnState}  onClick={onStatus} title="Changer l'�tat">
+           <button style={S.btnState}  onClick={onStatus} title="Changer l'ï¿½tat">
              <FaFlag size={16} />
            </button>
            <button style={S.btnDel}    onClick={onDelete} title="Supprimer">
@@ -866,7 +866,7 @@ function OrderRow({ order, onView, onEdit, onStatus, onDelete }) {
   );
 }
 
-// ─── Main ──────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function ManageOrders({
   Sidebar = EmployeeSidebar,
@@ -906,12 +906,12 @@ export default function ManageOrders({
       }
     } catch (err) {
       const message = getOrderErrorMessage(err);
-      console.error("Erreur récupération commandes :", err);
+      console.error("Erreur rÃ©cupÃ©ration commandes :", err);
       setLoadError(message);
       const cachedOrders = getCachedOrders();
       if (cachedOrders.length) {
         setOrders(cachedOrders);
-        toast.warning(`${message} Affichage des dernières commandes en cache.`);
+        toast.warning(`${message} Affichage des derniÃ¨res commandes en cache.`);
       } else {
         setOrders([]);
         toast.error(message);
@@ -962,9 +962,9 @@ export default function ManageOrders({
       await addOrder(data);
       await fetchOrders(true);
       setShowAdd(false);
-      toast.success("Commande créée avec succès.");
+      toast.success("Commande crÃ©Ã©e avec succÃ¨s.");
     } catch {
-      toast.error("Impossible de créer la commande.");
+      toast.error("Impossible de crÃ©er la commande.");
     }
   };
 
@@ -974,7 +974,7 @@ export default function ManageOrders({
       await fetchOrders(true);
       setShowEdit(false);
       setSelectedOrder(null);
-      toast.success("Commande mise à jour.");
+      toast.success("Commande mise Ã  jour.");
     } catch {
       toast.error("Impossible de modifier la commande.");
     }
@@ -986,9 +986,9 @@ export default function ManageOrders({
       await fetchOrders(true);
       setShowStatus(false);
       setSelectedOrder(null);
-      toast.success("Statut mis à jour.");
+      toast.success("Statut mis Ã  jour.");
     } catch {
-      toast.error("Impossible de mettre à jour le statut.");
+      toast.error("Impossible de mettre Ã  jour le statut.");
     }
   };
 
@@ -998,7 +998,7 @@ export default function ManageOrders({
       await fetchOrders(true);
       setShowDelete(false);
       setSelectedOrder(null);
-      toast.success("Commande supprimée.");
+      toast.success("Commande supprimÃ©e.");
     } catch {
       toast.error("Impossible de supprimer la commande.");
     }
@@ -1017,7 +1017,7 @@ export default function ManageOrders({
     total:     orders.length,
     enAttente: orders.filter(o => o.status === "en attente").length,
     enCours:   orders.filter(o => o.status === "en cours").length,
-    expedié:   orders.filter(o => o.status === "expédié").length,
+    expédié:   orders.filter(o => o.status === "expédié").length,
     livré:     orders.filter(o => o.status === "livré").length,
   };
 
@@ -1030,10 +1030,10 @@ export default function ManageOrders({
 
       <main className="employee-main sm-internal-main sm-orders-main" style={S.main}>
 
-        {/* ── Topbar ── */}
+        {/* â”€â”€ Topbar â”€â”€ */}
         <div className="sm-page-topbar" style={S.topbar}>
           <div>
-            <p style={S.topbarSub}>Star Mousse · Employé</p>
+            <p style={S.topbarSub}>Star Mousse Â· EmployÃ©</p>
             <h1 style={S.topbarTitle}>Gestion des commandes</h1>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1058,14 +1058,14 @@ export default function ManageOrders({
           </div>
         </div>
 
-        {/* ── KPI strip ── */}
+        {/* â”€â”€ KPI strip â”€â”€ */}
         <div className="sm-kpi-strip" style={S.kpiStrip}>
           {[
             { label: "Total commandes", value: stats.total,     color: "#f97316" },
             { label: "En attente",      value: stats.enAttente, color: "#b45309" },
             { label: "En cours",        value: stats.enCours,   color: "#6d28d9" },
-            { label: "Expédiées",       value: stats.expedié,   color: "#1d4ed8" },
-            { label: "Livrées",         value: stats.livré,     color: "#15803d" },
+            { label: "expédiées",       value: stats.expédié,   color: "#1d4ed8" },
+            { label: "livrées",         value: stats.livré,     color: "#15803d" },
           ].map((k, i, arr) => (
             <React.Fragment key={k.label}>
               <div className="sm-kpi-item" style={S.kpiItem}>
@@ -1082,18 +1082,18 @@ export default function ManageOrders({
           ))}
         </div>
 
-        {/* ── Controls ── */}
+        {/* â”€â”€ Controls â”€â”€ */}
         <div className="sm-controls" style={S.controls}>
           <div className="sm-search-wrap" style={S.searchWrap}>
             <Ico d={ICO.search} size={15} color="#9ca3af" />
             <input
               style={S.searchInput}
-              placeholder="Rechercher client, téléphone, ID…"
+              placeholder="Rechercher client, tÃ©lÃ©phone, IDâ€¦"
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
             {search && (
-              <button onClick={() => setSearch("")} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16, padding: 2 }}>×</button>
+              <button onClick={() => setSearch("")} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 16, padding: 2 }}>Ã—</button>
             )}
           </div>
           <div className="sm-status-filters" style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
@@ -1114,7 +1114,7 @@ export default function ManageOrders({
             disabled={refreshing}
           >
             <Ico d={ICO.refresh} size={14} color="#6b7280" />
-            {refreshing ? "Actualisation…" : "Rafraîchir"}
+            {refreshing ? "Actualisationâ€¦" : "RafraÃ®chir"}
           </button>
         </div>
 
@@ -1131,26 +1131,26 @@ export default function ManageOrders({
         {!loadError && connectionInfo?.ok && (
           <div style={S.okBanner}>
             <Ico d={ICO.check} size={15} color="#166534" />
-            Données liées à la base: {connectionInfo.count ?? orders.length} commande{(connectionInfo.count ?? orders.length) !== 1 ? "s" : ""} détectée{(connectionInfo.count ?? orders.length) !== 1 ? "s" : ""}.
+            DonnÃ©es liÃ©es Ã  la base: {connectionInfo.count ?? orders.length} commande{(connectionInfo.count ?? orders.length) !== 1 ? "s" : ""} dÃ©tectÃ©e{(connectionInfo.count ?? orders.length) !== 1 ? "s" : ""}.
           </div>
         )}
 
-        {/* ── Table ── */}
+        {/* â”€â”€ Table â”€â”€ */}
         {loading ? (
-          <div style={S.empty}>Chargement des commandes…</div>
+          <div style={S.empty}>Chargement des commandesâ€¦</div>
         ) : (
           <div className="sm-table-card" style={S.card}>
             <div className="sm-card-header" style={S.cardHeader}>
               <div>
                 <h2 style={S.cardTitle}>Liste des commandes</h2>
-                <p style={S.cardSub}>{filteredOrders.length} résultat{filteredOrders.length !== 1 ? "s" : ""} sur {orders.length} chargé{orders.length !== 1 ? "s" : ""} depuis la base</p>
+                <p style={S.cardSub}>{filteredOrders.length} rÃ©sultat{filteredOrders.length !== 1 ? "s" : ""} sur {orders.length} chargÃ©{orders.length !== 1 ? "s" : ""} depuis la base</p>
               </div>
             </div>
             <div className="sm-table-wrap" style={{ overflowX: "auto" }}>
               <table style={S.table}>
                 <thead>
                   <tr style={{ background: "#f9fafb" }}>
-                    {["ID", "Date", "Client", "Téléphone", "Adresse", "Produits", "Dimensions", "Montant", "État", "Actions"].map(h => (
+                    {["ID", "Date", "Client", "TÃ©lÃ©phone", "Adresse", "Produits", "Dimensions", "Montant", "Ã‰tat", "Actions"].map(h => (
                       <th key={h} style={S.th}>{h}</th>
                     ))}
                   </tr>
@@ -1159,7 +1159,7 @@ export default function ManageOrders({
                   {filteredOrders.length === 0 ? (
                     <tr><td colSpan={10} style={S.empty}>
                       {search || filterStatus !== "Tous"
-                        ? "Aucune commande ne correspond à votre recherche."
+                        ? "Aucune commande ne correspond Ã  votre recherche."
                         : "Aucune commande disponible."}
                     </td></tr>
                   ) : (
@@ -1181,7 +1181,7 @@ export default function ManageOrders({
         )}
       </main>
 
-      {/* ── Modals ── */}
+      {/* â”€â”€ Modals â”€â”€ */}
       {showView   && <ViewModal   order={selectedOrder} onClose={close(setShowView)} />}
       {showAdd    && <AddEditModal order={null}          onClose={() => setShowAdd(false)} onSave={createOrder} />}
       {showEdit   && <AddEditModal order={selectedOrder} onClose={close(setShowEdit)}  onSave={editOrder} />}
@@ -1190,5 +1190,7 @@ export default function ManageOrders({
     </div>
   );
 }
+
+
 
 

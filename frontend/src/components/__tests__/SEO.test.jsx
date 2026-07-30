@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-const SEO = (await vi.importActual('../SEO.js')).default;
+const SEO = (await vi.importActual('../shared/SEO.js')).default;
 
 describe('SEO', () => {
   it('updates document head metadata for a route', async () => {

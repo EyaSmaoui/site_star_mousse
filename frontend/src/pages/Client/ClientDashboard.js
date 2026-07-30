@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { getProfile, updateProfile } from '../../services/authService';
 import { getMyOrders } from '../../services/orderService';
 import { hasAccess, ROLES } from '../../utils/authUtils';
-import AdvancedFilters from '../.@@components/shared/AdvancedFilters';
+import AdvancedFilters from '@components/shared/AdvancedFilters';
 import ClientSidebar from './ClientSidebar';
 import { notifyProfileChanged } from '../../services/profileSyncService';
 
@@ -55,11 +55,11 @@ const KPI_CONFIG = [
 ];
 
 const STATUS_STYLES = {
-  livrÃ©: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  livré: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   "en attente": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
   "en cours": { bg: "#ede9fe", color: "#6d28d9", border: "#c4b5fd" },
-  expÃ©diÃ©: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
-  annulÃ©: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+  expédié: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
+  annulé: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
 const ClientDashboard = () => {
@@ -175,7 +175,7 @@ const ClientDashboard = () => {
     const totalSpent = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
     const activeOrders = orders.filter((order) => {
       const status = (order.status || '').toLowerCase();
-      return ['pending', 'en attente', 'en cours', 'expÃ©diÃ©'].includes(status);
+      return ['pending', 'en attente', 'en cours', 'expédié'].includes(status);
     }).length;
     return { totalOrders, totalSpent, activeOrders };
   }, [orders]);
@@ -401,7 +401,7 @@ const ClientDashboard = () => {
                       key: 'status',
                       label: 'Statut',
                       type: 'checkbox',
-                      options: ['en attente', 'en cours', 'expÃ©diÃ©', 'livrÃ©', 'annulÃ©']
+                      options: ['en attente', 'en cours', 'expédié', 'livré', 'annulé']
                     }
                   ]}
                   sortOptions={[
@@ -847,5 +847,7 @@ const S = {
 };
 
 export default ClientDashboard;
+
+
 
 

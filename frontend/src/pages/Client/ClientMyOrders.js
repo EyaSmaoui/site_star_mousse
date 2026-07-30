@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+﻿import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientSidebar from "./ClientSidebar";
@@ -27,22 +27,22 @@ export default function ClientMyOrders() {
   const [profile, setProfile] = useState(() => getCachedProfile() || { username: "" });
   const [loading, setLoading] = useState(true);
 
-  // Fonction pour rafraîchir les commandes
+  // Fonction pour rafraÃ®chir les commandes
   const refreshOrders = useCallback(async (profileOverride = profile) => {
     try {
-      console.log('🔄 Rafraîchissement des commandes... (forceRefresh=true)');
-      const ordersData = await getMyOrders(true); // ✅ FORCE REFRESH
+      console.log('ðŸ”„ RafraÃ®chissement des commandes... (forceRefresh=true)');
+      const ordersData = await getMyOrders(true); // âœ… FORCE REFRESH
       setOrders(applyProfileToOrders(ordersData, profileOverride));
-      console.log('✅ Commandes rafraîchies! Nombre:', ordersData.length);
+      console.log('âœ… Commandes rafraÃ®chies! Nombre:', ordersData.length);
       if (ordersData.length > 0) {
-        console.log('📊 Nouvelle première commande:', {
+        console.log('ðŸ“Š Nouvelle premiÃ¨re commande:', {
           customerName: ordersData[0].customerName,
           phone: ordersData[0].phone,
           address: ordersData[0].address
         });
       }
     } catch (error) {
-      console.error('❌ Erreur lors du rafraîchissement:', error);
+      console.error('âŒ Erreur lors du rafraÃ®chissement:', error);
     }
   }, [profile]);
 
@@ -59,7 +59,7 @@ export default function ClientMyOrders() {
     if (userData) {
       const parsedUser = JSON.parse(userData);
       if (!hasAccess(parsedUser, [ROLES.CLIENT, ROLES.USER])) {
-        toast.error("Accès non autorisé");
+        toast.error("AccÃ¨s non autorisÃ©");
         navigate("/login/client");
         return;
       }
@@ -88,19 +88,19 @@ export default function ClientMyOrders() {
     };
   }, [navigate]);
 
-  // 🔔 S'abonner aux changements de profil GLOBAL
+  // ðŸ”” S'abonner aux changements de profil GLOBAL
   useEffect(() => {
-    console.log('👂 ClientMyOrders: Écoute les changements de profil global');
+    console.log('ðŸ‘‚ ClientMyOrders: Ã‰coute les changements de profil global');
     const unsubscribe = subscribeToProfileChanges((updatedProfile) => {
-      console.log('🔔 ClientMyOrders: Profil changé globalement! Mise à jour:', updatedProfile);
+      console.log('ðŸ”” ClientMyOrders: Profil changÃ© globalement! Mise Ã  jour:', updatedProfile);
       setProfile(updatedProfile);
-      // Rafraîchir les commandes aussi
+      // RafraÃ®chir les commandes aussi
       setOrders((currentOrders) => applyProfileToOrders(currentOrders, updatedProfile));
       refreshOrders(updatedProfile);
     });
 
     return () => {
-      console.log('👋 ClientMyOrders: Arrêt de l\'écoute des changements');
+      console.log('ðŸ‘‹ ClientMyOrders: ArrÃªt de l\'Ã©coute des changements');
       unsubscribe();
     };
   }, [refreshOrders]);
@@ -167,7 +167,7 @@ export default function ClientMyOrders() {
                     <span>{order.customerEmail}</span>
                   </div>
                   <div style={S.detailRow}>
-                    <span style={S.detailLabel}>Téléphone</span>
+                    <span style={S.detailLabel}>TÃ©lÃ©phone</span>
                     <span>{order.phone}</span>
                   </div>
                   <div style={S.detailRow}>
@@ -352,3 +352,4 @@ const S = {
     fontWeight: 700,
   },
 };
+

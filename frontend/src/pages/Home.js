@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUniversity } from "react-icons/fa";
 import { FiAward, FiCheck, FiMoon, FiShoppingBag, FiTruck } from "react-icons/fi";
@@ -125,7 +125,7 @@ const HERO_SLIDES = [
 const USP_ITEMS = [
   {
     icon: FiMoon,
-    title: "Jusqu'à 5 nuits d'essai",
+    title: "Jusqu'Ã  5 nuits d'essai",
   },
   {
     icon: FiTruck,
@@ -133,7 +133,7 @@ const USP_ITEMS = [
   },
   {
     icon: FiAward,
-    title: "Jusqu'à 11 ans de garantie",
+    title: "Jusqu'Ã  11 ans de garantie",
   },
   {
     icon: FaUniversity,
@@ -144,7 +144,7 @@ const USP_ITEMS = [
 const HIGHLIGHT_BANNER = {
   headline: "+5 millions de clients livrés dans le monde",
   headlineNote: "3",
-  description: "+140.000 avis 5 étoiles dans le monde",
+  description: "+140.000 avis 5 Ã©toiles dans le monde",
   descriptionNote: "2",
 };
 
@@ -165,7 +165,7 @@ const CATALOG_DEALS = [
 
     promo: "Offre de la semaine",
     tags: ["50% de reduction"],
-    bullets: ["LIT À TÊTE CAPITONNÉE", "Matelas Orthopediques", "2 Oreillers gratuites , Protege-matelas"],
+    bullets: ["LIT Ã€ TÃŠTE CAPITONNÃ‰E", "Matelas Orthopediques", "2 Oreillers gratuites , Protege-matelas"],
     price: "1 614 DT",
     oldPrice: "2 900 DT",
     note: "Prix base sur la taille 160x190",
@@ -175,25 +175,25 @@ const CATALOG_DEALS = [
     title: "Matelas Relax Plus",
     image: "relax.png",
 
-    tags: ["elu de l'année"],
+    tags: ["elu de l'annÃ©e"],
     bullets: [
-      "Ressorts ensachés (independance de couchage)",
+      "Ressorts ensachÃ©s (independance de couchage)",
       "Hauteur 27 cm",
-      " Jusqu’à 130kg par personne, 2 Face (mi-ferme,relaxante), Tissu 100% coton anti-acarien",
+      " Jusquâ€™Ã  130kg par personne, 2 Face (mi-ferme,relaxante), Tissu 100% coton anti-acarien",
     ],
     price: "A partir de 590 DT ",
     oldPrice: "619 DT",
     route: "/product/medico-plus",
   },
   {
-    title: " Matelas orthopédique",
+    title: " Matelas orthopÃ©dique",
 
     image: "soft.png",
     tags: ["Jusqu'a -35%"],
     bullets: [
-      "Jusqu’à 80kg par personne",
+      "Jusquâ€™Ã  80kg par personne",
       "22 cm",
-      "Matelas réversible (été/hiver)",
+      "Matelas rÃ©versible (Ã©tÃ©/hiver)",
       "Tissus 80% coton anti-acarien",
       " Garantie 3 ans"
     ],
@@ -245,7 +245,7 @@ const GENERIC_CAROUSEL_CARDS = [
     route: "/matelas-reconditionnes/",
     mediaType: "image",
     src: "/caroussel0.png",
-    alt: "Produits reconditionnés Star Mousse",
+    alt: "Produits reconditionnÃ©s Star Mousse",
   },
 ];
 
@@ -383,7 +383,7 @@ const STAR_MOUSSE_PRODUCTS = [
   {
     id: 8424,
     category: "oreillers",
-    title: "Oreiller Médical Aroma Therapy Lavande",
+    title: "Oreiller MÃ©dical Aroma Therapy Lavande",
     image: "/oreiller_lavande.png",
     alt: "oreiller_lavande",
     price: "175 DT",
@@ -393,7 +393,7 @@ const STAR_MOUSSE_PRODUCTS = [
    {
     id: 8424,
     category: "oreillers",
-    title: "Oreiller Médical Aroma Therapy Menthe",
+    title: "Oreiller MÃ©dical Aroma Therapy Menthe",
     image: "/oreiller_menthe.png",
     alt: "oreiller_menthe",
     price: "175 DT",
@@ -403,7 +403,7 @@ const STAR_MOUSSE_PRODUCTS = [
    {
     id: 8424,
     category: "oreillers",
-    title: "Oreiller Médical Aroma Therapy Océan Puff",
+    title: "Oreiller MÃ©dical Aroma Therapy OcÃ©an Puff",
     image: "/oreiller_puff.png",
     alt: "oreiller_puff",
     price: "175 DT",
@@ -1300,7 +1300,7 @@ const Home = () => {
           font-weight: 900;
         }
         .ssn-highlight-text p::before {
-          content: "★";
+          content: "â˜…";
           display: inline-block;
           margin-right: 9px;
           color: #f2bd22;
@@ -3364,7 +3364,7 @@ const Home = () => {
 
         <section className="ssn-catalog-section" aria-label="Best sellers soldes">
           <div className="ssn-catalog-heading ssn-fade">
-            <h2>Découvrez nos Best Sellers Soldés</h2>
+            <h2>DÃ©couvrez nos Best Sellers SoldÃ©s</h2>
           </div>
 
           <div className="ssn-catalog-viewport">
@@ -3402,7 +3402,7 @@ const Home = () => {
                       ))}
                     </ul>
                     <div className="ssn-catalog-price">
-                      <span className="ssn-catalog-price-label">Dès</span>
+                      <span className="ssn-catalog-price-label">DÃ¨s</span>
                       <span className="ssn-catalog-current">{deal.price}</span>
                       <span className="ssn-catalog-old">{deal.oldPrice}</span>
                       {deal.note && <span className="ssn-catalog-note">{deal.note}</span>}
@@ -3496,7 +3496,7 @@ const Home = () => {
           <div className="ssn-star-mousse-inner">
             <header className="ssn-star-mousse-head ssn-fade">
               <h2>Nos Oreillers et Autre</h2>
-              <p>Oreillers et accessoires pensés pour compléter votre confort de sommeil.</p>
+              <p>Oreillers et accessoires pensÃ©s pour complÃ©ter votre confort de sommeil.</p>
             </header>
 
             <div className="ssn-star-mousse-grid">
@@ -3549,7 +3549,7 @@ const Home = () => {
           <div className="ssn-star-mousse-inner">
             <header className="ssn-star-mousse-head ssn-fade">
               <h2>Lits & Meubles</h2>
-              <p>Éléments de literie et mobilier conçus pour une chambre complète et harmonieuse.</p>
+              <p>Ã‰lÃ©ments de literie et mobilier conÃ§us pour une chambre complÃ¨te et harmonieuse.</p>
             </header>
 
             <div className="ssn-star-mousse-grid">
@@ -3670,7 +3670,7 @@ const Home = () => {
                                     <source type="video/mp4" src={card.src} media="(min-width: 0px)" />
                                   </video>
                                   <div className="video-player__button video-player__button--shifted-left">
-                                    <button className="button button--medium button--icon-filled themed themed--default-major media-control__button" type="button" aria-label="Lecture vidéo">
+                                    <button className="button button--medium button--icon-filled themed themed--default-major media-control__button" type="button" aria-label="Lecture vidÃ©o">
                                       <svg aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24">
                                         <path d="M19.4717 9.64206L10.3584 4.17429C9.49805 3.6572 8.46094 3.6445 7.58838 4.13913C6.71484 4.63376 6.19336 5.52829 6.19336 6.5322V17.4677C6.19336 18.4717 6.71484 19.3662 7.58838 19.8603C8.01465 20.1025 8.47998 20.2226 8.94434 20.2226C9.43164 20.2226 9.91797 20.0898 10.3584 19.8261L19.4727 14.3584C20.3076 13.8564 20.8066 12.9746 20.8066 11.9995C20.8057 11.0244 20.3076 10.143 19.4717 9.64206ZM18.7002 13.0722L9.58692 18.539C9.19581 18.7763 8.7251 18.7793 8.32764 18.5556C7.93018 18.33 7.69336 17.9238 7.69336 17.4677V6.5322C7.69336 6.07615 7.93018 5.66941 8.32764 5.4448C8.52149 5.33494 8.73291 5.28025 8.94385 5.28025C9.16553 5.28025 9.38623 5.34031 9.58692 5.46043L18.7002 10.9282C19.0801 11.1557 19.3067 11.5566 19.3067 12C19.3067 12.4433 19.0801 12.8447 18.7002 13.0722Z" />
                                       </svg>
@@ -3769,3 +3769,4 @@ const Home = () => {
 };
 
 export default Home;
+

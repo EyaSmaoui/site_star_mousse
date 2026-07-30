@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SuccessModal from "../.@@components/shared/SuccessModal";
+import SuccessModal from "@components/shared/SuccessModal";
 import { useSuccessAlert } from "../../hooks/useSuccessAlert";
 import { getAllUsers, updateProfile, changePassword } from "../../services/userService";
 
@@ -278,4 +278,5 @@ const S = {
   activityText: { flex: 1, fontSize: 13, color: "#374151" },
   activityTime: { fontSize: 11, color: "#9ca3af", whiteSpace: "nowrap" },
 };
+
 

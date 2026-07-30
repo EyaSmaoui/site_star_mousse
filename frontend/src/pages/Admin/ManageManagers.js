@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SearchBar from "../.@@components/store/SearchBar";
+import SearchBar from "@components/store/SearchBar";
 import { getAllManagers, createManager, updateManager, deleteManager } from "../../services/staffService";
 
 /* â”€â”€â”€ Constantes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -452,4 +452,5 @@ const S = {
 
   empty: { padding: "52px", textAlign: "center", color: "#9ca3af", fontSize: 14 },
 };
+
 

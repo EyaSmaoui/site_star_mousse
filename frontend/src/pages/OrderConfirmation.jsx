@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+﻿import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { FaCheckCircle, FaBox, FaClock } from 'react-icons/fa';
@@ -43,7 +43,7 @@ export default function OrderConfirmation() {
   if (!order) {
     return (
       <div className="text-center py-12">
-        <p className="text-red-500">Commande non trouvée</p>
+        <p className="text-red-500">Commande non trouvÃ©e</p>
       </div>
     );
   }
@@ -59,7 +59,7 @@ export default function OrderConfirmation() {
           <p className="text-2xl font-bold text-blue-600 mb-6">Commande #${order._id?.substring(0, 8) || 'N/A'}</p>
 
           <p className="text-gray-700 mb-8">
-            Vous recevrez un email de confirmation à <span className="font-semibold">{order.customerEmail}</span>
+            Vous recevrez un email de confirmation Ã  <span className="font-semibold">{order.customerEmail}</span>
           </p>
 
           <Link
@@ -70,21 +70,21 @@ export default function OrderConfirmation() {
           </Link>
         </div>
 
-        {/* Détails de la commande */}
+        {/* DÃ©tails de la commande */}
         <div className="bg-white rounded-lg shadow p-8 space-y-6">
           <div className="border-b pb-6">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <FaBox /> Détails de la commande
+              <FaBox /> DÃ©tails de la commande
             </h2>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Statut:</span>
                 <span className="font-semibold capitalize">
-                  {order.status === 'en attente' ? '⏳ En attente' :
-                   order.status === 'en cours' ? '🚚 En cours' :
-                   order.status === 'confirmée' ? '✅ Confirmée' :
-                   order.status === 'expédié' ? '📦 Expédiée' :
-                   order.status === 'livré' ? '✓ Livrée' : order.status}
+                  {order.status === 'en attente' ? 'â³ En attente' :
+                   order.status === 'en cours' ? 'ðŸšš En cours' :
+                   order.status === 'confirmée' ? 'âœ… confirmée' :
+                   order.status === 'expédié' ? 'ðŸ“¦ expédiée' :
+                   order.status === 'livré' ? 'âœ“ livrée' : order.status}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -112,24 +112,24 @@ export default function OrderConfirmation() {
               <p className="text-gray-700 mb-2">{order.address}</p>
               <p className="text-gray-700 mb-4">{order.phone}</p>
               <p className="text-sm text-gray-600">
-                Notre équipe vous contactera prochainement pour confirmer votre livraison
+                Notre Ã©quipe vous contactera prochainement pour confirmer votre livraison
               </p>
             </div>
           </div>
 
           {/* Produits */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">📦 Produits</h2>
+            <h2 className="text-xl font-semibold mb-4">ðŸ“¦ Produits</h2>
             <div className="space-y-3">
               {order.items?.map((item, index) => (
                 <div key={index} className="flex justify-between items-center pb-3 border-b">
                   <div>
                     <p className="font-semibold">{item.name}</p>
                     <p className="text-sm text-gray-600">
-                      Quantité: {item.quantity} × {item.price}€
+                      QuantitÃ©: {item.quantity} Ã— {item.price}â‚¬
                     </p>
                   </div>
-                  <p className="font-semibold">{(item.quantity * item.price).toFixed(2)}€</p>
+                  <p className="font-semibold">{(item.quantity * item.price).toFixed(2)}â‚¬</p>
                 </div>
               ))}
             </div>
@@ -138,11 +138,11 @@ export default function OrderConfirmation() {
           {/* Instructions */}
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
             <p className="text-sm text-yellow-800">
-              <span className="font-semibold">📌 À savoir:</span><br />
-              • Vous recevrez votre commande en {2}-{3} jours<br />
-              • Paiement à la livraison<br />
-              • Suivi en ligne disponible sous peu<br />
-              • Contactez-nous pour toute question: support@starmousse.tn
+              <span className="font-semibold">ðŸ“Œ Ã€ savoir:</span><br />
+              â€¢ Vous recevrez votre commande en {2}-{3} jours<br />
+              â€¢ Paiement Ã  la livraison<br />
+              â€¢ Suivi en ligne disponible sous peu<br />
+              â€¢ Contactez-nous pour toute question: support@starmousse.tn
             </p>
           </div>
         </div>
@@ -150,3 +150,4 @@ export default function OrderConfirmation() {
     </div>
   );
 }
+

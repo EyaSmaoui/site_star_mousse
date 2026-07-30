@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import Breadcrumbs from '.@@components/shared/Breadcrumbs';
+import Breadcrumbs from '@components/shared/Breadcrumbs';
 
 const PrivacyPolicy = () => {
 
@@ -283,5 +283,6 @@ const styles = {
 };
 
 export default PrivacyPolicy;
+
 
 

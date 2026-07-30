@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmployeeSidebar from "./EmployeeSidebar";
-import SearchBar from "../.@@components/store/SearchBar";
+import SearchBar from "@components/store/SearchBar";
 import { getAllOrders } from "../../services/orderApiService";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 
@@ -161,4 +161,5 @@ const S = {
   muted: { color: "#9ca3af" },
   empty: { padding: 40, textAlign: "center", color: "#9ca3af" },
 };
+
 
