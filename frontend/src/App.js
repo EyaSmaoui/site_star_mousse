@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+﻿import React, { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -6,15 +6,15 @@ import "./App.css";
 import { hasAccess, ROLES, getStoredUser, getToken } from "./utils/authUtils";
 import Home from "./pages/Home";
 
-import CookiesModal from "./components/shared/CookiesModal";
-import PromoModal from "./components/store/PromoModal";
+import CookiesModal from "@@components/shared/CookiesModal";
+import PromoModal from "@@components/store/PromoModal";
 
-import WhatsAppWidget from "./components/shared/WhatsAppWidget";
-import Breadcrumbs from "./components/shared/Breadcrumbs";
-import SEO from "./components/shared/SEO";
-import TopContactHeader from "./components/shared/TopContactHeader";
-import NavBar from "./components/shared/NavBar";
-import Footer from "./components/shared/Footer";
+import WhatsAppWidget from "@@components/shared/WhatsAppWidget";
+import Breadcrumbs from "@@components/shared/Breadcrumbs";
+import SEO from "@@components/shared/SEO";
+import TopContactHeader from "@@components/shared/TopContactHeader";
+import NavBar from "@@components/shared/NavBar";
+import Footer from "@@components/shared/Footer";
 
 const Auth = lazy(() => import("./pages/Auth/Auth"));
 const Register = lazy(() => import("./pages/Auth/Register"));
@@ -44,12 +44,12 @@ const EmployeeStock = lazy(() => import("./pages/Employee/EmployeeStock"));
 const EmployeeProfile = lazy(() => import("./pages/Employee/EmployeeProfile"));
 const EmployeeClients = lazy(() => import("./pages/Employee/EmployeeClients"));
 const AdminOrders = lazy(() => import("./pages/Admin/AdminOrders"));
-const ChatbotAssistant = lazy(() => import("./components/shared/ChatbotAssistant"));
-const ProductTemplate = lazy(() => import("./components/store/ProductTemplate"));
+const ChatbotAssistant = lazy(() => import("@@components/shared/ChatbotAssistant"));
+const ProductTemplate = lazy(() => import("@@components/store/ProductTemplate"));
 const Matelas = lazy(() => import("./pages/Store/Matelas"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const LegalTerms = lazy(() => import("./pages/LegalTerms"));
-const ReviewHost = lazy(() => import("./components/store/ReviewHost"));
+const ReviewHost = lazy(() => import("@@components/store/ReviewHost"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
@@ -424,7 +424,7 @@ function ThemeToggle() {
       aria-label={isDark ? "Activer le mode clair" : "Activer le mode sombre"}
       title={isDark ? "Mode clair" : "Mode sombre"}
     >
-      <span className="theme-toggle__icon">{isDark ? "☀" : "☾"}</span>
+      <span className="theme-toggle__icon">{isDark ? "â˜€" : "â˜¾"}</span>
       <span className="theme-toggle__label">{isDark ? "Clair" : "Sombre"}</span>
     </button>
   );
@@ -636,4 +636,5 @@ function App() {
 }
 
 export default App;
+
 

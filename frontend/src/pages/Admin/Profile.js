@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SuccessModal from "../../components/shared/SuccessModal";
+import SuccessModal from "../.@@components/shared/SuccessModal";
 import { useSuccessAlert } from "../../hooks/useSuccessAlert";
 import { getAllUsers, updateProfile, changePassword } from "../../services/userService";
 
-/* ─── Icons ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const Icon = ({ d, size = 16, color = "currentColor", strokeWidth = 2 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
     {Array.isArray(d) ? d.map((p, i) => <path key={i} d={p} />) : <path d={d} />}
@@ -26,11 +26,11 @@ const icons = {
   camera:   ["M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z", "M12 17a4 4 0 100-8 4 4 0 000 8z"],
 };
 
-/* ─── Profile ────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Profile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export default function Profile() {
   const { isOpen, message, title, showSuccess, closeSuccess } = useSuccessAlert();
   
-  // États locaux pour gérer la session et le chargement
+  // Ã‰tats locaux pour gÃ©rer la session et le chargement
   const [userData, setUserData] = useState(null);
   const [nameInput, setNameInput] = useState("");
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ export default function Profile() {
   const [showPasswords, setShowPasswords] = useState({ current: false, next: false, confirm: false });
   const [passwordUpdating, setPasswordUpdating] = useState(false);
 
-  // useEffect : Récupération des données utilisateur
+  // useEffect : RÃ©cupÃ©ration des donnÃ©es utilisateur
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -61,7 +61,7 @@ export default function Profile() {
           }
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération du profil:", error);
+        console.error("Erreur lors de la rÃ©cupÃ©ration du profil:", error);
       } finally {
         setLoading(false);
       }
@@ -70,7 +70,7 @@ export default function Profile() {
     fetchProfileData();
   }, []);
 
-  // handleSave corrigé (évite l'erreur 431 en nettoyant le payload)
+  // handleSave corrigÃ© (Ã©vite l'erreur 431 en nettoyant le payload)
   const handleSave = async () => {
     try {
       const payload = {
@@ -84,9 +84,9 @@ export default function Profile() {
       const updatedUser = { ...userData, username: nameInput, phone: phoneInput, address: addressInput };
       setUserData(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
-      showSuccess('Profil mis à jour avec succès!', 'Enregistré!');
+      showSuccess('Profil mis Ã  jour avec succÃ¨s!', 'EnregistrÃ©!');
     } catch (error) {
-      console.error("Erreur lors de la mise à jour:", error);
+      console.error("Erreur lors de la mise Ã  jour:", error);
       toast.error("Erreur lors de la sauvegarde.");
     }
   };
@@ -111,10 +111,10 @@ export default function Profile() {
       await changePassword({ currentPassword: passwords.current, newPassword: passwords.next, confirmPassword: passwords.confirm });
       setPasswords({ current: "", next: "", confirm: "" });
       setShowPasswords({ current: false, next: false, confirm: false });
-      showSuccess('Mot de passe mis à jour avec succès!', 'Enregistré!');
+      showSuccess('Mot de passe mis Ã  jour avec succÃ¨s!', 'EnregistrÃ©!');
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du mot de passe:", error);
-      toast.error("Impossible de mettre à jour le mot de passe.");
+      console.error("Erreur lors de la mise Ã  jour du mot de passe:", error);
+      toast.error("Impossible de mettre Ã  jour le mot de passe.");
     } finally {
       setPasswordUpdating(false);
     }
@@ -143,13 +143,13 @@ export default function Profile() {
           <div>
             <p style={S.breadcrumb}>Administration / Profil</p>
             <h1 style={S.title}>Mon profil</h1>
-            <p style={S.subtitle}>Nom, email, téléphone, adresse et mot de passe</p>
+            <p style={S.subtitle}>Nom, email, tÃ©lÃ©phone, adresse et mot de passe</p>
           </div>
           <button onClick={handleLogout} style={S.logoutBtn}
             onMouseEnter={e => { e.currentTarget.style.background = "#fef2f2"; e.currentTarget.style.borderColor = "#fecaca"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#e5e7eb"; }}>
             <Icon d={icons.logout} size={15} color="#dc2626" />
-            <span>Déconnexion</span>
+            <span>DÃ©connexion</span>
           </button>
         </div>
 
@@ -165,7 +165,7 @@ export default function Profile() {
             />
             <label style={S.label}>Email</label>
             <input style={S.input} type="email" value={userData?.email || ""} disabled />
-            <label style={S.label}>Téléphone</label>
+            <label style={S.label}>TÃ©lÃ©phone</label>
             <input
               style={S.input}
               type="tel"
@@ -182,7 +182,7 @@ export default function Profile() {
               value={addressInput}
               onChange={(e) => setAddressInput(e.target.value)}
             />
-            <label style={S.label}>Rôle</label>
+            <label style={S.label}>RÃ´le</label>
             <input style={S.input} type="text" value={userData?.role || "Administrateur"} disabled />
             <button style={S.actionButton} type="button" onClick={handleSave}>
               Enregistrer
@@ -200,7 +200,7 @@ export default function Profile() {
                 onChange={(e) => handlePasswordFieldChange("current", e.target.value)}
               />
               <button style={S.toggleButton} onClick={() => setShowPasswords((prev) => ({ ...prev, current: !prev.current }))} type="button">
-                {showPasswords.current ? "👁️" : "🔒"}
+                {showPasswords.current ? "ðŸ‘ï¸" : "ðŸ”’"}
               </button>
             </div>
             <label style={S.label}>Nouveau mot de passe</label>
@@ -212,7 +212,7 @@ export default function Profile() {
                 onChange={(e) => handlePasswordFieldChange("next", e.target.value)}
               />
               <button style={S.toggleButton} onClick={() => setShowPasswords((prev) => ({ ...prev, next: !prev.next }))} type="button">
-                {showPasswords.next ? "👁️" : "🔒"}
+                {showPasswords.next ? "ðŸ‘ï¸" : "ðŸ”’"}
               </button>
             </div>
             <label style={S.label}>Confirmer le nouveau mot de passe</label>
@@ -224,11 +224,11 @@ export default function Profile() {
                 onChange={(e) => handlePasswordFieldChange("confirm", e.target.value)}
               />
               <button style={S.toggleButton} onClick={() => setShowPasswords((prev) => ({ ...prev, confirm: !prev.confirm }))} type="button">
-                {showPasswords.confirm ? "👁️" : "🔒"}
+                {showPasswords.confirm ? "ðŸ‘ï¸" : "ðŸ”’"}
               </button>
             </div>
             <button style={S.actionButton} onClick={handlePasswordUpdate} type="button" disabled={passwordUpdating}>
-              {passwordUpdating ? "Mise à jour…" : "Mettre à jour le mot de passe"}
+              {passwordUpdating ? "Mise Ã  jourâ€¦" : "Mettre Ã  jour le mot de passe"}
             </button>
           </section>
         </div>
@@ -239,7 +239,7 @@ export default function Profile() {
   );
 }
 
-/* ─── Styles ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const S = {
   root: { display: "flex", minHeight: "100vh", background: "#fdf6ef", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1f2937" },
   main: { marginLeft: 220, flex: 1, padding: "32px 34px 48px" },
@@ -278,3 +278,4 @@ const S = {
   activityText: { flex: 1, fontSize: 13, color: "#374151" },
   activityTime: { fontSize: 11, color: "#9ca3af", whiteSpace: "nowrap" },
 };
+

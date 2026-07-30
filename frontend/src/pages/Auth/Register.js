@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register } from "../../services/authService";
 import { submitPendingOrder } from "../../services/orderService";
-import Footer from "../../components/shared/Footer";
+import Footer from "../.@@components/shared/Footer";
 import "../../App.css";
 
 const Register = () => {
@@ -14,7 +14,7 @@ const Register = () => {
     username: searchParams.get("username") || "",
     email: searchParams.get("email") || "",
     password: "",
-    phone: searchParams.get("phone") || "", // Ajout du numéro de téléphone
+    phone: searchParams.get("phone") || "", // Ajout du numÃ©ro de tÃ©lÃ©phone
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -34,12 +34,12 @@ const Register = () => {
 
     // 1. Validation simple
     if (!formData.username || !formData.email || !formData.password || !formData.phone) {
-      toast.error("Veuillez remplir tous les champs ⚠️");
+      toast.error("Veuillez remplir tous les champs âš ï¸");
       return;
     }
     // phone must be exactly 8 digits
     if ((formData.phone || "").replace(/\D/g, "").length !== 8) {
-      toast.error("Le numéro de téléphone doit contenir exactement 8 chiffres.");
+      toast.error("Le numÃ©ro de tÃ©lÃ©phone doit contenir exactement 8 chiffres.");
       return;
     }
 
@@ -57,7 +57,7 @@ const Register = () => {
       if (hasPendingOrder) {
         sessionStorage.setItem('showReviewAfterAuth', 'true');
       }
-      toast.success("Compte Star Mousse créé ! Bienvenue 🌙");
+      toast.success("Compte Star Mousse crÃ©Ã© ! Bienvenue ðŸŒ™");
       submitPendingOrder().catch((err) => {
         console.error('Erreur commande en attente :', err);
         toast.warning("Compte cree. Votre ancienne commande en attente n'a pas pu etre envoyee, merci de la refaire.");
@@ -67,7 +67,7 @@ const Register = () => {
       }, 2000);
     } catch (err) {
       const errorMsg = err.response?.data?.error || "Erreur lors de l'inscription.";
-      toast.error(`Échec : ${errorMsg}`);
+      toast.error(`Ã‰chec : ${errorMsg}`);
     } finally {
       setLoading(false);
     }
@@ -82,12 +82,12 @@ const Register = () => {
 
         <div className="login-card">
           <div className="login-header">
-            <h2>Créer un compte</h2>
-            <p>Rejoignez le showroom Star Mousse et finalisez votre commande en toute simplicité.</p>
+            <h2>CrÃ©er un compte</h2>
+            <p>Rejoignez le showroom Star Mousse et finalisez votre commande en toute simplicitÃ©.</p>
             <div className="benefit-badges">
-              <span className="badge">Sécurité renforcée</span>
+              <span className="badge">SÃ©curitÃ© renforcÃ©e</span>
               <span className="badge">Saisie automatique</span>
-              <span className="badge">Expérience premium</span>
+              <span className="badge">ExpÃ©rience premium</span>
             </div>
           </div>
 
@@ -117,7 +117,7 @@ const Register = () => {
             </div>
 
             <div className="input-group">
-              <label>Numéro de téléphone *</label>
+              <label>NumÃ©ro de tÃ©lÃ©phone *</label>
               <input
                 type="tel"
                 name="phone"
@@ -133,7 +133,7 @@ const Register = () => {
               <input
                 type="password"
                 name="password"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -145,12 +145,12 @@ const Register = () => {
               className="btn-primary-glow w-full" 
               disabled={loading}
             >
-              {loading ? "Création en cours..." : "Créer mon compte"}
+              {loading ? "CrÃ©ation en cours..." : "CrÃ©er mon compte"}
             </button>
           </form>
 
           <p className="login-footer">
-            Déjà inscrit ? <Link to="/login">Se connecter</Link>
+            DÃ©jÃ  inscrit ? <Link to="/login">Se connecter</Link>
           </p>
         </div>
       </section>
@@ -161,3 +161,4 @@ const Register = () => {
 };
 
 export default Register;
+

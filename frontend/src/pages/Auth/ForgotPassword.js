@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { forgotPassword } from "../../services/authService";
-import Footer from "../../components/shared/Footer";
+import Footer from "../.@@components/shared/Footer";
 import "../../App.css";
 
 export default function ForgotPassword() {
@@ -25,20 +25,20 @@ export default function ForgotPassword() {
 
     try {
       const data = await forgotPassword(value);
-      toast.success(data.message || "Si cet email existe, un lien a été envoyé.");
+      toast.success(data.message || "Si cet email existe, un lien a Ã©tÃ© envoyÃ©.");
       if (data.resetLink) setResetLink(data.resetLink);
     } catch (error) {
-      // 🕵️‍♂️ Extraction compatible avec la structure de ton `httpClient.js`
+      // ðŸ•µï¸â€â™‚ï¸ Extraction compatible avec la structure de ton `httpClient.js`
       const status = error?.status || error?.response?.status;
       const message = error?.message || error?.response?.data?.error || "Impossible d'envoyer le lien.";
       
-      // On tente de récupérer le retry-after si jamais l'intercepteur l'a laissé passer
+      // On tente de rÃ©cupÃ©rer le retry-after si jamais l'intercepteur l'a laissÃ© passer
       const retryAfter = error?.response?.headers?.['retry-after'] || error?.response?.headers?.['Retry-After'];
       let seconds = Number.parseInt(retryAfter, 10);
 
-      // 🔥 Si c'est un 429 mais qu'on n'a pas pu parser les secondes (à cause de l'intercepteur)
+      // ðŸ”¥ Si c'est un 429 mais qu'on n'a pas pu parser les secondes (Ã  cause de l'intercepteur)
       if (status === 429 && (!Number.isFinite(seconds) || seconds <= 0)) {
-        // Fallback temporaire à 60 secondes pour bloquer l'IHM et protéger l'UX
+        // Fallback temporaire Ã  60 secondes pour bloquer l'IHM et protÃ©ger l'UX
         seconds = 60; 
       }
 
@@ -63,7 +63,7 @@ export default function ForgotPassword() {
     return () => clearInterval(t);
   }, [cooldownSeconds]);
 
-  // Formatage pour les très longues durées (ex: tes 23 heures de blocage actuelles)
+  // Formatage pour les trÃ¨s longues durÃ©es (ex: tes 23 heures de blocage actuelles)
   const formatCooldown = (sec) => {
     if (sec > 3600) return `${Math.ceil(sec / 3600)}h`;
     if (sec > 60) return `${Math.ceil(sec / 60)}m`;
@@ -76,8 +76,8 @@ export default function ForgotPassword() {
         <div className="login-blob" />
         <div className="login-card">
           <div className="login-header">
-            <h2>Mot de passe oublié</h2>
-            <p>Entrez votre email et nous vous envoyons un lien pour créer un nouveau mot de passe.</p>
+            <h2>Mot de passe oubliÃ©</h2>
+            <p>Entrez votre email et nous vous envoyons un lien pour crÃ©er un nouveau mot de passe.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
@@ -109,12 +109,12 @@ export default function ForgotPassword() {
 
           {resetLink && (
             <div className="login-footer" style={{ overflowWrap: "anywhere" }}>
-              Mode test: <a href={resetLink} target="_blank" rel="noreferrer">ouvrir le lien de réinitialisation</a>
+              Mode test: <a href={resetLink} target="_blank" rel="noreferrer">ouvrir le lien de rÃ©initialisation</a>
             </div>
           )}
 
           <p className="login-footer">
-            <Link to="/login">Retour à la connexion</Link>
+            <Link to="/login">Retour Ã  la connexion</Link>
           </p>
         </div>
       </section>
@@ -122,3 +122,4 @@ export default function ForgotPassword() {
     </>
   );
 }
+

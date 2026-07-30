@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmployeeSidebar from "./EmployeeSidebar";
-import SearchBar from "../../components/store/SearchBar";
+import SearchBar from "../.@@components/store/SearchBar";
 import { getAllOrders } from "../../services/orderApiService";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 
@@ -82,12 +82,12 @@ export default function EmployeeClients() {
       <main className="employee-main sm-internal-main" style={S.main}>
         <div style={S.header}>
           <div>
-            <p style={S.eyebrow}>Employé / Clients</p>
-            <h1 style={S.title}>Clients commandés</h1>
+            <p style={S.eyebrow}>EmployÃ© / Clients</p>
+            <h1 style={S.title}>Clients commandÃ©s</h1>
             <p style={S.subtitle}>Vue lecture seule construite depuis les commandes existantes.</p>
           </div>
           <SearchBar 
-            placeholder="Rechercher client, téléphone, email..." 
+            placeholder="Rechercher client, tÃ©lÃ©phone, email..." 
             value={search} 
             onChange={setSearch} 
           />
@@ -103,12 +103,12 @@ export default function EmployeeClients() {
           {loading ? (
             <div style={S.empty}>Chargement...</div>
           ) : filtered.length === 0 ? (
-            <div style={S.empty}>Aucun client trouvé.</div>
+            <div style={S.empty}>Aucun client trouvÃ©.</div>
           ) : (
             <table style={S.table}>
               <thead>
                 <tr>
-                  {["Client", "Contact", "Adresse", "Commandes", "Total", "Dernière commande"].map((head) => (
+                  {["Client", "Contact", "Adresse", "Commandes", "Total", "DerniÃ¨re commande"].map((head) => (
                     <th key={head} style={S.th}>{head}</th>
                   ))}
                 </tr>
@@ -161,3 +161,4 @@ const S = {
   muted: { color: "#9ca3af" },
   empty: { padding: 40, textAlign: "center", color: "#9ca3af" },
 };
+

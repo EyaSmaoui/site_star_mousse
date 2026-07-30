@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,7 +8,7 @@ import { getAllOrders } from "../../services/orderApiService";
 import { getAll as getAllProducts } from "../../services/productService";
 import { getAllUsers } from "../../services/userService";
 import { deleteReview, getAllReviews } from "../../services/reviewService";
-import SearchBar from "../../components/store/SearchBar";
+import SearchBar from "../.@@components/store/SearchBar";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,14 +34,14 @@ ChartJS.register(
   Filler
 );
 
-/* ─── Constantes ──────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Constantes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const MOCK_ORDERS = [
   {
     id: "#7841",
     name: "Amira Ben Salah",
     amount: "1 890 DT",
-    status: "livré",
+    status: "livrÃ©",
     date: "18/05/2024",
   },
   {
@@ -55,7 +55,7 @@ const MOCK_ORDERS = [
     id: "#7839",
     name: "Sonia Mejri",
     amount: "1 290 DT",
-    status: "livré",
+    status: "livrÃ©",
     date: "17/05/2024",
   },
 ];
@@ -63,7 +63,7 @@ const MOCK_ORDERS = [
 const STOCK_ALERTS = [
   {
     id: 1,
-    name: "Super Siesta Orthopédique",
+    name: "Super Siesta OrthopÃ©dique",
     sku: "SS-ORTHO-01",
     tag: "Rupture",
     tagStyle: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
@@ -78,19 +78,19 @@ const STOCK_ALERTS = [
 ];
 
 const STATUS_STYLES = {
-  livré: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  livrÃ©: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   "en transit": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
-  confirmé: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
-  annulé: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+  confirmÃ©: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+  annulÃ©: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
 const STATUS_COLORS = {
-  livré: "#10b981",
+  livrÃ©: "#10b981",
   "en transit": "#f97316",
-  confirmé: "#3b82f6",
-  annulé: "#ef4444",
+  confirmÃ©: "#3b82f6",
+  annulÃ©: "#ef4444",
   "en attente": "#fb923c",
-  expédié: "#8b5cf6",
+  expÃ©diÃ©: "#8b5cf6",
   inconnu: "#94a3b8",
 };
 
@@ -100,7 +100,7 @@ const KPI_CONFIG = [
     valueKey: "totalRevenue",
     format: (v) => `${Number(v || 0).toLocaleString("fr-TN")} DT`,
     change: "+55%",
-    changeLabel: "mois précédent",
+    changeLabel: "mois prÃ©cÃ©dent",
     trend: "up",
     iconColor: "#10b981",
     icon: (
@@ -124,7 +124,7 @@ const KPI_CONFIG = [
     valueKey: "totalOrders",
     format: (v) => String(v || 0),
     change: "+12%",
-    changeLabel: "mois précédent",
+    changeLabel: "mois prÃ©cÃ©dent",
     trend: "up",
     iconColor: "#3b82f6",
     icon: (
@@ -149,7 +149,7 @@ const KPI_CONFIG = [
     valueKey: "clientsActifs",
     format: (v) => String(v || 0),
     change: "+8%",
-    changeLabel: "mois précédent",
+    changeLabel: "mois prÃ©cÃ©dent",
     trend: "up",
     iconColor: "#7c3aed",
     icon: (
@@ -171,9 +171,9 @@ const KPI_CONFIG = [
   },
 ];
 
-/* ─── Revenue Chart ───────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Revenue Chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const revenueChartData = {
-  labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû"],
+  labels: ["Jan", "FÃ©v", "Mar", "Avr", "Mai", "Jun", "Jul", "AoÃ»"],
   datasets: [
     {
       label: "Google Ads",
@@ -233,10 +233,10 @@ const donutOptions = {
   plugins: { legend: { display: false }, tooltip: { enabled: true } },
 };
 
-/* ─── Composant Principal ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ Composant Principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Aperçu");
+  const [activeTab, setActiveTab] = useState("AperÃ§u");
   const [time, setTime] = useState(new Date());
   const [statsSummary, setStatsSummary] = useState({
     totalRevenue: 0,
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [reviewRatingFilter, setReviewRatingFilter] = useState("all");
 
-  /* ── Auth + data fetch ── */
+  /* â”€â”€ Auth + data fetch â”€â”€ */
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -277,7 +277,7 @@ export default function AdminDashboard() {
             ""
         );
         if (!hasAccess(parsedUser, [ROLES.ADMIN])) {
-          toast.error("Accès non autorisé");
+          toast.error("AccÃ¨s non autorisÃ©");
           navigate("/login/admin");
           return;
         }
@@ -288,7 +288,7 @@ export default function AdminDashboard() {
     }
 
     checkApiHealth().catch(() =>
-      toast.warn("API indisponible : démarrez le backend et MongoDB.")
+      toast.warn("API indisponible : dÃ©marrez le backend et MongoDB.")
     );
 
     const loadData = async () => {
@@ -351,7 +351,7 @@ export default function AdminDashboard() {
         setReviews(allReviews);
       } catch (e) {
         console.error(e);
-        toast.error("Impossible de récupérer les données.");
+        toast.error("Impossible de rÃ©cupÃ©rer les donnÃ©es.");
       } finally {
         setLoading(false);
       }
@@ -366,7 +366,7 @@ export default function AdminDashboard() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  /* ── Horloge ── */
+  /* â”€â”€ Horloge â”€â”€ */
   useEffect(() => {
     const t = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(t);
@@ -377,13 +377,13 @@ export default function AdminDashboard() {
     "Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi",
   ];
   const MONTHS = [
-    "janvier","février","mars","avril","mai","juin",
-    "juillet","août","septembre","octobre","novembre","décembre",
+    "janvier","fÃ©vrier","mars","avril","mai","juin",
+    "juillet","aoÃ»t","septembre","octobre","novembre","dÃ©cembre",
   ];
   const dateStr = `${DAYS[time.getDay()]} ${time.getDate()} ${MONTHS[time.getMonth()]}`;
   const timeStr = `${pad(time.getHours())}:${pad(time.getMinutes())}:${pad(time.getSeconds())}`;
 
-  /* ── Donut data ── */
+  /* â”€â”€ Donut data â”€â”€ */
   const orderStatusLabels = Object.keys(statusCounts).filter(Boolean);
   const orderStatusData = orderStatusLabels.map((l) => statusCounts[l] || 0);
   const orderStatusColors = orderStatusLabels.map(
@@ -395,7 +395,7 @@ export default function AdminDashboard() {
     color: STATUS_COLORS[l] || "#94a3b8",
   }));
 
-  /* ── Stock alerts ── */
+  /* â”€â”€ Stock alerts â”€â”€ */
   const productStockAlerts = products.length
     ? products
         .filter((item) => Number(item.stock || 0) <= 10)
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
   const ordersDonutData = {
     labels: orderStatusLabels.length
       ? orderStatusLabels.map((l) => l.charAt(0).toUpperCase() + l.slice(1))
-      : ["Livré", "En transit", "Confirmé", "Annulé"],
+      : ["LivrÃ©", "En transit", "ConfirmÃ©", "AnnulÃ©"],
     datasets: [
       {
         data: orderStatusLabels.length
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
     ],
   };
 
-  /* ── Filtrage ── */
+  /* â”€â”€ Filtrage â”€â”€ */
   const q = searchTerm.toLowerCase();
 
   const filteredOrders = orders.filter(
@@ -476,20 +476,20 @@ export default function AdminDashboard() {
     try {
       await deleteReview(id);
       setReviews((current) => current.filter((review) => review._id !== id));
-      toast.success("Avis supprimé.");
+      toast.success("Avis supprimÃ©.");
     } catch (error) {
       console.error(error);
       toast.error("Impossible de supprimer l'avis.");
     }
   };
 
-  /* ── Render ── */
+  /* â”€â”€ Render â”€â”€ */
   return (
     <div style={S.root}>
       <AdminSidebar />
 
       <main className="admin-main" style={S.main}>
-        {/* ── Topbar ── */}
+        {/* â”€â”€ Topbar â”€â”€ */}
         <div style={S.topbar}>
           <div>
             <h1 style={S.title}>
@@ -518,7 +518,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* ── Search + action bouton ── */}
+        {/* â”€â”€ Search + action bouton â”€â”€ */}
         <div style={S.periodRow}>
           <SearchBar 
             placeholder="Rechercher avis, clients, produits..." 
@@ -530,11 +530,11 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab("Commandes")}
             style={S.allOrdersBtn}
           >
-            Voir toutes les commandes →
+            Voir toutes les commandes â†’
           </button>
         </div>
 
-        {/* ── KPI Cards ── */}
+        {/* â”€â”€ KPI Cards â”€â”€ */}
         <div style={S.kpiGrid}>
           {KPI_CONFIG.map((kpi, i) => (
             <div key={i} style={S.kpiCard}>
@@ -547,7 +547,7 @@ export default function AdminDashboard() {
                   <span style={S.kpiDate}>Mai 2026</span>
                 </div>
                 <div style={S.kpiValue}>
-                  {loading ? "…" : kpi.format(statsSummary[kpi.valueKey])}
+                  {loading ? "â€¦" : kpi.format(statsSummary[kpi.valueKey])}
                 </div>
                 <div style={S.kpiChange}>
                   <svg
@@ -568,8 +568,8 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* ══ Aperçu ══ */}
-        {activeTab === "Aperçu" && (
+        {/* â•â• AperÃ§u â•â• */}
+        {activeTab === "AperÃ§u" && (
           <div style={S.overviewGrid}>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {/* Revenue Chart */}
@@ -595,7 +595,7 @@ export default function AdminDashboard() {
               {/* Recent Orders */}
               <div style={S.card}>
                 <div style={S.cardHeader}>
-                  <h2 style={S.cardTitle}>Commandes récentes</h2>
+                  <h2 style={S.cardTitle}>Commandes rÃ©centes</h2>
                 </div>
                 <table style={S.table}>
                   <thead>
@@ -634,10 +634,10 @@ export default function AdminDashboard() {
                   {(orderStatusLabels.length
                     ? orderStatusLegend
                     : [
-                        { label: "Livré", count: 38, color: "#f97316" },
+                        { label: "LivrÃ©", count: 38, color: "#f97316" },
                         { label: "En transit", count: 22, color: "#10b981" },
-                        { label: "Confirmé", count: 12, color: "#06b6d4" },
-                        { label: "Annulé", count: 28, color: "#ef4444" },
+                        { label: "ConfirmÃ©", count: 12, color: "#06b6d4" },
+                        { label: "AnnulÃ©", count: 28, color: "#ef4444" },
                       ]
                   ).map((item) => (
                     <div key={item.label} style={S.donutRow}>
@@ -669,7 +669,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ══ Statistiques ══ */}
+        {/* â•â• Statistiques â•â• */}
         {activeTab === "Statistiques" && (
           <div
             style={{
@@ -682,7 +682,7 @@ export default function AdminDashboard() {
               {
                 title: "Total commandes",
                 value: statsSummary.totalOrders,
-                desc: "Commandes enregistrées sur la période.",
+                desc: "Commandes enregistrÃ©es sur la pÃ©riode.",
               },
               {
                 title: "Chiffre d'affaires",
@@ -697,7 +697,7 @@ export default function AdminDashboard() {
               {
                 title: "Clients actifs",
                 value: statsSummary.clientsActifs,
-                desc: "Clients uniques ayant passé une commande.",
+                desc: "Clients uniques ayant passÃ© une commande.",
               },
             ].map((s, i) => (
               <div key={i} style={S.card}>
@@ -735,11 +735,11 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ══ Commandes ══ */}
+        {/* â•â• Commandes â•â• */}
         {activeTab === "Commandes" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>Gestion Générale des Commandes</h2>
+              <h2 style={S.cardTitle}>Gestion GÃ©nÃ©rale des Commandes</h2>
             </div>
             <table style={S.table}>
               <thead>
@@ -766,7 +766,7 @@ export default function AdminDashboard() {
                         color: "#9ca3af",
                       }}
                     >
-                      Aucune commande trouvée
+                      Aucune commande trouvÃ©e
                     </td>
                   </tr>
                 )}
@@ -775,7 +775,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ══ Matelas ══ */}
+        {/* â•â• Matelas â•â• */}
         {activeTab === "Matelas" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
@@ -845,7 +845,7 @@ export default function AdminDashboard() {
                                 : "#b06000",
                           }}
                         >
-                          {p.stock ?? 0} pièces
+                          {p.stock ?? 0} piÃ¨ces
                         </span>
                       </td>
                     </tr>
@@ -860,7 +860,7 @@ export default function AdminDashboard() {
                         color: "#9ca3af",
                       }}
                     >
-                      Aucun article trouvé
+                      Aucun article trouvÃ©
                     </td>
                   </tr>
                 )}
@@ -869,16 +869,16 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ══ Clients ══ */}
+        {/* â•â• Clients â•â• */}
         {activeTab === "Clients" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>Liste des Clients enregistrés</h2>
+              <h2 style={S.cardTitle}>Liste des Clients enregistrÃ©s</h2>
             </div>
             <table style={S.table}>
               <thead>
                 <tr style={{ background: "#f9fafb" }}>
-                  {["Nom complet", "Email", "Rôle"].map((h) => (
+                  {["Nom complet", "Email", "RÃ´le"].map((h) => (
                     <th key={h} style={S.th}>
                       {h}
                     </th>
@@ -934,7 +934,7 @@ export default function AdminDashboard() {
                         color: "#9ca3af",
                       }}
                     >
-                      Aucun utilisateur trouvé
+                      Aucun utilisateur trouvÃ©
                     </td>
                   </tr>
                 )}
@@ -943,7 +943,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ══ Avis ══ */}
+        {/* â•â• Avis â•â• */}
         {activeTab === "Avis" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
@@ -986,7 +986,7 @@ export default function AdminDashboard() {
                         {review.product?.name || review.productName || "Produit Star Mousse"}
                       </td>
                       <td style={{ padding: "13px 20px", fontSize: 13, color: "#b45309", whiteSpace: "nowrap" }}>
-                        {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                        {"â˜…".repeat(review.rating)}{"â˜†".repeat(5 - review.rating)}
                       </td>
                       <td style={{ padding: "13px 20px", fontSize: 13, color: "#4b5563", maxWidth: 360 }}>
                         {review.comment || "-"}
@@ -1036,7 +1036,7 @@ export default function AdminDashboard() {
                         color: "#9ca3af",
                       }}
                     >
-                      Aucun avis trouvé
+                      Aucun avis trouvÃ©
                     </td>
                   </tr>
                 )}
@@ -1049,7 +1049,7 @@ export default function AdminDashboard() {
   );
 }
 
-/* ─── Sous-composants ─────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Sous-composants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function OrderRow({ order }) {
   const name = order.customerName || order.name || "Client inconnu";
   const amount =
@@ -1155,7 +1155,7 @@ function AlertItem({ alert }) {
   );
 }
 
-/* ─── Styles ──────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const S = {
   root: {
     display: "flex",
@@ -1475,3 +1475,4 @@ const S = {
     color: "#374151",
   },
 };
+

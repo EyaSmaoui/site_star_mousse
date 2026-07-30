@@ -1,10 +1,10 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createEmployer } from '../../services/staffService';
 import { createManager } from '../../services/staffService';
 import AdminSidebar from './AdminSidebar';
-import SuccessModal from '../../components/shared/SuccessModal';
+import SuccessModal from '../.@@components/shared/SuccessModal';
 import { useSuccessAlert } from '../../hooks/useSuccessAlert';
 
 const FONT_HEAD = "'Syne', sans-serif";
@@ -12,7 +12,7 @@ const FONT_BODY = "'DM Sans', sans-serif";
 const ACCENT    = "#3b82f6";
 const SIDEBAR_W = "260px";
 
-const ROLE_OPTIONS = ["gestionnaire", "Livreur", "Responsable Stock", "Vendeur", "Nettoyeur", "Agent de Sécurité"];
+const ROLE_OPTIONS = ["gestionnaire", "Livreur", "Responsable Stock", "Vendeur", "Nettoyeur", "Agent de SÃ©curitÃ©"];
 
 const AddEmployer = () => {
   const navigate = useNavigate();
@@ -61,11 +61,11 @@ const AddEmployer = () => {
       };
       await createManager(managerPayload);
       
-      showSuccess(`L'employé ${formData.username} a été créé avec succès!`, 'Employé Créé!');
+      showSuccess(`L'employÃ© ${formData.username} a Ã©tÃ© crÃ©Ã© avec succÃ¨s!`, 'EmployÃ© CrÃ©Ã©!');
       setFormData({ username: '', email: '', password: '', phone: '', role: 'gestionnaire', status: 'actif' });
     } catch (error) {
       const message = error.response?.data?.error || error.response?.data?.message || error.message;
-      toast.error(message || "Erreur lors de la création de l'employé.");
+      toast.error(message || "Erreur lors de la crÃ©ation de l'employÃ©.");
     } finally {
       setLoading(false);
     }
@@ -74,8 +74,8 @@ const AddEmployer = () => {
   const FIELDS = [
     { label: 'Nom complet',           field: 'username', type: 'text',     placeholder: 'Ex : Mohamed Ben Ali' },
     { label: 'Email professionnel',   field: 'email',    type: 'email',    placeholder: 'exemple@starmousse.tn' },
-    { label: 'Mot de passe temporaire', field: 'password', type: 'password', placeholder: '••••••••' },
-    { label: 'Téléphone',             field: 'phone',    type: 'text',     placeholder: '+216 XX XXX XXX' },
+    { label: 'Mot de passe temporaire', field: 'password', type: 'password', placeholder: 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢' },
+    { label: 'TÃ©lÃ©phone',             field: 'phone',    type: 'text',     placeholder: '+216 XX XXX XXX' },
   ];
 
   return (
@@ -94,7 +94,7 @@ const AddEmployer = () => {
         <header style={s.header}>
           <div>
             <p style={s.headerSub}>Gestion des gestionnaires</p>
-            <h1 style={s.headerTitle}>Créer un employé</h1>
+            <h1 style={s.headerTitle}>CrÃ©er un employÃ©</h1>
           </div>
         </header>
 
@@ -103,9 +103,9 @@ const AddEmployer = () => {
 
           {/* Card header */}
           <div style={s.cardHeader}>
-            <span style={s.cardIcon}>👤</span>
+            <span style={s.cardIcon}>ðŸ‘¤</span>
             <div>
-              <div style={s.cardTitle}>Nouvel employé / employeur</div>
+              <div style={s.cardTitle}>Nouvel employÃ© / employeur</div>
               <div style={s.cardSub}>Remplissez les informations ci-dessous</div>
             </div>
           </div>
@@ -140,7 +140,7 @@ const AddEmployer = () => {
             {/* Role and Status Selectors */}
             <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
               <div style={{ flex: 1 }}>
-                <label style={s.label}>Rôle *</label>
+                <label style={s.label}>RÃ´le *</label>
                 <select
                   value={formData.role}
                   onChange={handleChange('role')}
@@ -177,7 +177,7 @@ const AddEmployer = () => {
                 onMouseEnter={(e) => { if (!loading) e.currentTarget.style.background = "#2563eb"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = ACCENT; }}
               >
-              {loading ? '⏳ Enregistrement...' : '✓ Enregistrer l\'employé'}
+              {loading ? 'â³ Enregistrement...' : 'âœ“ Enregistrer l\'employÃ©'}
               </button>
 
               <button
@@ -193,7 +193,7 @@ const AddEmployer = () => {
                   e.currentTarget.style.borderColor = "#e2e8f0";
                 }}
               >
-                ← Retour
+                â† Retour
               </button>
             </div>
 
@@ -206,7 +206,7 @@ const AddEmployer = () => {
 
 export default AddEmployer;
 
-/* ─── Styles ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const s = {
   root: {
@@ -308,3 +308,4 @@ const s = {
     transition: "all 0.2s",
   },
 };
+

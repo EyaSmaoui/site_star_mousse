@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SearchBar from "../../components/store/SearchBar";
+import SearchBar from "../.@@components/store/SearchBar";
 import { createClient, deleteClient, getAllClients, updateClient } from "../../services/clientService";
 import { getAllOrders } from "../../services/orderApiService";
 
@@ -178,7 +178,7 @@ export default function ManageClients() {
       try {
         const user = JSON.parse(userData);
         if (user.role !== "admin") {
-          toast.error("Accès réservé à l'administrateur");
+          toast.error("AccÃ¨s rÃ©servÃ© Ã  l'administrateur");
           navigate("/");
           return;
         }
@@ -210,11 +210,11 @@ export default function ManageClients() {
 
   const handleSave = async () => {
     if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) {
-      toast.error("Nom, email et téléphone sont obligatoires.");
+      toast.error("Nom, email et tÃ©lÃ©phone sont obligatoires.");
       return;
     }
     if ((form.phone || "").toString().replace(/\D/g, "").length !== 8) {
-      toast.error("Le numéro de téléphone doit contenir exactement 8 chiffres.");
+      toast.error("Le numÃ©ro de tÃ©lÃ©phone doit contenir exactement 8 chiffres.");
       return;
     }
 
@@ -222,10 +222,10 @@ export default function ManageClients() {
     try {
       if (modal === "add") {
         await createClient(form);
-        toast.success("Client ajouté");
+        toast.success("Client ajoutÃ©");
       } else {
         await updateClient(modal.client._id, form);
-        toast.success("Client mis à jour");
+        toast.success("Client mis Ã  jour");
       }
       closeModal();
       await fetchData();
@@ -241,7 +241,7 @@ export default function ManageClients() {
 
     try {
       await deleteClient(confirmClient._id);
-      toast.success("Client supprimé");
+      toast.success("Client supprimÃ©");
       setConfirmClient(null);
       await fetchData();
     } catch (err) {
@@ -256,13 +256,13 @@ export default function ManageClients() {
       <main className="admin-main sm-internal-main" style={S.main}>
         <div style={S.topbar}>
           <div>
-            <p style={S.eyebrow}>Star Mousse · Administration</p>
+            <p style={S.eyebrow}>Star Mousse Â· Administration</p>
             <h1 style={S.title}>Clients</h1>
           </div>
           <div style={S.actions}>
             <button style={S.btnGhost} onClick={fetchData} disabled={loading}>
               <Ico d={ICO.refresh} size={15} />
-              {loading ? "Chargement..." : "Rafraîchir"}
+              {loading ? "Chargement..." : "RafraÃ®chir"}
             </button>
             <button style={S.btnPrimary} onClick={openAdd}>
               <Ico d={ICO.plus} size={15} color="#fff" sw={2.5} />
@@ -273,8 +273,8 @@ export default function ManageClients() {
 
         <div style={S.kpiGrid}>
           <Kpi icon={ICO.user} label="Clients" value={stats.total} color="#3b82f6" />
-          <Kpi icon={ICO.order} label="Commandes liées" value={stats.orders} color="#f97316" />
-          <Kpi icon={ICO.wallet} label="Total dépensé" value={formatMoney(stats.totalSpent)} color="#f97316" />
+          <Kpi icon={ICO.order} label="Commandes liÃ©es" value={stats.orders} color="#f97316" />
+          <Kpi icon={ICO.wallet} label="Total dÃ©pensÃ©" value={formatMoney(stats.totalSpent)} color="#f97316" />
           <Kpi icon={ICO.user} label="Clients auto" value={stats.auto} color="#10b981" />
         </div>
 
@@ -282,11 +282,11 @@ export default function ManageClients() {
           <div style={S.panelHead}>
             <div>
               <h2 style={S.panelTitle}>Liste des clients</h2>
-              <p style={S.panelSub}>{filteredRows.length} résultat{filteredRows.length !== 1 ? "s" : ""} sur {rows.length}</p>
+              <p style={S.panelSub}>{filteredRows.length} rÃ©sultat{filteredRows.length !== 1 ? "s" : ""} sur {rows.length}</p>
             </div>
             <div style={S.tools}>
               <SearchBar 
-                placeholder="Rechercher clients, email, téléphone..." 
+                placeholder="Rechercher clients, email, tÃ©lÃ©phone..." 
                 value={search} 
                 onChange={setSearch} 
               />
@@ -303,13 +303,13 @@ export default function ManageClients() {
           {loading ? (
             <div style={S.empty}>Chargement des clients...</div>
           ) : filteredRows.length === 0 ? (
-            <div style={S.empty}>Aucun client trouvé.</div>
+            <div style={S.empty}>Aucun client trouvÃ©.</div>
           ) : (
             <div style={S.tableWrap}>
               <table style={S.table}>
                 <thead>
                   <tr>
-                    {["Client", "Contact", "Commandes", "Total dépensé", "Dernière commande", "Statut", "Actions"].map(title => (
+                    {["Client", "Contact", "Commandes", "Total dÃ©pensÃ©", "DerniÃ¨re commande", "Statut", "Actions"].map(title => (
                       <th key={title} style={S.th}>{title}</th>
                     ))}
                   </tr>
@@ -383,13 +383,13 @@ function ClientRow({ client, onEdit, onDelete }) {
           <div style={S.avatar}>{initials || "C"}</div>
           <div>
             <div style={S.clientName}>{client.name || "Client"}</div>
-            <div style={S.source}>{client.isAuto ? "Créé depuis commandes" : "Fiche client"}</div>
+            <div style={S.source}>{client.isAuto ? "CrÃ©Ã© depuis commandes" : "Fiche client"}</div>
           </div>
         </div>
       </td>
       <td style={S.td}>
-        <div style={S.primaryText}>{client.email || "Email non renseigné"}</div>
-        <div style={S.mutedText}>{client.phone || "Téléphone non renseigné"}</div>
+        <div style={S.primaryText}>{client.email || "Email non renseignÃ©"}</div>
+        <div style={S.mutedText}>{client.phone || "TÃ©lÃ©phone non renseignÃ©"}</div>
       </td>
       <td style={S.td}>
         <span style={S.orderBadge}>{client.orders || 0}</span>
@@ -433,7 +433,7 @@ function ClientModal({ mode, form, setForm, saving, onClose, onSave }) {
           </div>
           <div>
             <h3 style={S.modalTitle}>{isAdd ? "Nouveau client" : "Modifier le client"}</h3>
-            <p style={S.modalSub}>Les champs nom, email et téléphone sont obligatoires.</p>
+            <p style={S.modalSub}>Les champs nom, email et tÃ©lÃ©phone sont obligatoires.</p>
           </div>
           <button style={S.iconBtn} onClick={onClose}>
             <Ico d={ICO.x} size={16} />
@@ -442,7 +442,7 @@ function ClientModal({ mode, form, setForm, saving, onClose, onSave }) {
         <div style={S.modalBody}>
           <Field label="Nom complet" value={form.name} onChange={value => setForm(f => ({ ...f, name: value }))} placeholder="Ex : Amira Ben Salah" />
           <Field label="Email" type="email" value={form.email} onChange={value => setForm(f => ({ ...f, email: value }))} placeholder="amira@example.com" />
-          <Field label="Téléphone" type="tel" value={form.phone} onChange={value => setForm(f => ({ ...f, phone: value.replace(/\D/g, "").slice(0,8) }))} placeholder="+216 71 234 567" />
+          <Field label="TÃ©lÃ©phone" type="tel" value={form.phone} onChange={value => setForm(f => ({ ...f, phone: value.replace(/\D/g, "").slice(0,8) }))} placeholder="+216 71 234 567" />
         </div>
         <div style={S.modalFoot}>
           <button style={S.btnCancel} onClick={onClose}>Annuler</button>
@@ -466,7 +466,7 @@ function ConfirmDeleteModal({ client, onClose, onConfirm }) {
           </div>
           <div>
             <h3 style={S.modalTitle}>Supprimer le client</h3>
-            <p style={S.modalSub}>Cette action est irréversible.</p>
+            <p style={S.modalSub}>Cette action est irrÃ©versible.</p>
           </div>
           <button style={S.iconBtn} onClick={onClose}>
             <Ico d={ICO.x} size={16} />
@@ -568,3 +568,4 @@ const S = {
   btnDanger: { padding: "9px 20px", border: 0, borderRadius: 9, background: "#dc2626", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" },
   confirmText: { margin: 0, color: "#374151", lineHeight: 1.6, fontSize: 14 },
 };
+

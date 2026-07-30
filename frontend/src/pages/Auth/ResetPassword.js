@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { resetPassword } from "../../services/authService";
-import Footer from "../../components/shared/Footer";
+import Footer from "../.@@components/shared/Footer";
 import "../../App.css";
 
 export default function ResetPassword() {
@@ -57,7 +57,7 @@ export default function ResetPassword() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 autoComplete="new-password"
                 required
               />
@@ -70,7 +70,7 @@ export default function ResetPassword() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 autoComplete="new-password"
                 required
               />
@@ -90,3 +90,4 @@ export default function ResetPassword() {
     </>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -14,7 +14,7 @@ import {
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
 import EmployeeSidebar from "./EmployeeSidebar";
-import AdvancedFilters from "../../components/shared/AdvancedFilters";
+import AdvancedFilters from "../.@@components/shared/AdvancedFilters";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { getAllOrders } from "../../services/orderApiService";
 import { getAll as getAllProducts } from "../../services/productService";
@@ -22,25 +22,25 @@ import "../Admin/AdminDashboard.css";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Filler);
 
-const PERIOD_OPTIONS = ["7 derniers jours", "30 derniers jours", "Ce mois-ci", "Ce trimestre", "Cette année"];
-const TABS = ["Aperçu", "Commandes", "Stock"];
+const PERIOD_OPTIONS = ["7 derniers jours", "30 derniers jours", "Ce mois-ci", "Ce trimestre", "Cette annÃ©e"];
+const TABS = ["AperÃ§u", "Commandes", "Stock"];
 
 const STATUS_STYLES = {
-  livré: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  livrÃ©: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   "en transit": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
-  confirmé: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
+  confirmÃ©: { bg: "#eff6ff", color: "#2563eb", border: "#bfdbfe" },
   "en attente": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
   "en cours": { bg: "#ede9fe", color: "#6d28d9", border: "#c4b5fd" },
-  expédié: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
-  annulé: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+  expÃ©diÃ©: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
+  annulÃ©: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
 const STATUS_COLORS = {
-  livré: "#10b981",
+  livrÃ©: "#10b981",
   "en attente": "#fb923c",
   "en cours": "#8b5cf6",
-  expédié: "#3b82f6",
-  annulé: "#ef4444",
+  expÃ©diÃ©: "#3b82f6",
+  annulÃ©: "#ef4444",
   inconnu: "#94a3b8",
 };
 
@@ -50,7 +50,7 @@ const KPI_CONFIG = [
     valueKey: "totalRevenue",
     format: (v) => `${Number(v || 0).toLocaleString("fr-TN")} DT`,
     change: "+55%",
-    changeLabel: "mois précédent",
+    changeLabel: "mois prÃ©cÃ©dent",
     iconColor: "#10b981",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,7 +64,7 @@ const KPI_CONFIG = [
     valueKey: "totalOrders",
     format: (v) => String(v || 0),
     change: "+12%",
-    changeLabel: "activité",
+    changeLabel: "activitÃ©",
     iconColor: "#3b82f6",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -118,7 +118,7 @@ const orderAmount = (order) => order.total != null ? `${Number(order.total).toLo
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Aperçu");
+  const [activeTab, setActiveTab] = useState("AperÃ§u");
   const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [time, setTime] = useState(new Date());
   const [user, setUser] = useState(null);
@@ -145,7 +145,7 @@ export default function EmployeeDashboard() {
       try {
         const parsedUser = JSON.parse(userData);
         if (!hasAccess(parsedUser, [ROLES.MANAGER, ROLES.EMPLOYEE, "employeur"])) {
-          toast.error("Accès non autorisé");
+          toast.error("AccÃ¨s non autorisÃ©");
           navigate("/login");
           return;
         }
@@ -163,7 +163,7 @@ export default function EmployeeDashboard() {
         setOrders(Array.isArray(ordersData) ? ordersData : []);
         setProducts(Array.isArray(productsData) ? productsData : []);
       } catch {
-        toast.error("Impossible de récupérer les données.");
+        toast.error("Impossible de rÃ©cupÃ©rer les donnÃ©es.");
       } finally {
         setLoading(false);
       }
@@ -188,7 +188,7 @@ export default function EmployeeDashboard() {
     const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total || order.amount || 0), 0);
     const avgBasket = totalOrders ? totalRevenue / totalOrders : 0;
     const activeOrders = orders.filter((order) =>
-      ["en attente", "en cours", "confirmé", "expédié", "pending"].includes(String(order.status || "").toLowerCase())
+      ["en attente", "en cours", "confirmÃ©", "expÃ©diÃ©", "pending"].includes(String(order.status || "").toLowerCase())
     ).length;
     return { totalOrders, totalRevenue, avgBasket, activeOrders };
   }, [orders]);
@@ -268,7 +268,7 @@ export default function EmployeeDashboard() {
   };
 
   const lineData = {
-    labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû"],
+    labels: ["Jan", "FÃ©v", "Mar", "Avr", "Mai", "Jun", "Jul", "AoÃ»"],
     datasets: [{
       label: "Commandes",
       data: [8, 14, 11, 18, Math.max(stats.totalOrders, 3), 15, 20, 16],
@@ -291,7 +291,7 @@ export default function EmployeeDashboard() {
       <main className="employee-main" style={S.main}>
         <div style={S.topbar}>
           <div>
-            <h1 style={S.title}>Star Mousse • Espace Employé</h1>
+            <h1 style={S.title}>Star Mousse â€¢ Espace EmployÃ©</h1>
             <div style={S.subtitle}>Gestion & Suivi des Commandes</div>
           </div>
 
@@ -323,7 +323,7 @@ export default function EmployeeDashboard() {
           ))}
 
           <button onClick={() => navigate("/employer/orders")} style={S.allOrdersBtn}>
-            Voir toutes les commandes →
+            Voir toutes les commandes â†’
           </button>
         </div>
 
@@ -364,12 +364,12 @@ export default function EmployeeDashboard() {
           ))}
         </div>
 
-        {activeTab === "Aperçu" && (
+        {activeTab === "AperÃ§u" && (
           <div style={S.overviewGrid}>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div style={S.card}>
                 <div style={S.cardHeader}>
-                  <h2 style={S.cardTitle}>Activité des commandes</h2>
+                  <h2 style={S.cardTitle}>ActivitÃ© des commandes</h2>
                   <div style={S.chartLegend}>
                     <span style={S.legendItem}>
                       <span style={{ ...S.legendDot, background: "#f97316" }} />
@@ -384,7 +384,7 @@ export default function EmployeeDashboard() {
 
               <div style={S.card}>
                 <div style={S.cardHeader}>
-                  <h2 style={S.cardTitle}>Commandes récentes</h2>
+                  <h2 style={S.cardTitle}>Commandes rÃ©centes</h2>
                   <button style={S.smallLink} onClick={() => setActiveTab("Commandes")}>Voir tout</button>
                 </div>
                 <OrdersTable orders={filteredOrders.slice(0, 5)} />
@@ -394,7 +394,7 @@ export default function EmployeeDashboard() {
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div style={S.card}>
                 <div style={S.cardHeader}>
-                  <h2 style={S.cardTitle}>État des commandes</h2>
+                  <h2 style={S.cardTitle}>Ã‰tat des commandes</h2>
                 </div>
                 <div style={{ height: 210, padding: 18 }}>
                   <Doughnut data={donutData} options={donutOptions} />
@@ -423,7 +423,7 @@ export default function EmployeeDashboard() {
                 ].map((action) => (
                   <button key={action.path} style={S.actionItem} onClick={() => navigate(action.path)}>
                     <span>{action.label}</span>
-                    <span>→</span>
+                    <span>â†’</span>
                   </button>
                 ))}
               </div>
@@ -434,22 +434,22 @@ export default function EmployeeDashboard() {
         {activeTab === "Commandes" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>🔍 Gestion des commandes</h2>
+              <h2 style={S.cardTitle}>ðŸ” Gestion des commandes</h2>
             </div>
             <AdvancedFilters
-              searchPlaceholder="Rechercher par numéro, client, email..."
+              searchPlaceholder="Rechercher par numÃ©ro, client, email..."
               filters={[
                 {
                   key: 'status',
                   label: 'Statut',
                   type: 'checkbox',
-                  options: ['en attente', 'en cours', 'expédié', 'livré', 'annulé', 'confirmé']
+                  options: ['en attente', 'en cours', 'expÃ©diÃ©', 'livrÃ©', 'annulÃ©', 'confirmÃ©']
                 }
               ]}
               sortOptions={[
-                { value: 'recent', label: 'Plus récentes' },
+                { value: 'recent', label: 'Plus rÃ©centes' },
                 { value: 'older', label: 'Plus anciennes' },
-                { value: 'amount_high', label: 'Montant décroissant' },
+                { value: 'amount_high', label: 'Montant dÃ©croissant' },
                 { value: 'amount_low', label: 'Montant croissant' }
               ]}
               onFilterChange={(filters) => setFilterConfig(filters)}
@@ -461,14 +461,14 @@ export default function EmployeeDashboard() {
         {activeTab === "Stock" && (
           <div style={S.card}>
             <div style={S.cardHeader}>
-              <h2 style={S.cardTitle}>📦 Catalogue stock</h2>
+              <h2 style={S.cardTitle}>ðŸ“¦ Catalogue stock</h2>
             </div>
             <AdvancedFilters
-              searchPlaceholder="Rechercher par SKU, nom, catégorie..."
+              searchPlaceholder="Rechercher par SKU, nom, catÃ©gorie..."
               filters={[
                 {
                   key: 'category',
-                  label: 'Catégorie',
+                  label: 'CatÃ©gorie',
                   type: 'select',
                   options: [...new Set(products.map(p => p.category).filter(Boolean))]
                 }
@@ -476,7 +476,7 @@ export default function EmployeeDashboard() {
               sortOptions={[
                 { value: 'name_asc', label: 'Nom (A-Z)' },
                 { value: 'name_desc', label: 'Nom (Z-A)' },
-                { value: 'price_high', label: 'Prix décroissant' },
+                { value: 'price_high', label: 'Prix dÃ©croissant' },
                 { value: 'price_low', label: 'Prix croissant' }
               ]}
               onFilterChange={(filters) => setFilterConfig(filters)}
@@ -518,7 +518,7 @@ function OrdersTable({ orders }) {
               <td style={S.td}><StatusBadge status={order.status} /></td>
             </tr>
           )) : (
-            <tr><td colSpan={5} style={S.emptyCell}>Aucune commande trouvée</td></tr>
+            <tr><td colSpan={5} style={S.emptyCell}>Aucune commande trouvÃ©e</td></tr>
           )}
         </tbody>
       </table>
@@ -550,13 +550,13 @@ function StockTable({ products }) {
                     color: stock > 10 ? "#16a34a" : "#d97706",
                     border: `1px solid ${stock > 10 ? "#bbf7d0" : "#fde68a"}`,
                   }}>
-                    {stock} pièces
+                    {stock} piÃ¨ces
                   </span>
                 </td>
               </tr>
             );
           }) : (
-            <tr><td colSpan={4} style={S.emptyCell}>Aucun article trouvé</td></tr>
+            <tr><td colSpan={4} style={S.emptyCell}>Aucun article trouvÃ©</td></tr>
           )}
         </tbody>
       </table>
@@ -617,3 +617,4 @@ const S = {
   donutPct: { fontWeight: 600, color: "#374151" },
   actionItem: { width: "100%", padding: "14px 20px", border: "none", borderBottom: "1px solid #f3f4f6", background: "#fff", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, color: "#374151", cursor: "pointer", fontFamily: "inherit", textAlign: "left" },
 };
+

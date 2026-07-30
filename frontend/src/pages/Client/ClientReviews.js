@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientSidebar from "./ClientSidebar";
-import SearchBar from "../../components/store/SearchBar";
+import SearchBar from "../.@@components/store/SearchBar";
 import { getMyReviews } from "../../services/reviewService";
 import { getProfile } from "../../services/authService";
 import { hasAccess, ROLES } from "../../utils/authUtils";
@@ -30,7 +30,7 @@ export default function ClientReviews() {
     if (userData) {
       const parsedUser = JSON.parse(userData);
       if (!hasAccess(parsedUser, [ROLES.CLIENT])) {
-        toast.error("Accès non autorisé");
+        toast.error("AccÃ¨s non autorisÃ©");
         navigate("/login/client");
         return;
       }
@@ -93,7 +93,7 @@ export default function ClientReviews() {
         <div className="sm-page-topbar" style={S.topbar}>
           <div>
             <h1 style={S.title}>Mes avis</h1>
-            <div style={S.subtitle}>Vos retours aident à améliorer votre expérience.</div>
+            <div style={S.subtitle}>Vos retours aident Ã  amÃ©liorer votre expÃ©rience.</div>
           </div>
           <div style={S.topbarRight}>
             <div style={S.clock}>{formatDate(new Date())}</div>
@@ -105,7 +105,7 @@ export default function ClientReviews() {
           <div style={S.loading}>Chargement...</div>
         ) : reviews.length === 0 ? (
           <div style={S.emptyState}>
-            <p>Vous n'avez pas encore publié d'avis.</p>
+            <p>Vous n'avez pas encore publiÃ© d'avis.</p>
           </div>
         ) : (
           <>
@@ -121,16 +121,16 @@ export default function ClientReviews() {
                 onChange={(event) => setRatingFilter(event.target.value)}
               >
                 <option value="all">Toutes les notes</option>
-                <option value="5">5 étoiles</option>
-                <option value="4">4 étoiles</option>
-                <option value="3">3 étoiles</option>
-                <option value="2">2 étoiles</option>
-                <option value="1">1 étoile</option>
+                <option value="5">5 Ã©toiles</option>
+                <option value="4">4 Ã©toiles</option>
+                <option value="3">3 Ã©toiles</option>
+                <option value="2">2 Ã©toiles</option>
+                <option value="1">1 Ã©toile</option>
               </select>
             </div>
             {filteredReviews.length === 0 ? (
               <div style={S.emptyState}>
-                <p>Aucun avis ne correspond à votre recherche.</p>
+                <p>Aucun avis ne correspond Ã  votre recherche.</p>
               </div>
             ) : (
               <div className="reviews-grid">
@@ -141,7 +141,7 @@ export default function ClientReviews() {
                         <h2 style={S.reviewTitle}>{review.product?.name || review.productName || 'Produit Star Mousse'}</h2>
                         <p className="review-subtitle">Avis client</p>
                       </div>
-                      <span className="review-stars-summary">{'★'.repeat(review.rating || 0)}{'☆'.repeat(5 - (review.rating || 0))}</span>
+                      <span className="review-stars-summary">{'â˜…'.repeat(review.rating || 0)}{'â˜†'.repeat(5 - (review.rating || 0))}</span>
                     </div>
                     <p className="review-text">{review.comment || 'Aucun commentaire.'}</p>
                     <div className="review-card-meta">
@@ -282,3 +282,4 @@ const S = {
     color: "#111827",
   },
 };
+

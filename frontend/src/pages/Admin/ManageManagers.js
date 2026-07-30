@@ -1,14 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SearchBar from "../../components/store/SearchBar";
+import SearchBar from "../.@@components/store/SearchBar";
 import { getAllManagers, createManager, updateManager, deleteManager } from "../../services/staffService";
 
-/* ─── Constantes ─────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Constantes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const EMPTY_FORM = { name: "", email: "", phone: "", password: "", role: "gestionnaire", status: "actif" };
 
-const ROLE_OPTIONS = ["gestionnaire", "Livreur", "Responsable Stock", "Vendeur", "Nettoyeur", "Agent de Sécurité"];
+const ROLE_OPTIONS = ["gestionnaire", "Livreur", "Responsable Stock", "Vendeur", "Nettoyeur", "Agent de SÃ©curitÃ©"];
 
 const ROLE_COLORS = {
   "gestionnaire":         { bg: "#f3e8ff", color: "#7c3aed", border: "#ddd6fe" },
@@ -16,7 +16,7 @@ const ROLE_COLORS = {
   "Responsable Stock":   { bg: "#f0fdf4", color: "#16a34a", border: "#86efac" },
   "Vendeur":             { bg: "#fdf4ff", color: "#9333ea", border: "#e9d5ff" },
   "Nettoyeur":           { bg: "#fff7ed", color: "#f97316", border: "#fed7aa" },
-  "Agent de Sécurité":   { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+  "Agent de SÃ©curitÃ©":   { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
 const STATUS_STYLE = {
@@ -24,7 +24,7 @@ const STATUS_STYLE = {
   inactif: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
-/* ─── SVG Icons ──────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ SVG Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const Ico = ({ d, size = 16, color = "currentColor", sw = 2 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
     stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
@@ -45,7 +45,7 @@ const ICO = {
   check: "M20 6L9 17l-5-5",
 };
 
-/* ─── Composant Principal ────────────────────────────────────────────────── */
+/* â”€â”€â”€ Composant Principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export default function ManageManagers() {
   const navigate = useNavigate();
   const [managers, setManagers]   = useState([]);
@@ -63,7 +63,7 @@ export default function ManageManagers() {
       setManagers(Array.isArray(data) ? data : []);
     } catch (error) {
       const msg = error.response?.status === 401
-        ? "Session expirée — reconnectez-vous"
+        ? "Session expirÃ©e â€” reconnectez-vous"
         : error.response?.data?.message || "Impossible de charger les gestionnaires";
       toast.error(msg);
       if (error.response?.status === 401) navigate("/login/admin");
@@ -79,7 +79,7 @@ export default function ManageManagers() {
     if (userData) {
       try {
         const user = JSON.parse(userData);
-        if (user.role !== "admin") { toast.error("Accès réservé à l'administrateur"); navigate("/"); return; }
+        if (user.role !== "admin") { toast.error("AccÃ¨s rÃ©servÃ© Ã  l'administrateur"); navigate("/"); return; }
       } catch { navigate("/login/admin"); return; }
     }
     fetchManagers();
@@ -93,10 +93,10 @@ export default function ManageManagers() {
 
   const handleSave = async () => {
     if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.role.trim()) {
-      toast.warning("Nom, email, téléphone et rôle sont obligatoires"); return;
+      toast.warning("Nom, email, tÃ©lÃ©phone et rÃ´le sont obligatoires"); return;
     }
     if ((form.phone || "").toString().replace(/\D/g, "").length !== 8) {
-      toast.warning("Le numéro de téléphone doit contenir exactement 8 chiffres"); return;
+      toast.warning("Le numÃ©ro de tÃ©lÃ©phone doit contenir exactement 8 chiffres"); return;
     }
     if (modal === "add" && !form.password.trim()) {
       toast.warning("Mot de passe obligatoire pour un nouveau gestionnaire"); return;
@@ -105,8 +105,8 @@ export default function ManageManagers() {
     if (form.password.trim()) payload.password = form.password;
     setSaving(true);
     try {
-      if (modal === "add") { await createManager(payload); toast.success("Gestionnaire ajouté"); }
-      else if (modal?.manager?._id) { await updateManager(modal.manager._id, payload); toast.success("Gestionnaire mis à jour"); }
+      if (modal === "add") { await createManager(payload); toast.success("Gestionnaire ajoutÃ©"); }
+      else if (modal?.manager?._id) { await updateManager(modal.manager._id, payload); toast.success("Gestionnaire mis Ã  jour"); }
       fetchManagers(); closeModal();
     } catch (err) {
       toast.error(err.response?.data?.message || err.response?.data?.error || "Erreur lors de la sauvegarde.");
@@ -115,7 +115,7 @@ export default function ManageManagers() {
 
   const handleDelete = async (id) => {
     try {
-      await deleteManager(id); toast.success("Gestionnaire supprimé");
+      await deleteManager(id); toast.success("Gestionnaire supprimÃ©");
       fetchManagers(); setConfirmId(null);
     } catch (err) {
       toast.error(err.response?.data?.message || "Erreur lors de la suppression.");
@@ -136,26 +136,26 @@ export default function ManageManagers() {
 
       <main className="admin-main sm-internal-main" style={S.main}>
 
-        {/* ── Topbar ── */}
+        {/* â”€â”€ Topbar â”€â”€ */}
         <div style={S.topbar}>
           <div>
-            <p style={S.topbarSub}>Star Mousse · Administration</p>
+            <p style={S.topbarSub}>Star Mousse Â· Administration</p>
             <h1 style={S.topbarTitle}>Gestion des Gestionnaires</h1>
           </div>
         </div>
 
-        {/* ── Card ── */}
+        {/* â”€â”€ Card â”€â”€ */}
         <div style={S.card}>
           {/* Card header */}
           <div style={S.cardHeader}>
             <div>
               <h2 style={S.cardTitle}>Liste des gestionnaires</h2>
-              <p style={S.cardSub}>{filtered.length} résultat{filtered.length !== 1 ? "s" : ""}</p>
+              <p style={S.cardSub}>{filtered.length} rÃ©sultat{filtered.length !== 1 ? "s" : ""}</p>
             </div>
             <div style={S.headerActions}>
               {/* Search */}
               <SearchBar 
-                placeholder="Rechercher gestionnaires, rôles, email..." 
+                placeholder="Rechercher gestionnaires, rÃ´les, email..." 
                 value={search} 
                 onChange={setSearch} 
               />
@@ -164,15 +164,15 @@ export default function ManageManagers() {
 
           {/* Table */}
           {loading ? (
-            <div style={S.empty}>Chargement des gestionnaires…</div>
+            <div style={S.empty}>Chargement des gestionnairesâ€¦</div>
           ) : filtered.length === 0 ? (
-            <div style={S.empty}>Aucun gestionnaire trouvé{search ? ` pour « ${search} »` : ""}</div>
+            <div style={S.empty}>Aucun gestionnaire trouvÃ©{search ? ` pour Â« ${search} Â»` : ""}</div>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <table style={S.table}>
                 <thead>
                   <tr style={{ background: "#f9fafb" }}>
-                    {["Nom", "Contact", "Rôle", "Statut", "Actions"].map(h => (
+                    {["Nom", "Contact", "RÃ´le", "Statut", "Actions"].map(h => (
                       <th key={h} style={S.th}>{h}</th>
                     ))}
                   </tr>
@@ -192,7 +192,7 @@ export default function ManageManagers() {
           )}
         </div>
 
-        {/* ── Modal Ajout / Édition ── */}
+        {/* â”€â”€ Modal Ajout / Ã‰dition â”€â”€ */}
         {modal && (
           <div style={S.backdrop} onClick={closeModal}>
             <div style={S.modalCard} onClick={e => e.stopPropagation()}>
@@ -214,12 +214,12 @@ export default function ManageManagers() {
               <div style={S.modalBody}>
                 <Field label="Nom complet *"  value={form.name}  onChange={v => setForm(f => ({ ...f, name: v }))}  placeholder="Ex : Amira Ben Salah" />
                 <Field label="Email *"        value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="amira@example.com" type="email" />
-                <Field label={modal === "add" ? "Mot de passe *" : "Mot de passe (laisser vide pour ne pas changer)"}        value={form.password} onChange={v => setForm(f => ({ ...f, password: v }))} placeholder="••••••••" type="password" />
-                <Field label="Téléphone *"    value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v.replace(/\D/g, "").slice(0,8) }))} placeholder="+216 XX XXX XXX" type="tel" />
+                <Field label={modal === "add" ? "Mot de passe *" : "Mot de passe (laisser vide pour ne pas changer)"}        value={form.password} onChange={v => setForm(f => ({ ...f, password: v }))} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" type="password" />
+                <Field label="TÃ©lÃ©phone *"    value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v.replace(/\D/g, "").slice(0,8) }))} placeholder="+216 XX XXX XXX" type="tel" />
 
                 <div style={{ display: "flex", gap: 14 }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
-                    <label style={S.fieldLabel}>Rôle *</label>
+                    <label style={S.fieldLabel}>RÃ´le *</label>
                     <select style={S.fieldSelect} value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}>
                       {ROLE_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
@@ -239,14 +239,14 @@ export default function ManageManagers() {
                 <button style={{ ...S.btnPrimary, opacity: saving ? 0.7 : 1 }} onClick={handleSave} disabled={saving}
                   onMouseEnter={e => { if (!saving) e.currentTarget.style.background = "#ea580c"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "#f97316"; }}>
-                  {saving ? "Enregistrement…" : modal === "add" ? "Ajouter le gestionnaire" : "Enregistrer"}
+                  {saving ? "Enregistrementâ€¦" : modal === "add" ? "Ajouter le gestionnaire" : "Enregistrer"}
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ── Confirmation Suppression ── */}
+        {/* â”€â”€ Confirmation Suppression â”€â”€ */}
         {confirmId && (
           <div style={S.backdrop} onClick={() => setConfirmId(null)}>
             <div style={{ ...S.modalCard, maxWidth: 420 }} onClick={e => e.stopPropagation()}>
@@ -257,7 +257,7 @@ export default function ManageManagers() {
                 </div>
                 <div>
                   <div style={S.modalTitle}>Confirmer la suppression</div>
-                  <div style={S.modalSub}>Cette action est irréversible</div>
+                  <div style={S.modalSub}>Cette action est irrÃ©versible</div>
                 </div>
                 <button style={S.modalClose} onClick={() => setConfirmId(null)}>
                   <Ico d={ICO.x} size={16} color="#9ca3af" />
@@ -268,12 +268,12 @@ export default function ManageManagers() {
                   Voulez-vous vraiment supprimer le gestionnaire{" "}
                   <strong style={{ color: "#1f2937" }}>
                     {managers.find(m => m._id === confirmId)?.name}
-                  </strong> ? Toutes ses données seront perdues.
+                  </strong> ? Toutes ses donnÃ©es seront perdues.
                 </p>
               </div>
               <div style={S.modalFooter}>
                 <button style={S.btnCancel} onClick={() => setConfirmId(null)}>Annuler</button>
-                <button style={S.btnDanger} onClick={() => handleDelete(confirmId)}>Supprimer définitivement</button>
+                <button style={S.btnDanger} onClick={() => handleDelete(confirmId)}>Supprimer dÃ©finitivement</button>
               </div>
             </div>
           </div>
@@ -283,7 +283,7 @@ export default function ManageManagers() {
   );
 }
 
-/* ─── ManagerRow ─────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ ManagerRow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function ManagerRow({ manager, onEdit, onDelete }) {
   const st = STATUS_STYLE[manager.status] || STATUS_STYLE.actif;
   const rc = ROLE_COLORS[manager.role]    || { bg: "#f3f4f6", color: "#6b7280", border: "#e5e7eb" };
@@ -301,7 +301,7 @@ function ManagerRow({ manager, onEdit, onDelete }) {
       </td>
       <td style={S.td}>
         <div style={{ fontSize: 13, color: "#374151" }}>{manager.email}</div>
-        <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{manager.phone || "—"}</div>
+        <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{manager.phone || "â€”"}</div>
       </td>
       <td style={S.td}>
         <span style={{ ...S.badge, background: rc.bg, color: rc.color, border: `1px solid ${rc.border}` }}>
@@ -323,7 +323,7 @@ function ManagerRow({ manager, onEdit, onDelete }) {
   );
 }
 
-/* ─── Field ──────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function Field({ label, value, onChange, placeholder, type = "text" }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -348,7 +348,7 @@ function Field({ label, value, onChange, placeholder, type = "text" }) {
   );
 }
 
-/* ─── Styles ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Styles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const S = {
   root: { display: "flex", minHeight: "100vh", background: "#fdf6ef", fontFamily: "'Segoe UI', system-ui, sans-serif", color: "#1f2937" },
   main: { marginLeft: 220, flex: 1, padding: "28px 32px" },
@@ -452,3 +452,4 @@ const S = {
 
   empty: { padding: "52px", textAlign: "center", color: "#9ca3af", fontSize: 14 },
 };
+

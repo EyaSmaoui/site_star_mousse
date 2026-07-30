@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import GoogleMapsEmbed from '../components/shared/GoogleMapsEmbed';
+import GoogleMapsEmbed from '.@@components/shared/GoogleMapsEmbed';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -27,7 +27,7 @@ export default function Contact() {
     e.preventDefault();
     // Validate phone if provided
     if (formData.phone && formData.phone.toString().replace(/\D/g, '').length !== 8) {
-      toast.error('Le numéro de téléphone doit contenir exactement 8 chiffres.');
+      toast.error('Le numÃ©ro de tÃ©lÃ©phone doit contenir exactement 8 chiffres.');
       return;
     }
     // For now, just show success message
@@ -249,8 +249,8 @@ export default function Contact() {
       `}</style>
 
       <div className="contact-header">
-        <h1>📞 Contactez-Nous</h1>
-        <p>Vous avez une question? Nous sommes là pour vous aider! Remplissez le formulaire ci-dessous ou appelez-nous directement.</p>
+        <h1>ðŸ“ž Contactez-Nous</h1>
+        <p>Vous avez une question? Nous sommes lÃ  pour vous aider! Remplissez le formulaire ci-dessous ou appelez-nous directement.</p>
       </div>
 
       <div className="contact-content">
@@ -258,7 +258,7 @@ export default function Contact() {
           <div className="contact-form-wrapper">
             {submitted && (
               <div className="success-message">
-                ✅ Votre message a été envoyé avec succès! Nous vous répondrons bientôt.
+                âœ… Votre message a Ã©tÃ© envoyÃ© avec succÃ¨s! Nous vous rÃ©pondrons bientÃ´t.
               </div>
             )}
 
@@ -292,7 +292,7 @@ export default function Contact() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone">Téléphone</label>
+                <label htmlFor="phone">TÃ©lÃ©phone</label>
                 <input
                   type="tel"
                   id="phone"
@@ -324,16 +324,16 @@ export default function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  placeholder="Décrivez votre demande..."
+                  placeholder="DÃ©crivez votre demande..."
                 />
               </div>
 
               <div className="form-buttons">
                 <button type="submit" className="btn-submit">
-                  📧 Envoyer le message
+                  ðŸ“§ Envoyer le message
                 </button>
                 <button type="reset" className="btn-reset" onClick={() => setFormData({ name: '', email: '', phone: '', subject: '', message: '' })}>
-                  Réinitialiser
+                  RÃ©initialiser
                 </button>
               </div>
             </form>
@@ -343,21 +343,21 @@ export default function Contact() {
 
           <div className="contact-info-grid">
             <div className="contact-info-card">
-              <div className="contact-info-icon">📍</div>
+              <div className="contact-info-icon">ðŸ“</div>
               <div className="contact-info-title">Adresse</div>
               <div className="contact-info-value">Borj Chakir, Tunis, Tunisie</div>
             </div>
 
             <div className="contact-info-card">
-              <div className="contact-info-icon">📞</div>
-              <div className="contact-info-title">Téléphone</div>
+              <div className="contact-info-icon">ðŸ“ž</div>
+              <div className="contact-info-title">TÃ©lÃ©phone</div>
               <div className="contact-info-value">
                 <a href="tel:+21622900131">22 900 131</a>
               </div>
             </div>
 
             <div className="contact-info-card">
-              <div className="contact-info-icon">💬</div>
+              <div className="contact-info-icon">ðŸ’¬</div>
               <div className="contact-info-title">WhatsApp</div>
               <div className="contact-info-value">
                 <a href="https://wa.me/21622900207">22 900 207</a>
@@ -365,7 +365,7 @@ export default function Contact() {
             </div>
 
             <div className="contact-info-card">
-              <div className="contact-info-icon">📧</div>
+              <div className="contact-info-icon">ðŸ“§</div>
               <div className="contact-info-title">Email</div>
               <div className="contact-info-value">
                 <a href="/contact">Formulaire de contact</a>
@@ -373,7 +373,7 @@ export default function Contact() {
             </div>
 
             <div className="contact-info-card">
-              <div className="contact-info-icon">⏰</div>
+              <div className="contact-info-icon">â°</div>
               <div className="contact-info-title">Horaires</div>
               <div className="contact-info-value">
                 Lun-Sam: 8h-18h<br />
@@ -382,7 +382,7 @@ export default function Contact() {
             </div>
 
             <div className="contact-info-card">
-              <div className="contact-info-icon">🚚</div>
+              <div className="contact-info-icon">ðŸšš</div>
               <div className="contact-info-title">Livraison</div>
               <div className="contact-info-value">
                 Gratuite en Tunisie<br />
@@ -395,4 +395,5 @@ export default function Contact() {
     </div>
   );
 }
+
 

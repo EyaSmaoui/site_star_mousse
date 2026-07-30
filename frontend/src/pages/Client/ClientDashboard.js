@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
+﻿import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getProfile, updateProfile } from '../../services/authService';
 import { getMyOrders } from '../../services/orderService';
 import { hasAccess, ROLES } from '../../utils/authUtils';
-import AdvancedFilters from '../../components/shared/AdvancedFilters';
+import AdvancedFilters from '../.@@components/shared/AdvancedFilters';
 import ClientSidebar from './ClientSidebar';
 import { notifyProfileChanged } from '../../services/profileSyncService';
 
@@ -38,7 +38,7 @@ const KPI_CONFIG = [
     ),
   },
   {
-    label: "Dépense totale",
+    label: "DÃ©pense totale",
     valueKey: "totalSpent",
     format: (v) => `${Number(v || 0).toLocaleString('fr-TN')} DT`,
     change: "investi",
@@ -55,11 +55,11 @@ const KPI_CONFIG = [
 ];
 
 const STATUS_STYLES = {
-  livré: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+  livrÃ©: { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   "en attente": { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
   "en cours": { bg: "#ede9fe", color: "#6d28d9", border: "#c4b5fd" },
-  expédié: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
-  annulé: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
+  expÃ©diÃ©: { bg: "#dbeafe", color: "#1d4ed8", border: "#93c5fd" },
+  annulÃ©: { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
 const ClientDashboard = () => {
@@ -120,7 +120,7 @@ const ClientDashboard = () => {
     try {
       const parsedUser = JSON.parse(userData);
       if (!hasAccess(parsedUser, [ROLES.CLIENT, ROLES.USER])) {
-        toast.error('Accès non autorisé');
+        toast.error('AccÃ¨s non autorisÃ©');
         navigate('/login');
         return;
       }
@@ -148,7 +148,7 @@ const ClientDashboard = () => {
       });
     } catch (error) {
       console.error('Erreur:', error);
-      toast.error('Erreur lors du chargement des données');
+      toast.error('Erreur lors du chargement des donnÃ©es');
     } finally {
       setLoading(false);
     }
@@ -175,7 +175,7 @@ const ClientDashboard = () => {
     const totalSpent = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
     const activeOrders = orders.filter((order) => {
       const status = (order.status || '').toLowerCase();
-      return ['pending', 'en attente', 'en cours', 'expédié'].includes(status);
+      return ['pending', 'en attente', 'en cours', 'expÃ©diÃ©'].includes(status);
     }).length;
     return { totalOrders, totalSpent, activeOrders };
   }, [orders]);
@@ -243,20 +243,20 @@ const ClientDashboard = () => {
     try {
       // Validations
       if (!editedProfile.username || !editedProfile.username.trim()) {
-        toast.error('❌ Le nom d\'utilisateur est requis');
+        toast.error('âŒ Le nom d\'utilisateur est requis');
         return;
       }
       if (!editedProfile.phone || !editedProfile.phone.trim()) {
-        toast.error('❌ Le numéro de téléphone est requis');
+        toast.error('âŒ Le numÃ©ro de tÃ©lÃ©phone est requis');
         return;
       }
       if ((editedProfile.phone || '').toString().replace(/\D/g, '').length !== 8) {
-        toast.error('❌ Le numéro de téléphone doit contenir exactement 8 chiffres');
+        toast.error('âŒ Le numÃ©ro de tÃ©lÃ©phone doit contenir exactement 8 chiffres');
         return;
       }
 
       setIsSaving(true);
-      console.log('📤 Envoi des données:', {
+      console.log('ðŸ“¤ Envoi des donnÃ©es:', {
         username: editedProfile.username,
         phone: editedProfile.phone,
         address: editedProfile.address
@@ -268,7 +268,7 @@ const ClientDashboard = () => {
         address: editedProfile.address
       });
 
-      console.log('✅ Réponse du serveur:', result);
+      console.log('âœ… RÃ©ponse du serveur:', result);
 
       const updatedProfile = result?.user || {
         id: profile.id || profile._id,
@@ -281,40 +281,40 @@ const ClientDashboard = () => {
       setProfile(updatedProfile);
       localStorage.setItem('user', JSON.stringify(updatedProfile));
 
-      // 🔔 IMPORTANT: Notifier TOUTE l'application que le profil a changé
+      // ðŸ”” IMPORTANT: Notifier TOUTE l'application que le profil a changÃ©
       notifyProfileChanged(updatedProfile);
-      console.log('🔔 Notification globale envoyée - Le profil a changé partout dans l\'app');
+      console.log('ðŸ”” Notification globale envoyÃ©e - Le profil a changÃ© partout dans l\'app');
 
-      // 🔄 IMPORTANT: Rafraîchir les commandes après la mise à jour du profil
-      console.log('🔄 Rafraîchissement des commandes...');
+      // ðŸ”„ IMPORTANT: RafraÃ®chir les commandes aprÃ¨s la mise Ã  jour du profil
+      console.log('ðŸ”„ RafraÃ®chissement des commandes...');
       try {
         const updatedOrders = await getMyOrders();
         setOrders(Array.isArray(updatedOrders) ? updatedOrders : []);
-        setFilterConfig({ search: '', status: [], sort: '' }); // Réinitialiser les filtres
-        console.log('✅ Commandes rafraîchies! Nombre:', updatedOrders.length);
+        setFilterConfig({ search: '', status: [], sort: '' }); // RÃ©initialiser les filtres
+        console.log('âœ… Commandes rafraÃ®chies! Nombre:', updatedOrders.length);
         
         // Afficher les commandes avec les nouvelles infos
         if (updatedOrders.length > 0) {
-          console.log('📋 Première commande mise à jour:', {
+          console.log('ðŸ“‹ PremiÃ¨re commande mise Ã  jour:', {
             customerName: updatedOrders[0].customerName,
             phone: updatedOrders[0].phone,
             address: updatedOrders[0].address
           });
         }
       } catch (error) {
-        console.error('⚠️ Erreur lors du rafraîchissement des commandes:', error);
+        console.error('âš ï¸ Erreur lors du rafraÃ®chissement des commandes:', error);
       }
 
-      toast.success('✅ Profil enregistré! Les commandes sont maintenant à jour.');
+      toast.success('âœ… Profil enregistrÃ©! Les commandes sont maintenant Ã  jour.');
       
-      // 🔄 Passer automatiquement à l'onglet Aperçu pour voir les changements
+      // ðŸ”„ Passer automatiquement Ã  l'onglet AperÃ§u pour voir les changements
       setTimeout(() => {
         setActiveTab('overview');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 1000);
     } catch (error) {
-      console.error('❌ Erreur lors de l\'enregistrement:', error);
-      toast.error(`❌ Erreur: ${error.message || 'Impossible de mettre à jour le profil'}`);
+      console.error('âŒ Erreur lors de l\'enregistrement:', error);
+      toast.error(`âŒ Erreur: ${error.message || 'Impossible de mettre Ã  jour le profil'}`);
     } finally {
       setIsSaving(false);
     }
@@ -343,7 +343,7 @@ const ClientDashboard = () => {
           <div style={S.header}>
             <div>
               <h1 style={S.title}>Bienvenue, {profile.username}!</h1>
-              <p style={S.subtitle}>Gérez votre compte et vos commandes</p>
+              <p style={S.subtitle}>GÃ©rez votre compte et vos commandes</p>
             </div>
             <div style={S.headerRight}>
               <div style={S.timeBox}>{timeStr}</div>
@@ -358,7 +358,7 @@ const ClientDashboard = () => {
               onClick={() => handleTabClick('overview')}
               style={{ ...S.tabButton, ...(activeTab === 'overview' ? S.tabButtonActive : S.tabButtonInactive) }}
             >
-              Aperçu
+              AperÃ§u
             </button>
             <button
               onClick={() => handleTabClick('profile')}
@@ -390,24 +390,24 @@ const ClientDashboard = () => {
               {/* Recent Orders */}
               <div style={S.recentOrdersSection}>
                 <div style={S.sectionHeader}>
-                  <h2 style={S.sectionTitle}>📦 Mes commandes</h2>
+                  <h2 style={S.sectionTitle}>ðŸ“¦ Mes commandes</h2>
                 </div>
 
                 {/* Advanced Filters */}
                 <AdvancedFilters
-                  searchPlaceholder="Rechercher par numéro, nom, email..."
+                  searchPlaceholder="Rechercher par numÃ©ro, nom, email..."
                   filters={[
                     {
                       key: 'status',
                       label: 'Statut',
                       type: 'checkbox',
-                      options: ['en attente', 'en cours', 'expédié', 'livré', 'annulé']
+                      options: ['en attente', 'en cours', 'expÃ©diÃ©', 'livrÃ©', 'annulÃ©']
                     }
                   ]}
                   sortOptions={[
-                    { value: 'recent', label: 'Plus récentes' },
+                    { value: 'recent', label: 'Plus rÃ©centes' },
                     { value: 'older', label: 'Plus anciennes' },
-                    { value: 'amount_high', label: 'Montant décroissant' },
+                    { value: 'amount_high', label: 'Montant dÃ©croissant' },
                     { value: 'amount_low', label: 'Montant croissant' }
                   ]}
                   onFilterChange={(filters) => setFilterConfig(filters)}
@@ -451,7 +451,7 @@ const ClientDashboard = () => {
           {activeTab === 'profile' && (
             <div style={S.content}>
               <div style={S.profileCard}>
-                <h2 style={S.profileTitle}>📋 Modifier mon profil</h2>
+                <h2 style={S.profileTitle}>ðŸ“‹ Modifier mon profil</h2>
                 <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
                   <div style={S.formGrid}>
                     <div style={S.formGroup}>
@@ -478,7 +478,7 @@ const ClientDashboard = () => {
                     </div>
 
                     <div style={S.formGroup}>
-                      <label style={S.label}>Téléphone</label>
+                      <label style={S.label}>TÃ©lÃ©phone</label>
                       <input
                         type="tel"
                         name="phone"
@@ -847,4 +847,5 @@ const S = {
 };
 
 export default ClientDashboard;
+
 
