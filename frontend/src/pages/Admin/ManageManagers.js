@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
 import SearchBar from "../../components/SearchBar";
-import { getAllManagers, createManager, updateManager, deleteManager } from "../../services/apiManagers";
+import { getAllManagers, createManager, updateManager, deleteManager } from "../../services/staffService";
 
 /* ─── Constantes ─────────────────────────────────────────────────────────── */
 const EMPTY_FORM = { name: "", email: "", phone: "", password: "", role: "gestionnaire", status: "actif" };

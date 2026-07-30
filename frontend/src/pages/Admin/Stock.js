@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { FiEdit, FiPackage, FiPlus, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 import AdminSidebar from "./AdminSidebar";
 import { createProduct, deleteProduct, getAll, updateProduct } from "../../services/productService";
-import { getAllCategories } from "../../services/apiCategory";
+import { getAllCategories } from "../../services/categoryService";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 
 const EMPTY_FORM = { name: "", size: "", price: "", stock: "0", category: "" };

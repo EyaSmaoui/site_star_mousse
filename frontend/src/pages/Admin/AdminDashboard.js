@@ -3,7 +3,7 @@ import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { hasAccess, ROLES } from "../../utils/authUtils";
-import { checkApiHealth } from "../../services/apiHealth";
+import { checkApiHealth } from "../../services/healthService";
 import { getAllOrders } from "../../services/orderApiService";
 import { getAll as getAllProducts } from "../../services/productService";
 import { getAllUsers } from "../../services/userService";

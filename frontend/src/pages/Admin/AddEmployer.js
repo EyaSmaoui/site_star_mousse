@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createEmployer } from '../../services/apiAdmin';
-import { createManager } from '../../services/apiManagers';
+import { createEmployer } from '../../services/staffService';
+import { createManager } from '../../services/staffService';
 import AdminSidebar from './AdminSidebar';
 import SuccessModal from '../../components/SuccessModal';
 import { useSuccessAlert } from '../../hooks/useSuccessAlert';
