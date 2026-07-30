@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { addReview } from "../services/apiReview";
-import { login, register } from "../services/apiAuth";
+import { addReview } from "../services/reviewService";
+import { login, register } from "../services/authService";
 import { PROFILE_CHANGED_EVENT } from "../services/profileSyncService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

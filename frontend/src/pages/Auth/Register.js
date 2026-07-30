@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { register } from "../../services/apiAuth";
+import { register } from "../../services/authService";
 import { submitPendingOrder } from "../../services/orderService";
 import Footer from "../../components/Footer";
 import "../../App.css";

@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { checkApiHealth } from "../../services/apiHealth";
-import { getAllOrders } from "../../services/apiOrder";
-import { getAll as getAllProducts } from "../../services/apiProduct";
-import { getAllUsers } from "../../services/apiUser";
-import { deleteReview, getAllReviews } from "../../services/apiReview";
+import { getAllOrders } from "../../services/orderApiService";
+import { getAll as getAllProducts } from "../../services/productService";
+import { getAllUsers } from "../../services/userService";
+import { deleteReview, getAllReviews } from "../../services/reviewService";
 import SearchBar from "../../components/SearchBar";
 import {
   Chart as ChartJS,

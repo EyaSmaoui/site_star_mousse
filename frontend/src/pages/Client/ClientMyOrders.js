@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientSidebar from "./ClientSidebar";
 import { getMyOrders } from "../../services/orderService";
-import { getProfile } from "../../services/apiAuth";
+import { getProfile } from "../../services/authService";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { getCachedProfile, subscribeToProfileChanges } from "../../services/profileSyncService";
 

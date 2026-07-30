@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { resetPassword } from "../../services/apiAuth";
+import { resetPassword } from "../../services/authService";
 import Footer from "../../components/Footer";
 import "../../App.css";
 

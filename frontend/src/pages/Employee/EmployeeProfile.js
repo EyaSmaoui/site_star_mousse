@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import EmployeeSidebar from "./EmployeeSidebar";
 import { hasAccess, ROLES } from "../../utils/authUtils";
-import { changePassword, updateProfile } from "../../services/apiUser";
+import { changePassword, updateProfile } from "../../services/userService";
 
 export default function EmployeeProfile() {
   const navigate = useNavigate();

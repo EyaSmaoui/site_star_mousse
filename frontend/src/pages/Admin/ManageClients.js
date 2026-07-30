@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
 import SearchBar from "../../components/SearchBar";
-import { createClient, deleteClient, getAllClients, updateClient } from "../../services/apiCustomers";
-import { getAllOrders } from "../../services/apiOrder";
+import { createClient, deleteClient, getAllClients, updateClient } from "../../services/clientService";
+import { getAllOrders } from "../../services/orderApiService";
 
 const EMPTY_FORM = { name: "", email: "", phone: "" };
 const FILTERS = [

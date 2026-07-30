@@ -16,8 +16,8 @@ import { Doughnut, Line } from "react-chartjs-2";
 import EmployeeSidebar from "./EmployeeSidebar";
 import AdvancedFilters from "../../components/AdvancedFilters";
 import { hasAccess, ROLES } from "../../utils/authUtils";
-import { getAllOrders } from "../../services/apiOrder";
-import { getAll as getAllProducts } from "../../services/apiProduct";
+import { getAllOrders } from "../../services/orderApiService";
+import { getAll as getAllProducts } from "../../services/productService";
 import "../Admin/AdminDashboard.css";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Filler);

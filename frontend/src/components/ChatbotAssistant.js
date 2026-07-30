@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { sendChatMessage, getRecommendations } from "../services/apiChatbot";
+import { sendChatMessage, getRecommendations } from "../services/chatbotService";
 import "../styles/chatbot.css";
 import formatPrice from '../utils/formatPrice';
 

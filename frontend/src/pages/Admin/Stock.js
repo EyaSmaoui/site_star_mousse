@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiEdit, FiPackage, FiPlus, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 import AdminSidebar from "./AdminSidebar";
-import { createProduct, deleteProduct, getAll, updateProduct } from "../../services/apiProduct";
+import { createProduct, deleteProduct, getAll, updateProduct } from "../../services/productService";
 import { getAllCategories } from "../../services/apiCategory";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 

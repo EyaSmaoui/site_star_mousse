@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login, register, managerLogin } from "../../services/apiAuth";
+import { login, register, managerLogin } from "../../services/authService";
 import { submitPendingOrder } from "../../services/orderService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

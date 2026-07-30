@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
 import SuccessModal from "../../components/SuccessModal";
 import { useSuccessAlert } from "../../hooks/useSuccessAlert";
-import { getAllUsers, updateProfile, changePassword } from "../../services/apiUser";
+import { getAllUsers, updateProfile, changePassword } from "../../services/userService";
 
 /* ─── Icons ─────────────────────────────────────────────────────────────── */
 const Icon = ({ d, size = 16, color = "currentColor", strokeWidth = 2 }) => (

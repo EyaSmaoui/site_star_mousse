@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getProfile, updateProfile } from '../../services/apiAuth';
+import { getProfile, updateProfile } from '../../services/authService';
 import { getMyOrders } from '../../services/orderService';
 import { hasAccess, ROLES } from '../../utils/authUtils';
 import AdvancedFilters from '../../components/AdvancedFilters';

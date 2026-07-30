@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEdit, FaFlag, FaTrash } from "react-icons/fa";
 import EmployeeSidebar from "./EmployeeSidebar";
-import { addOrder, checkOrdersConnection, deleteOrder as removeOrder, getAllOrders, getCachedOrders, invalidateOrdersCache, updateOrder } from "../../services/apiOrder";
+import { addOrder, checkOrdersConnection, deleteOrder as removeOrder, getAllOrders, getCachedOrders, invalidateOrdersCache, updateOrder } from "../../services/orderApiService";
 import { PROFILE_CHANGED_EVENT, PROFILE_SYNC_KEY } from "../../services/profileSyncService";
 
 // ─── Config ────────────────────────────────────────────────────────────────────

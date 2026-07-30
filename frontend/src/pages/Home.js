@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUniversity } from "react-icons/fa";
 import { FiAward, FiCheck, FiMoon, FiShoppingBag, FiTruck } from "react-icons/fi";
-import { getAll as getAllProducts, getRecommended as getRecommendedProducts } from "../services/apiProduct";
+import { getAll as getAllProducts, getRecommended as getRecommendedProducts } from "../services/productService";
 import formatPrice from '../utils/formatPrice';
 
 const FALLBACK_BEST_SELLERS = [
