@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { getProfile, updateProfile } from '../../services/authService';
 import { getMyOrders } from '../../services/orderService';
 import { hasAccess, ROLES } from '../../utils/authUtils';
-import AdvancedFilters from '../../components/AdvancedFilters';
+import AdvancedFilters from '../../components/shared/AdvancedFilters';
 import ClientSidebar from './ClientSidebar';
 import { notifyProfileChanged } from '../../services/profileSyncService';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import formatPrice from '../../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
-import { getProductBySlug } from '../data/products';
+import { getProductBySlug } from '../../data/products';
 
 const getSizePrice = (slug) => {
   const product = getProductBySlug(slug);

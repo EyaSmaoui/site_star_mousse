@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import OrderCheckout from "./OrderCheckout";
-import { getProductBySlug } from "../data/products";
+import { getProductBySlug } from "../../data/products";
 
 import formatPrice from '../../utils/formatPrice';
 
@@ -136,7 +136,7 @@ function ProductTemplate({ product: fallbackProduct }) {
 
 
     try {
-      const { submitProductOrder } = await import("../services/orderService");
+      const { submitProductOrder } = await import("../../services/orderService");
       await submitProductOrder(orderData);
 
       toast.success("Commande envoyée avec succès !");
