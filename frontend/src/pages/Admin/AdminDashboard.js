@@ -8,7 +8,7 @@ import { getAllOrders } from "../../services/orderApiService";
 import { getAll as getAllProducts } from "../../services/productService";
 import { getAllUsers } from "../../services/userService";
 import { deleteReview, getAllReviews } from "../../services/reviewService";
-import SearchBar from "../../components/SearchBar";
+import SearchBar from "../../components/store/SearchBar";
 import {
   Chart as ChartJS,
   CategoryScale,

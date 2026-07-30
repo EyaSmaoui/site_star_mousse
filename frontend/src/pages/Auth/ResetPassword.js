@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { resetPassword } from "../../services/authService";
-import Footer from "../../components/Footer";
+import Footer from "../../components/shared/Footer";
 import "../../App.css";
 
 export default function ResetPassword() {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import GoogleMapsEmbed from '../components/GoogleMapsEmbed';
+import GoogleMapsEmbed from '../components/shared/GoogleMapsEmbed';
 
 export default function Contact() {
   const [formData, setFormData] = useState({

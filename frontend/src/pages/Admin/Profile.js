@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SuccessModal from "../../components/SuccessModal";
+import SuccessModal from "../../components/shared/SuccessModal";
 import { useSuccessAlert } from "../../hooks/useSuccessAlert";
 import { getAllUsers, updateProfile, changePassword } from "../../services/userService";
 

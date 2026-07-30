@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
-import SearchBar from "../../components/SearchBar";
+import SearchBar from "../../components/store/SearchBar";
 import { createClient, deleteClient, getAllClients, updateClient } from "../../services/clientService";
 import { getAllOrders } from "../../services/orderApiService";
 

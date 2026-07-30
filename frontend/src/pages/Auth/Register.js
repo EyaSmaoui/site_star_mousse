@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register } from "../../services/authService";
 import { submitPendingOrder } from "../../services/orderService";
-import Footer from "../../components/Footer";
+import Footer from "../../components/shared/Footer";
 import "../../App.css";
 
 const Register = () => {

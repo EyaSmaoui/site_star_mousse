@@ -1,5 +1,5 @@
 import React from 'react';
-import Breadcrumbs from '../components/Breadcrumbs';
+import Breadcrumbs from '../components/shared/Breadcrumbs';
 
 const PrivacyPolicy = () => {
 

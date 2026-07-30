@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientSidebar from "./ClientSidebar";
-import SearchBar from "../../components/SearchBar";
+import SearchBar from "../../components/store/SearchBar";
 import { getMyReviews } from "../../services/reviewService";
 import { getProfile } from "../../services/authService";
 import { hasAccess, ROLES } from "../../utils/authUtils";

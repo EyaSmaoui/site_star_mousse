@@ -14,7 +14,7 @@ import {
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
 import EmployeeSidebar from "./EmployeeSidebar";
-import AdvancedFilters from "../../components/AdvancedFilters";
+import AdvancedFilters from "../../components/shared/AdvancedFilters";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { getAllOrders } from "../../services/orderApiService";
 import { getAll as getAllProducts } from "../../services/productService";
