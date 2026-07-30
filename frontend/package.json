@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/write-version.js",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
@@ -17,6 +18,7 @@
     "test:coverage": "npx c8 --reporter=lcov vitest run",
     "check:json": "node -e \"JSON.parse(require('fs').readFileSync('package.json','utf8')); console.log('frontend JSON ok')\""
   },
+  "devDependencies": {
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
     "axios": "^1.18.0",

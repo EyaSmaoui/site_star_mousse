@@ -1,8 +1,22 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = 'star-mousse-v2.2.2';
+// Cache name will include the build version to force cache-busting when a new build is deployed.
+const CACHE_NAME_BASE = 'star-mousse-';
+let CACHE_NAME = CACHE_NAME_BASE + 'unknown';
 const RUNTIME_CACHE = 'star-mousse-runtime-v4';
 const MAX_CACHE_ENTRIES = 120;
 const MAX_CACHE_BYTES = 50 * 1024 * 1024;
+
+// Helper to load version from public/version.json (written at build time by scripts/write-version.js)
+async function loadBuildVersion() {
+  try {
+    const resp = await fetch('/version.json', { cache: 'no-store' });
+    if (!resp.ok) return null;
+    const json = await resp.json();
+    return json.version || null;
+  } catch (e) {
+    return null;
+  }
+}
 
 const PRECACHE_ASSETS = [
   '/',
@@ -13,25 +27,31 @@ const PRECACHE_ASSETS = [
 const STATIC_ASSET = /\.(?:js|css|png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/i;
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(async (cache) => {
-        await Promise.allSettled(PRECACHE_ASSETS.map((asset) => cache.add(asset)));
-      })
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    // Try to read build version and set CACHE_NAME accordingly before precaching
+    const version = await loadBuildVersion();
+    if (version) CACHE_NAME = `${CACHE_NAME_BASE}${version}`;
+
+    const cache = await caches.open(CACHE_NAME);
+    await Promise.allSettled(PRECACHE_ASSETS.map((asset) => cache.add(asset)));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => Promise.all(
-        cacheNames
-          .filter((name) => ![CACHE_NAME, RUNTIME_CACHE].includes(name))
-          .map((name) => caches.delete(name))
-      ))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    // On activate, recompute current cache name (in case install couldn't fetch version earlier)
+    const version = await loadBuildVersion();
+    if (version) CACHE_NAME = `${CACHE_NAME_BASE}${version}`;
+
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames
+        .filter((name) => ![CACHE_NAME, RUNTIME_CACHE].includes(name))
+        .map((name) => caches.delete(name))
+    );
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch', (event) => {
