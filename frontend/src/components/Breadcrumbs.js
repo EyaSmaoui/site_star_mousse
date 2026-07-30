@@ -83,7 +83,7 @@ export default function Breadcrumbs() {
         }
 
         .breadcrumb-link {
-          color: #b52f2f;
+          color: #b78b3f;
           text-decoration: none;
           font-weight: 500;
           transition: all 0.2s ease;
@@ -91,7 +91,7 @@ export default function Breadcrumbs() {
         }
 
         .breadcrumb-link:hover {
-          color: #8f2424;
+          color: #9f7d3d;
           text-decoration: underline;
         }
 
@@ -141,3 +141,4 @@ export default function Breadcrumbs() {
     </nav>
   );
 }
+

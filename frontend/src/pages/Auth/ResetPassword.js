@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
 import { resetPassword } from "../../services/apiAuth";
+import Footer from "../../components/Footer";
 import "../../App.css";
 
 export default function ResetPassword() {
@@ -42,7 +41,6 @@ export default function ResetPassword() {
 
   return (
     <>
-      <NavBar />
       <section className="login-section">
         <div className="login-blob" />
         <div className="login-card">

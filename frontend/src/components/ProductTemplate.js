@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NavBar from "./NavBar";
-import Footer from "./Footer";
 import OrderCheckout from "./OrderCheckout";
 import { getProductBySlug } from "../data/products";
 
@@ -97,7 +95,7 @@ function ProductTemplate({ product: fallbackProduct }) {
         <button
           type="button"
           onClick={() => navigate("/products")}
-          style={{ marginTop: "20px", padding: "12px 24px", borderRadius: "12px", background: "#b52f2f", color: "#fff", border: "none", cursor: "pointer" }}
+          style={{ marginTop: "20px", padding: "12px 24px", borderRadius: "12px", background: "#b78b3f", color: "#fff", border: "none", cursor: "pointer" }}
         >
           Retour aux produits
         </button>
@@ -156,7 +154,7 @@ function ProductTemplate({ product: fallbackProduct }) {
 
   const hasOldPrice = hasSizes ? selectedSize?.oldPrice : product.oldPrice;
   const badgeIsPopular = product.tag?.trim().toUpperCase() === "POPULAIRE";
-  const accent = badgeIsPopular ? "#e63946" : "#94a3b8";
+  const accent = badgeIsPopular ? "#b78b3f" : "#94a3b8";
 
   return (
     <>
@@ -209,7 +207,6 @@ function ProductTemplate({ product: fallbackProduct }) {
       `}</style>
 
       <div className="ssn-page">
-        <NavBar />
         <div className="ssn-container">
           <div className="ssn-grid">
             <div className="ssn-gallery ssn-fade">
@@ -322,10 +319,10 @@ function ProductTemplate({ product: fallbackProduct }) {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
     </>
   );
 }
 
 export default ProductTemplate;
+

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
 import { forgotPassword } from "../../services/apiAuth";
+import Footer from "../../components/Footer";
 import "../../App.css";
 
 export default function ForgotPassword() {
@@ -73,8 +72,6 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <NavBar />
-
       <section className="login-section">
         <div className="login-blob" />
         <div className="login-card">

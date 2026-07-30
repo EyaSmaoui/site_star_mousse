@@ -24,6 +24,46 @@ export const hasAccess = (user, requiredRoles) => {
   return requiredRoles.includes(user.role);
 };
 
+export const getStoredUser = () => {
+  if (typeof window === 'undefined') return null;
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null');
+  } catch {
+    return null;
+  }
+};
+
+export const setStoredUser = (user) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('user', JSON.stringify(user));
+};
+
+export const clearStoredUser = () => {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('user');
+};
+
+export const getToken = () => {
+  if (typeof window === 'undefined') return null;
+  const token = localStorage.getItem('token');
+  return token && token !== 'null' && token !== 'undefined' ? token : null;
+};
+
+export const setToken = (token) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('token', token);
+};
+
+export const clearToken = () => {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('token');
+};
+
+export const clearAuth = () => {
+  clearToken();
+  clearStoredUser();
+};
+
 // Rôles disponibles
 export const ROLES = {
   ADMIN: 'admin',

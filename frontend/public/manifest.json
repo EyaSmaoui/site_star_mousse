@@ -1,46 +1,80 @@
 {
-  "name": "Star Mousse - Matelas Premium Tunisie",
   "short_name": "Star Mousse",
-  "description": "Matelas ergonomiques, oreillers et literie premium à Borj Chakir, Tunisie. Garantie 10 ans, livraison gratuite, paiement à la livraison.",
-  "start_url": "/",
-  "scope": "/",
-  "display": "standalone",
-  "background_color": "#fbfaf8",
-  "theme_color": "#b52f2f",
-  "orientation": "portrait-primary",
+  "name": "Star Mousse - Matelas & Literie Premium",
+  "description": "Découvrez notre collection de matelas orthopédiques, ortomédicaux et ergonomiques de haute qualité",
   "icons": [
     {
-      "src": "%PUBLIC_URL%/logo-star-mousse.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "favicon.png",
+      "sizes": "64x64",
+      "type": "image/png"
     },
     {
-      "src": "%PUBLIC_URL%/logo-star-mousse.png",
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "%PUBLIC_URL%/logo-star-mousse.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
-  "categories": ["shopping", "business"],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#8f2f2f",
+  "background_color": "#fbfaf8",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["shopping", "lifestyle"],
+  "lang": "fr-TN",
+  "dir": "ltr",
   "screenshots": [
     {
-      "src": "%PUBLIC_URL%/showroom1.jpg",
-      "sizes": "540x720",
-      "type": "image/jpeg",
-      "form_factor": "narrow"
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
     },
     {
-      "src": "%PUBLIC_URL%/showroom2.jpg",
-      "sizes": "1280x720",
-      "type": "image/jpeg",
-      "form_factor": "wide"
+      "src": "/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Nos Produits",
+      "short_name": "Produits",
+      "description": "Voir tous nos matelas",
+      "url": "/products",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Promotions",
+      "short_name": "Promos",
+      "description": "Voir les promotions en cours",
+      "url": "/promos",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mon Panier",
+      "short_name": "Panier",
+      "description": "Voir mon panier",
+      "url": "/cart",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }

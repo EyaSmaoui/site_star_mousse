@@ -1,78 +1,73 @@
-/**
- * STRUCTURED ERROR RESPONSE MIDDLEWARE
- * Standardise toutes les réponses d'erreur API
- */
+const Sentry = require('@sentry/node');
+const logger = require('../logger');
 
-class ApiError extends Error {
-  constructor(statusCode, message, details = null) {
-    super(message);
-    this.statusCode = statusCode;
-    this.details = details;
+const isOperationalError = (error) => {
+  if (error.isOperational) return true;
+  return ['ValidationError', 'CastError', 'MongoServerError'].includes(error.name);
+};
+
+const getStatusCode = (error) => {
+  if (error.statusCode) return error.statusCode;
+  if (error.status) return error.status;
+  if (error.name === 'ValidationError') return 400;
+  if (error.name === 'CastError') return 400;
+  if (error.name === 'JsonWebTokenError') return 401;
+  if (error.name === 'TokenExpiredError') return 401;
+  if (error.name === 'MongoServerError' && error.code === 11000) return 409;
+  if (error.type === 'entity.parse.failed') return 400;
+  return 500;
+};
+
+const getPublicMessage = (error, statusCode) => {
+  if (process.env.NODE_ENV === 'production') {
+    return statusCode === 500 ? 'Internal server error' : error.message || 'Request failed';
   }
-}
+  return error.message || 'Request failed';
+};
 
-// Middleware pour capturer les erreurs non gérées
 const errorHandler = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const isDevelopment = process.env.NODE_ENV !== 'production';
+  if (res.headersSent) return next(err);
 
-  // Ne pas exposer les détails d'erreur en production
-  const message = isDevelopment ? err.message : 'Erreur serveur';
-  const details = isDevelopment ? err.details : null;
-
-  // Logging
-  const errorLog = {
-    timestamp: new Date().toISOString(),
-    statusCode,
-    message: err.message,
-    path: req.path,
+  const statusCode = getStatusCode(err);
+  const errorPayload = {
+    error: getPublicMessage(err, statusCode),
+    status: statusCode,
+    path: req.originalUrl || req.url,
     method: req.method,
-    userId: req.user?.id || 'anonymous',
-    ...(isDevelopment && { stack: err.stack })
   };
 
-  if (statusCode >= 500) {
-    console.error('🔴 Server Error:', errorLog);
-  } else if (statusCode >= 400) {
-    console.warn('🟡 Client Error:', errorLog);
+  if (process.env.NODE_ENV !== 'production') {
+    errorPayload.details = err.details || err.errors || undefined;
+    errorPayload.stack = err.stack;
   }
 
-  // Réponse standardisée
-  res.status(statusCode).json({
-    error: {
-      status: statusCode,
-      message,
-      ...(details && { details }),
-      ...(isDevelopment && process.env.DEBUG_ERRORS && { debug: err.stack })
-    },
-    ...(process.env.NODE_ENV === 'development' && { timestamp: new Date().toISOString() })
-  });
-};
-
-// Middleware pour les routes non trouvées
-const notFoundHandler = (req, res) => {
-  res.status(404).json({
-    error: {
-      status: 404,
-      message: `Route non trouvée: ${req.method} ${req.path}`
+  if (statusCode >= 500 || !isOperationalError(err)) {
+    loggerError(err, req, statusCode);
+    if (Sentry && typeof Sentry.captureException === 'function' && process.env.SENTRY_DSN) {
+      Sentry.captureException(err);
     }
+  } else {
+    logger.info('Handled API error', {
+      statusCode,
+      path: req.originalUrl || req.url,
+      method: req.method,
+      error: err.message,
+    });
+  }
+
+  return res.status(statusCode).json(errorPayload);
+};
+
+const loggerError = (error, req, statusCode) => {
+  require('../logger').error('Unhandled API error:', {
+    error: error.message,
+    name: error.name,
+    stack: error.stack,
+    statusCode,
+    url: req.originalUrl || req.url,
+    method: req.method,
+    bodySize: Buffer.byteLength(JSON.stringify(req.body || {})),
   });
 };
 
-// Wrapper pour les contrôleurs async pour capturer les erreurs
-const asyncHandler = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-// Créer une erreur API facilement
-const createApiError = (statusCode, message, details = null) => {
-  return new ApiError(statusCode, message, details);
-};
-
-module.exports = {
-  ApiError,
-  errorHandler,
-  notFoundHandler,
-  asyncHandler,
-  createApiError
-};
+module.exports = errorHandler;

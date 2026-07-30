@@ -1,81 +1,90 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import { hasAccess, ROLES } from "./utils/authUtils";
-
+import { hasAccess, ROLES, getStoredUser, getToken } from "./utils/authUtils";
 import Home from "./pages/Home";
-import Auth from "./pages/Auth/Auth";
-import Register from "./pages/Auth/Register";
-import ForgotPassword from "./pages/Auth/ForgotPassword";
-import ResetPassword from "./pages/Auth/ResetPassword";
-import Products from "./pages/Store/Articles";
-import Promos from "./pages/Store/Promos";
-import Cart from "./pages/Store/Cart";
-import About from "./pages/Info/About";
-import Help from "./pages/Info/Help";
-import Contact from "./pages/Contact";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-import Profile from "./pages/Admin/Profile";
-import ManageClients from "./pages/Admin/ManageClients";
-import ManageManagers from "./pages/Admin/ManageManagers";
-import AddEmployer from "./pages/Admin/AddEmployer";
-import Quiz from "./quiz";
-import ClientDashboard from "./pages/Client/ClientDashboard";
-import ClientMyOrders from "./pages/Client/ClientMyOrders";
-import ClientReviews from "./pages/Client/ClientReviews";
-import ClientRecommendations from "./pages/Client/ClientRecommendations";
-import EmployeeDashboard from "./pages/Employee/EmployeeDashboard";
-import EmployeeOrders from "./pages/Employee/EmployeeOrders";
-import EmployeeStock from "./pages/Employee/EmployeeStock";
-import EmployeeProfile from "./pages/Employee/EmployeeProfile";
-import EmployeeClients from "./pages/Employee/EmployeeClients";
-import AdminOrders from "./pages/Admin/AdminOrders";
-import ChatbotAssistant from "./components/ChatbotAssistant";
+
 import CookiesModal from "./components/CookiesModal";
 import PromoModal from "./components/PromoModal";
 
-import ProductTemplate from "./components/ProductTemplate";
-import TopContactHeader from "./components/TopContactHeader";
 import WhatsAppWidget from "./components/WhatsAppWidget";
 import Breadcrumbs from "./components/Breadcrumbs";
-import GoogleMapsEmbed from "./components/GoogleMapsEmbed";
-import Matelas from "./pages/Store/Matelas";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import LegalTerms from "./pages/LegalTerms";
 import SEO from "./components/SEO";
-import ReviewHost from "./components/ReviewHost";
+import TopContactHeader from "./components/TopContactHeader";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+
+const Auth = lazy(() => import("./pages/Auth/Auth"));
+const Register = lazy(() => import("./pages/Auth/Register"));
+const ForgotPassword = lazy(() => import("./pages/Auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/Auth/ResetPassword"));
+const Products = lazy(() => import("./pages/Store/Articles"));
+const Promos = lazy(() => import("./pages/Store/Promos"));
+const Cart = lazy(() => import("./pages/Store/Cart"));
+const About = lazy(() => import("./pages/Info/About"));
+const Help = lazy(() => import("./pages/Info/Help"));
+const Contact = lazy(() => import("./pages/Contact"));
+const B2BExport = lazy(() => import("./pages/B2BExport"));
+const InternationalRoadmap = lazy(() => import("./pages/InternationalRoadmap"));
+const AdminDashboard = lazy(() => import("./pages/Admin/AdminDashboard"));
+const Profile = lazy(() => import("./pages/Admin/Profile"));
+const ManageClients = lazy(() => import("./pages/Admin/ManageClients"));
+const ManageManagers = lazy(() => import("./pages/Admin/ManageManagers"));
+const AddEmployer = lazy(() => import("./pages/Admin/AddEmployer"));
+const Quiz = lazy(() => import("./quiz"));
+const ClientDashboard = lazy(() => import("./pages/Client/ClientDashboard"));
+const ClientMyOrders = lazy(() => import("./pages/Client/ClientMyOrders"));
+const ClientReviews = lazy(() => import("./pages/Client/ClientReviews"));
+const ClientRecommendations = lazy(() => import("./pages/Client/ClientRecommendations"));
+const EmployeeDashboard = lazy(() => import("./pages/Employee/EmployeeDashboard"));
+const EmployeeOrders = lazy(() => import("./pages/Employee/EmployeeOrders"));
+const EmployeeStock = lazy(() => import("./pages/Employee/EmployeeStock"));
+const EmployeeProfile = lazy(() => import("./pages/Employee/EmployeeProfile"));
+const EmployeeClients = lazy(() => import("./pages/Employee/EmployeeClients"));
+const AdminOrders = lazy(() => import("./pages/Admin/AdminOrders"));
+const ChatbotAssistant = lazy(() => import("./components/ChatbotAssistant"));
+const ProductTemplate = lazy(() => import("./components/ProductTemplate"));
+const Matelas = lazy(() => import("./pages/Store/Matelas"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const LegalTerms = lazy(() => import("./pages/LegalTerms"));
+const ReviewHost = lazy(() => import("./components/ReviewHost"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
+const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
+const OrderTracking = lazy(() => import("./pages/OrderTracking"));
+const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 
 function GlobalBrandTheme() {
   return (
     <style>{`
       :root {
-        --sm-bg: #fbfaf8;
+        --sm-bg: #fafaf8;
         --sm-surface: #ffffff;
         --sm-surface-warm: #f8f3ed;
-        --sm-ink: #151522;
-        --sm-text: #242436;
-        --sm-muted: #6f7180;
-        --sm-border: #ebe6df;
-        --sm-brand: #8f2f2f;
-        --sm-brand-dark: #6f1f1f;
-        --sm-gold: #f4c84f;
+        --sm-ink: #0a0a0a;
+        --sm-text: #0a0a0a;
+        --sm-muted: #6b6b6b;
+        --sm-border: #e2e2de;
+        --sm-brand: #0a0a0a;
+        --sm-brand-dark: #1f1f1f;
+        --sm-gold: #b78b3f;
         --sm-gold-soft: #fff5cf;
-        --sm-shadow: 0 22px 60px rgba(21, 21, 34, 0.1);
+        --sm-shadow: 0 22px 60px rgba(10, 10, 10, 0.08);
         --bg-dark: var(--sm-bg);
         --bg-card: var(--sm-surface);
         --accent-blue: var(--sm-brand);
         --accent-purple: var(--sm-gold);
         --text-main: var(--sm-text);
         --text-muted: var(--sm-muted);
-        --glass-border: rgba(21, 21, 34, 0.1);
+        --glass-border: rgba(10, 10, 10, 0.08);
       }
 
       html, body, #root, .App {
         background: var(--sm-bg) !important;
         color: var(--sm-text) !important;
-        font-family: 'DM Sans', 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
       }
 
       .ssn-page,
@@ -92,7 +101,7 @@ function GlobalBrandTheme() {
       .qz-hero,
       .sm-auth-page {
         background:
-          radial-gradient(circle at 12% 18%, rgba(181,47,47,0.08), transparent 28%),
+          radial-gradient(circle at 12% 18%, rgba(183, 139, 63,0.08), transparent 28%),
           linear-gradient(180deg, #fbfaf8 0%, #ffffff 100%) !important;
         border-bottom: 1px solid var(--sm-border) !important;
       }
@@ -159,9 +168,9 @@ function GlobalBrandTheme() {
 
       .ssn-badge,
       .qz-badge {
-        background: rgba(255,255,255,0.82) !important;
-        border-color: rgba(181,47,47,0.16) !important;
-        box-shadow: 0 14px 34px rgba(21,21,34,0.06) !important;
+        background: rgba(255,255,255,0.92) !important;
+        border-color: rgba(10,10,10,0.08) !important;
+        box-shadow: 0 14px 34px rgba(10,10,10,0.06) !important;
         color: var(--sm-brand) !important;
         font-weight: 800 !important;
       }
@@ -193,7 +202,7 @@ function GlobalBrandTheme() {
       .sm-submit:hover:not(:disabled),
       .qz-btn-primary:hover {
         background: var(--sm-brand-dark) !important;
-        box-shadow: 0 16px 36px rgba(181, 47, 47, 0.22) !important;
+        box-shadow: 0 16px 36px rgba(183, 139, 63, 0.22) !important;
       }
 
       .ssn-btn-secondary:hover,
@@ -209,7 +218,7 @@ function GlobalBrandTheme() {
       [style*="border-color:#f97316"] {
         border-color: var(--sm-brand) !important;
         color: var(--sm-brand) !important;
-        box-shadow: 0 0 0 4px rgba(181, 47, 47, 0.08) !important;
+        box-shadow: 0 0 0 4px rgba(183, 139, 63, 0.08) !important;
       }
 
       .ssn-card,
@@ -343,7 +352,7 @@ function GlobalBrandTheme() {
 
       .theme-toggle {
         color: var(--sm-brand) !important;
-        border-color: rgba(181,47,47,0.22) !important;
+        border-color: rgba(10,10,10,0.18) !important;
       }
       .theme-toggle__icon {
         background: var(--sm-brand) !important;
@@ -375,18 +384,8 @@ const CHATBOT_HIDE_PREFIXES = [
   "/employer",
 ];
 
-const getStoredUser = () => {
-  try {
-    return JSON.parse(localStorage.getItem('user') || '{}');
-  } catch {
-    return null;
-  }
-};
-
-const isLoggedIn = () => {
-  const token = localStorage.getItem('token');
-  return Boolean(token && token !== 'null' && token !== 'undefined');
-};
+// App-level auth helpers now use shared utility functions
+const isLoggedIn = () => Boolean(getToken());
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
   if (!isLoggedIn()) {
@@ -431,20 +430,39 @@ function ThemeToggle() {
   );
 }
 
+function AppLoader() {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setVisible(false), 650);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="sm-app-loader" role="status" aria-label="Chargement">
+      <svg className="sm-app-loader-circular" viewBox="25 25 50 50" aria-hidden="true">
+        <circle className="sm-app-loader-path" cx="50" cy="50" r="20" fill="none" strokeWidth="2" strokeMiterlimit="10"></circle>
+      </svg>
+    </div>
+  );
+}
+
 function AppContent() {
   const location = useLocation();
   const hideOnPaths = ["/employer/orders", "/employer/inventory", "/admin-dashboard", "/admin/dashboard", "/manage-managers", "/manage-", "/add-employer", "/profile", "/products"];
   const hideForEmployer = location.pathname.startsWith("/employer");
   const showThemeToggle = PRIVATE_PREFIXES.some((path) => location.pathname.startsWith(path)) && !hideOnPaths.some(p => location.pathname.startsWith(p)) && !hideForEmployer;
-  const showTopContactHeader = !PRIVATE_PREFIXES.some((path) => location.pathname.startsWith(path));
   const showWhatsAppWidget = false;
   const showChatbot = !CHATBOT_HIDE_PREFIXES.some((path) => location.pathname.startsWith(path));
+  const [chatbotReady, setChatbotReady] = useState(false);
   const [toastTheme, setToastTheme] = useState(() => localStorage.getItem("theme") || "light");
 
   useEffect(() => {
     const syncTheme = () => setToastTheme(document.documentElement.dataset.theme || "light");
     syncTheme();
-    const observer = new MutationObserver(syncTheme);
+    const observer = new window.MutationObserver(syncTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     if (window.history && 'scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
@@ -459,16 +477,69 @@ function AppContent() {
   }, [location.pathname]);
 
   useEffect(() => {
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "page_view", {
+        send_to: "GLA",
+        page_path: location.pathname + location.search,
+        page_location: window.location.href,
+      });
+    }
+  }, [location.pathname, location.search]);
+
+  useEffect(() => {
     if (!showThemeToggle) {
       document.documentElement.dataset.theme = "light";
     }
   }, [showThemeToggle]);
 
+  useEffect(() => {
+    if (!showChatbot) {
+      setChatbotReady(false);
+      return undefined;
+    }
+
+    const scheduleIdle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 2500));
+    const cancelIdle = window.cancelIdleCallback || window.clearTimeout;
+    const idleId = scheduleIdle(() => setChatbotReady(true));
+    return () => cancelIdle(idleId);
+  }, [showChatbot]);
+
   return (
     <div className="App">
+      <style>{`
+        .sm-app-loader {
+          position: fixed;
+          inset: 0;
+          z-index: 9000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255,255,255,0.94);
+        }
+        .sm-app-loader-circular {
+          width: 54px;
+          height: 54px;
+          animation: sm-loader-rotate 1.4s linear infinite;
+        }
+        .sm-app-loader-path {
+          stroke: #0a0a0a;
+          stroke-linecap: round;
+          animation: sm-loader-dash 1.4s ease-in-out infinite;
+        }
+        @keyframes sm-loader-rotate {
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes sm-loader-dash {
+          0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+          50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+          100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+        }
+      `}</style>
+      <AppLoader />
       <SEO />
+      <TopContactHeader />
+      <NavBar />
       {showThemeToggle && <ThemeToggle />}
-      {showTopContactHeader && <TopContactHeader />}
       <Breadcrumbs />
       {showWhatsAppWidget && <WhatsAppWidget />}
       <CookiesModal />
@@ -488,8 +559,9 @@ function AppContent() {
         bodyClassName="custom-toast-body"
         progressClassName="custom-toast-progress"
       />
-      <Routes>
-        <Route path="/" element={<Home />} />
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<Home />} />
 
         <Route path="/login" element={<Auth />} />
         <Route path="/login/admin" element={<Auth role="admin" />} />
@@ -504,7 +576,11 @@ function AppContent() {
         <Route path="/nos-matelas" element={<Matelas />} />
         <Route path="/promos" element={<Promos />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
         <Route path="/about" element={<About />} />
+        <Route path="/b2b-export" element={<B2BExport />} />
+        <Route path="/roadmap-international" element={<InternationalRoadmap />} />
         <Route path="/help" element={<Help />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -530,10 +606,19 @@ function AppContent() {
         <Route path="/quiz" element={<Quiz />} />
 
         <Route path="/product/:slug" element={<ProductTemplate />} />
+        <Route path="/product-detail/:productId" element={<ProductDetail />} />
+        <Route path="/order-tracking" element={<OrderTracking />} />
+        <Route path="/admin-panel" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminPanel />} />} />
 
         <Route path="*" element={<Home />} />
-      </Routes>
-      {showChatbot && <ChatbotAssistant />}
+        </Routes>
+      </Suspense>
+      {showChatbot && chatbotReady && (
+        <Suspense fallback={null}>
+          <ChatbotAssistant />
+        </Suspense>
+      )}
+      <Footer />
       <GlobalBrandTheme />
     </div>
   );
@@ -543,9 +628,12 @@ function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppContent />
-      <ReviewHost />
+      <Suspense fallback={null}>
+        <ReviewHost />
+      </Suspense>
     </Router>
   );
 }
 
 export default App;
+

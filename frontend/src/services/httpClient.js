@@ -1,19 +1,29 @@
 import axios from 'axios';
+import { API_URL, IS_DEV } from '../utils/env';
 
 const fallbackProductionApi = 'https://starmousse-backend.onrender.com';
 const defaultApi = fallbackProductionApi;
+const localApiCandidates = ['', 'http://localhost:5000', 'http://127.0.0.1:5000'];
 
 const normalizeApiUrl = (url) => {
   const value = String(url || '').trim().replace(/\/$/, '');
 
   if (!value || value === '/api') {
-    return defaultApi;
+    return IS_DEV ? '' : defaultApi;
   }
 
   return value.replace(/\/api$/, '');
 };
 
-const baseURL = normalizeApiUrl(process.env.REACT_APP_API_URL);
+const baseURL = normalizeApiUrl(API_URL);
+
+const isLocalApiBase = (url) => {
+  if (!url) return true;
+  return localApiCandidates.some((candidate) => {
+    if (!candidate) return true;
+    return url === candidate || url.startsWith(`${candidate}/`);
+  });
+};
 
 const httpClient = axios.create({
   baseURL,
@@ -27,6 +37,13 @@ const httpClient = axios.create({
 const shouldRetryWithFallback = (error) => {
   if (baseURL === fallbackProductionApi) return false;
   if (error.config?.__retriedWithFallback) return false;
+  if (!isLocalApiBase(baseURL)) return false;
+
+  const status = error.response?.status;
+  if (status && [408, 429, 500, 502, 503, 504].includes(status)) {
+    return true;
+  }
+
   return ['ERR_NETWORK', 'ECONNABORTED'].includes(error.code);
 };
 
@@ -72,6 +89,11 @@ httpClient.interceptors.response.use(
         baseURL: fallbackProductionApi,
         __retriedWithFallback: true,
       };
+      console.warn('Retrying API request with hosted backend fallback', {
+        url: error.config?.url,
+        status: error.response?.status,
+        code: error.code,
+      });
       return httpClient.request(retryConfig);
     }
 

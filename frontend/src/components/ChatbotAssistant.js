@@ -37,12 +37,6 @@ const FALLBACK_RECOMMENDATIONS = [
   },
 ];
 
-// use shared formatPrice util for consistent formatting
-
-function shouldShowRecommendations(messages) {
-  return messages.filter((message) => message.from === "user").length >= 2;
-}
-
 function canRecommend(intent) {
   return [
     "dos",
@@ -136,7 +130,7 @@ export default function ChatbotAssistant() {
             recommendations,
           },
         ]);
-      } catch (error) {
+      } catch {
         setMessages((current) => {
           const recommendations = FALLBACK_RECOMMENDATIONS;
 
@@ -155,7 +149,7 @@ export default function ChatbotAssistant() {
         setLoading(false);
       }
     },
-    [input, loading, messages]
+    [input, loading]
   );
 
   const handleQuickPrompt = useCallback((prompt) => {

@@ -1,0 +1,63 @@
+name: Deploy Star Mousse
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20
+  FRONTEND_DIR: frontend
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm run check:json
+      - run: npm run lint --prefix ${{ env.FRONTEND_DIR }}
+
+  deploy-backend:
+    needs: lint-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: renderinc/deploy-to-render@v1
+        with:
+          serviceId: ${{ secrets.RENDER_BACKEND_SERVICE_ID }}
+          apiKey: ${{ secrets.RENDER_API_KEY }}
+          waitForCompletion: true
+          repositoryUrl: https://github.com/${{ github.repository }}
+          branch: main
+          rootDirectory: backend
+          buildCommand: npm install
+          startCommand: npm start
+          envVars: |
+            NODE_ENV=production
+            PORT=5000
+            MONGODB_URI=${{ secrets.MONGODB_URI }}
+
+  deploy-frontend:
+    needs: deploy-backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm install --prefix ${{ env.FRONTEND_DIR }}
+      - run: npm run build --prefix ${{ env.FRONTEND_DIR }}
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ${{ env.FRONTEND_DIR }}
+          prod: true
+          envs: |
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}

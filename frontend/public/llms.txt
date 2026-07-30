@@ -2,14 +2,14 @@
 
 > Star Mousse est une marque tunisienne de matelas, oreillers et literie premium basee a Borj Chakir, Tunis.
 
-## Site
+## Pages principales
 
-- Accueil: https://site-star-mousse.vercel.app/
-- Produits: https://site-star-mousse.vercel.app/products
-- Matelas Relax Plus: https://site-star-mousse.vercel.app/nos-matelas
-- Promotions: https://site-star-mousse.vercel.app/promos
-- Contact: https://site-star-mousse.vercel.app/contact
-- Aide: https://site-star-mousse.vercel.app/help
+- [Accueil](https://site-star-mousse.vercel.app/): presentation de Star Mousse, produits phares et avis clients.
+- [Produits](https://site-star-mousse.vercel.app/products): catalogue des matelas, oreillers et accessoires.
+- [Matelas Relax Plus](https://site-star-mousse.vercel.app/nos-matelas): page dediee au matelas Relax Plus.
+- [Promotions](https://site-star-mousse.vercel.app/promos): offres et reductions en cours.
+- [Contact](https://site-star-mousse.vercel.app/contact): formulaire, telephone, WhatsApp et showroom.
+- [Aide](https://site-star-mousse.vercel.app/help): questions frequentes et informations de service.
 
 ## Informations utiles
 
@@ -28,3 +28,8 @@
 - Venise Plus: matelas orthopedique.
 - Confort Plus: matelas ressort.
 - Oreillers: gel, aromatherapie, soutien cervical.
+
+## Donnees d'exploration
+
+- [Sitemap](https://site-star-mousse.vercel.app/sitemap.xml): URL publiques indexables.
+- [Robots](https://site-star-mousse.vercel.app/robots.txt): regles d'exploration.

@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
 
 const photos = [
   { src: '/showroom1.jpg', label: 'Vue principale' },
@@ -307,7 +305,6 @@ const About = () => {
       `}</style>
 
       <div className="ssn-page">
-        <NavBar />
 
         {/* ── HERO ── */}
         <section className="ssn-about-hero">
@@ -487,7 +484,6 @@ const About = () => {
           </div>
         </section>
 
-        <Footer />
       </div>
     </>
   );

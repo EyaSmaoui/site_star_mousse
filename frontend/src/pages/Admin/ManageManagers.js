@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
@@ -50,14 +50,13 @@ export default function ManageManagers() {
   const navigate = useNavigate();
   const [managers, setManagers]   = useState([]);
   const [search, setSearch]       = useState("");
-  const [filterRole, setFilterRole] = useState("Tous");
   const [modal, setModal]         = useState(null);
   const [form, setForm]           = useState(EMPTY_FORM);
   const [confirmId, setConfirmId] = useState(null);
   const [loading, setLoading]     = useState(false);
   const [saving, setSaving]       = useState(false);
 
-  const fetchManagers = async () => {
+  const fetchManagers = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getAllManagers();
@@ -71,7 +70,7 @@ export default function ManageManagers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     const token    = localStorage.getItem("token");
@@ -84,9 +83,8 @@ export default function ManageManagers() {
       } catch { navigate("/login/admin"); return; }
     }
     fetchManagers();
-  }, [navigate]);
+  }, [fetchManagers, navigate]);
 
-  const openAdd  = () => { setForm(EMPTY_FORM); setModal("add"); };
   const openEdit = (m) => {
     setForm({ name: m.name || "", email: m.email || "", phone: m.phone || "", password: "", role: m.role || "gestionnaire", status: m.status || "actif" });
     setModal({ mode: "edit", manager: m });
@@ -127,11 +125,10 @@ export default function ManageManagers() {
   const filtered = managers.filter((m) => {
     const q      = search.trim().toLowerCase();
     const okSearch = !q || m.name?.toLowerCase().includes(q) || m.email?.toLowerCase().includes(q);
-    const okRole = filterRole === "Tous" || m.role === filterRole;
+    const okRole = true;
     return okSearch && okRole;
   });
 
-  const actifCount = managers.filter(m => m.status === "actif").length;
 
   return (
     <div style={S.root}>

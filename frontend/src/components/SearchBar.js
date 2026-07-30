@@ -7,7 +7,7 @@ const Ico = ({ d, size = 16, color = "currentColor", sw = 2 }) => (
   </svg>
 );
 
-export default function SearchBar({ placeholder, value, onChange, minWidth = 220, onSubmit, isForm = false }) {
+export default function SearchBar({ placeholder, value, onChange, minWidth: _minWidth, onSubmit, isForm = false }) {
   const handleChange = (e) => {
     onChange(e.target.value);
   };

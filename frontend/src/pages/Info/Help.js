@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
 
 const faqs = [
   {
@@ -68,7 +66,6 @@ const faqs = [
 
 const Help = () => {
   const navigate = useNavigate();
-  const observerRef = useRef(null);
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
@@ -235,7 +232,6 @@ const Help = () => {
       `}</style>
 
       <div className="ssn-page">
-        <NavBar />
 
         {/* ── HERO ── */}
         <section className="ssn-help-hero">
@@ -320,7 +316,6 @@ const Help = () => {
           </div>
         </section>
 
-        <Footer />
       </div>
     </>
   );

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { addReview } from "../services/apiReview";
-import { addCartItem } from "../utils/cartUtils";
 import { login, register } from "../services/apiAuth";
 import { PROFILE_CHANGED_EVENT } from "../services/profileSyncService";
 import { ToastContainer, toast } from "react-toastify";
@@ -47,16 +46,16 @@ export default function OrderCheckout({
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || 'null'));
 
   useEffect(() => {
-    if (user && form.name === "") {
-      setForm(current => ({
+    if (user && form?.[formFields.name] === "") {
+      setForm((current) => ({
         ...current,
-        name: user.username || user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        address: user.address || "",
+        [formFields.name]: user.username || user.name || "",
+        [formFields.email]: user.email || "",
+        [formFields.phone]: user.phone || "",
+        [formFields.address]: user.address || "",
       }));
     }
-  }, [user]);
+  }, [user, form, formFields.address, formFields.email, formFields.name, formFields.phone, setForm]);
 
   useEffect(() => {
     const syncProfile = (event) => {
@@ -79,7 +78,7 @@ export default function OrderCheckout({
       window.removeEventListener(PROFILE_CHANGED_EVENT, syncProfile);
       window.removeEventListener('user-logged-in', syncProfile);
     };
-  }, [setForm]);
+  }, [formFields.address, formFields.email, formFields.name, formFields.phone, setForm]);
 
   const updateField = (key, value) => {
     const field = formFields[key];
@@ -174,25 +173,6 @@ export default function OrderCheckout({
     if (typeof onSubmit === "function") {
       onSubmit(event);
     }
-  };
-
-  const handleAddToCart = () => {
-    const title = document.querySelector("h1")?.textContent?.trim() || "Produit Star Mousse";
-    const selectedSize =
-      document.querySelector('input[name="size"]:checked')?.closest("label")?.textContent?.trim() ||
-      document.querySelector(".ssn-size.active, .ssn-size-btn.active, .ssn-size-item input:checked")?.textContent?.trim() ||
-      "";
-    const image = document.querySelector(".ssn-main-frame img, .ssn-gallery img, img[alt]")?.getAttribute("src") || "";
-    const quantity = Math.max(1, Number(qty || 1));
-    const unitPrice = quantity ? Number(subtotal || orderTotal || 0) / quantity : Number(subtotal || orderTotal || 0);
-
-    addCartItem({
-      name: title,
-      size: selectedSize,
-      image,
-      price: unitPrice,
-      quantity,
-    });
   };
 
   useEffect(() => {

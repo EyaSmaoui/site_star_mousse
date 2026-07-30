@@ -140,6 +140,7 @@ async function createSampleData() {
         price: variant.price,
         category: typeMap[mat.type]._id,
         stock: 100, // default inventory count
+        brand: 'Star Mousse',
       });
       products.push(p);
     }

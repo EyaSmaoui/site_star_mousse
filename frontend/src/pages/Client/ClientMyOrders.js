@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ClientSidebar from "./ClientSidebar";
@@ -28,7 +28,7 @@ export default function ClientMyOrders() {
   const [loading, setLoading] = useState(true);
 
   // Fonction pour rafraîchir les commandes
-  const refreshOrders = async (profileOverride = profile) => {
+  const refreshOrders = useCallback(async (profileOverride = profile) => {
     try {
       console.log('🔄 Rafraîchissement des commandes... (forceRefresh=true)');
       const ordersData = await getMyOrders(true); // ✅ FORCE REFRESH
@@ -44,7 +44,7 @@ export default function ClientMyOrders() {
     } catch (error) {
       console.error('❌ Erreur lors du rafraîchissement:', error);
     }
-  };
+  }, [profile]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -65,21 +65,27 @@ export default function ClientMyOrders() {
       }
     }
 
+    let active = true;
     const fetchData = async () => {
       try {
         setLoading(true);
         const [profileData, ordersData] = await Promise.all([getProfile(), getMyOrders(true)]);
+        if (!active) return;
         setProfile(profileData);
         setOrders(applyProfileToOrders(ordersData, profileData));
       } catch (error) {
         console.error(error);
+        if (!active) return;
         toast.error("Impossible de charger vos commandes.");
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
     fetchData();
+    return () => {
+      active = false;
+    };
   }, [navigate]);
 
   // 🔔 S'abonner aux changements de profil GLOBAL
@@ -97,7 +103,7 @@ export default function ClientMyOrders() {
       console.log('👋 ClientMyOrders: Arrêt de l\'écoute des changements');
       unsubscribe();
     };
-  }, []);
+  }, [refreshOrders]);
 
   const formatDate = (date) => {
     if (!date) return "-";

@@ -1,40 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import AdminSidebar from "./AdminSidebar";
 import SuccessModal from "../../components/SuccessModal";
 import { useSuccessAlert } from "../../hooks/useSuccessAlert";
 import { getAllUsers, updateProfile, changePassword } from "../../services/apiUser";
-
-/* ─── StatCard ───────────────────────────────────────────────────────────── */
-const StatCard = ({ icon, value, label, iconBg }) => (
-  <div style={S.statCard}>
-    <div style={{ ...S.statIconBox, background: iconBg }}>{icon}</div>
-    <div style={S.statValue}>{value}</div>
-    <div style={S.statLabel}>{label}</div>
-  </div>
-);
-
-/* ─── InfoRow ────────────────────────────────────────────────────────────── */
-const InfoRow = ({ icon, label, value, accent }) => (
-  <div style={S.infoRow}>
-    <div style={S.infoIconWrap}>{icon}</div>
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={S.infoLabel}>{label}</div>
-      <div style={{ ...S.infoValue, color: accent ? "#f97316" : "#1f2937" }}>{value}</div>
-    </div>
-  </div>
-);
-
-/* ─── ActivityRow ────────────────────────────────────────────────────────── */
-const ActivityRow = ({ action, time, type }) => {
-  const dotColor = { success: "#10b981", warning: "#f97316", info: "#3b82f6" }[type];
-  return (
-    <div style={S.activityRow}>
-      <div style={{ ...S.activityDot, background: dotColor }} />
-      <span style={S.activityText}>{action}</span>
-      <span style={S.activityTime}>{time}</span>
-    </div>
-  );
-};
 
 /* ─── Icons ─────────────────────────────────────────────────────────────── */
 const Icon = ({ d, size = 16, color = "currentColor", strokeWidth = 2 }) => (
@@ -118,7 +87,7 @@ export default function Profile() {
       showSuccess('Profil mis à jour avec succès!', 'Enregistré!');
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
-      alert("Erreur lors de la sauvegarde.");
+      toast.error("Erreur lors de la sauvegarde.");
     }
   };
 
@@ -128,12 +97,12 @@ export default function Profile() {
 
   const handlePasswordUpdate = async () => {
     if (!passwords.current || !passwords.next || !passwords.confirm) {
-      alert("Veuillez remplir tous les champs du mot de passe.");
+      toast.error("Veuillez remplir tous les champs du mot de passe.");
       return;
     }
 
     if (passwords.next !== passwords.confirm) {
-      alert("Le nouveau mot de passe et la confirmation ne correspondent pas.");
+      toast.error("Le nouveau mot de passe et la confirmation ne correspondent pas.");
       return;
     }
 
@@ -145,7 +114,7 @@ export default function Profile() {
       showSuccess('Mot de passe mis à jour avec succès!', 'Enregistré!');
     } catch (error) {
       console.error("Erreur lors de la mise à jour du mot de passe:", error);
-      alert("Impossible de mettre à jour le mot de passe.");
+      toast.error("Impossible de mettre à jour le mot de passe.");
     } finally {
       setPasswordUpdating(false);
     }
@@ -296,7 +265,7 @@ const S = {
   statValue: { fontSize: 28, fontWeight: 700, color: "#1f2937", lineHeight: 1 },
   statLabel: { fontSize: 11, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 },
   bottomGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 },
-  card: { background: "#fff", border: "1px solid #f0e8df", borderRadius: 14, overflow: "hidden" },
+  unusedCard: { background: "#fff", border: "1px solid #f0e8df", borderRadius: 14, overflow: "hidden" },
   cardHeader: { padding: "14px 20px", borderBottom: "1px solid #f9f0e8", display: "flex", alignItems: "center", justifyContent: "space-between" },
   cardTitle: { fontSize: 12, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: ".07em", margin: 0 },
   cardBadge: { fontSize: 11, fontWeight: 600, color: "#10b981", background: "#dcfce7", border: "1px solid #86efac", padding: "2px 10px", borderRadius: 999 },

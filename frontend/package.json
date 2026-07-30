@@ -1,37 +1,51 @@
 {
   "name": "star-mousse-frontend",
-  "version": "0.1.0",
+  "version": "2.2.0",
   "private": true,
-  "dependencies": {
-    "axios": "^1.6.0",
-    "chart.js": "^4.5.1",
-    "framer-motion": "^12.38.0",
-    "react": "^18.2.0",
-    "react-chartjs-2": "^5.3.1",
-    "react-dom": "^18.2.0",
-    "react-icons": "^5.6.0",
-    "react-router-dom": "^6.22.0",
-    "react-scripts": "^5.0.1",
-    "react-toastify": "^11.0.5",
-    "site_star_mousse": "file:..",
-    "web-vitals": "^5.1.0"
+  "type": "module",
+  "engines": {
+    "node": ">=20"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "test:mobile": "cypress run --spec 'cypress/e2e/01_mobile_scroll.cy.js'",
-    "test:security": "cypress run --spec 'cypress/e2e/02_security.cy.js'",
-    "test:features": "cypress run --spec 'cypress/e2e/03_functionality.cy.js'",
-    "test:all": "cypress run"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "npx c8 --reporter=lcov vitest run",
+    "check:json": "node -e \"JSON.parse(require('fs').readFileSync('package.json','utf8')); console.log('frontend JSON ok')\""
   },
-  "proxy": "http://localhost:5000",
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.21",
+    "axios": "^1.18.0",
+    "chart.js": "^4.5.1",
+    "framer-motion": "^12.40.0",
+    "react": "^19.2.7",
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "^19.2.7",
+    "react-icons": "^5.6.0",
+    "react-router-dom": "^7.17.0",
+    "react-toastify": "^11.0.5"
+  },
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.4"
+    "@tailwindcss/vite": "^4.3.1",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "c8": "^8.2.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "jsdom": "^22.1.0",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "^2.1.9"
   },
   "browserslist": {
     "production": [

@@ -86,7 +86,7 @@ export default function GoogleMapsEmbed() {
           align-items: center;
           gap: 8px;
           padding: 12px 24px;
-          background: #b52f2f;
+          background: #b78b3f;
           color: white;
           border: none;
           border-radius: 6px;
@@ -98,16 +98,16 @@ export default function GoogleMapsEmbed() {
         }
 
         .maps-button:hover {
-          background: #8f2424;
+          background: #9f7d3d;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(181, 47, 47, 0.3);
+          box-shadow: 0 4px 12px rgba(183, 139, 63, 0.3);
         }
 
         .maps-info {
           background: #fbfaf8;
           padding: 20px;
           border-radius: 12px;
-          border-left: 4px solid #b52f2f;
+          border-left: 4px solid #b78b3f;
           margin-top: 20px;
         }
 
@@ -136,7 +136,7 @@ export default function GoogleMapsEmbed() {
 
         .maps-info-label {
           font-weight: 600;
-          color: #b52f2f;
+          color: #b78b3f;
           min-width: 80px;
         }
 
@@ -145,7 +145,7 @@ export default function GoogleMapsEmbed() {
         }
 
         .maps-info-value a {
-          color: #b52f2f;
+          color: #b78b3f;
           text-decoration: none;
           font-weight: 600;
           transition: color 0.2s ease;
@@ -244,3 +244,4 @@ export default function GoogleMapsEmbed() {
     </div>
   );
 }
+

@@ -99,7 +99,7 @@ const Testimonials = () => {
             height: 8px;
           }
           .testimonials-grid::-webkit-scrollbar-thumb {
-            background: rgba(181, 47, 47, 0.35);
+            background: rgba(183, 139, 63, 0.35);
             border-radius: 999px;
           }
           .testimonials-grid::-webkit-scrollbar-track {
@@ -199,7 +199,7 @@ const Testimonials = () => {
               className="testimonials-card"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 12px 28px rgba(181, 47, 47, 0.15)';
+                e.currentTarget.style.boxShadow = '0 12px 28px rgba(183, 139, 63, 0.15)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
@@ -248,11 +248,11 @@ const Testimonials = () => {
             style={styles.ctaButton}
             className="cta-button"
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#8f2424';
+              e.currentTarget.style.background = '#9f7d3d';
               e.currentTarget.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#b52f2f';
+              e.currentTarget.style.background = '#b78b3f';
               e.currentTarget.style.transform = 'scale(1)';
             }}
           >
@@ -362,7 +362,7 @@ const styles = {
     width: '44px',
     height: '44px',
     borderRadius: '50%',
-    background: 'linear-gradient(135deg, #b52f2f, #8f2424)',
+    background: 'linear-gradient(135deg, #b78b3f, #9f7d3d)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -412,7 +412,7 @@ const styles = {
   },
   productBadge: {
     display: 'inline-block',
-    background: '#b52f2f',
+    background: '#b78b3f',
     color: 'white',
     padding: '6px 14px',
     borderRadius: '20px',
@@ -430,7 +430,7 @@ const styles = {
     background: 'white',
     padding: '50px 40px',
     borderRadius: '12px',
-    border: '2px solid #b52f2f',
+    border: '2px solid #b78b3f',
     textAlign: 'center',
     marginBottom: '50px',
     maxWidth: '600px',
@@ -448,7 +448,7 @@ const styles = {
     lineHeight: '1.6'
   },
   ctaButton: {
-    background: '#b52f2f',
+    background: '#b78b3f',
     color: 'white',
     border: 'none',
     padding: '14px 32px',
@@ -457,7 +457,7 @@ const styles = {
     fontWeight: 'bold',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
-    boxShadow: '0 4px 12px rgba(181, 47, 47, 0.3)'
+    boxShadow: '0 4px 12px rgba(183, 139, 63, 0.3)'
   },
   badges: {
     display: 'grid',
@@ -503,7 +503,7 @@ const styles = {
     marginBottom: '40px'
   },
   carouselBtn: {
-    background: '#b52f2f',
+    background: '#b78b3f',
     color: 'white',
     border: 'none',
     width: '40px',
@@ -535,10 +535,11 @@ const styles = {
     padding: '0'
   },
   dotActive: {
-    background: '#b52f2f',
+    background: '#b78b3f',
     width: '28px',
     borderRadius: '5px'
   }
 };
 
 export default Testimonials;
+

@@ -1,123 +1,212 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  /* Design tokens / CSS variables */
-  --color-primary: #f97316;
-  --color-primary-600: #ea580c;
-  --color-bg: #fdf6ef;
-  --color-surface: #ffffff;
-  --color-card-border: #f0e8df;
-  --color-muted: #6b7280;
-  --radius-lg: 12px;
-  --radius-md: 8px;
-
-  /* Breakpoints */
-  --bp-sm: 640px;   /* phone */
-  --bp-md: 768px;   /* tablet */
-  --bp-lg: 1024px;  /* small laptop */
-
-  color-scheme: dark;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  background-color: #070b14;
-  color: #f8fafc;
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://static.figma.com/font/Fraunces_SOFT_WONK_opsz_wght__1') format('woff2');
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://static.figma.com/font/Fraunces_SOFT_WONK_opsz_wght__1') format('woff2');
 }
 
-html, body, #root {
-  min-height: 100%;
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://static.figma.com/font/PlusJakartaSans_wght__2') format('woff2');
 }
 
-body {
-  background-color: #070b14;
-  color: #f8fafc;
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://static.figma.com/font/PlusJakartaSans_wght__2') format('woff2');
 }
 
-::selection {
-  background-color: rgba(56, 189, 248, 0.35);
-  color: #ffffff;
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://static.figma.com/font/PlusJakartaSans_wght__2') format('woff2');
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+@layer base {
+  :root {
+    --brand-50: #f4fbf7;
+    --brand-100: #dcf2e6;
+    --brand-200: #b8e3cd;
+    --brand-300: #86ceb0;
+    --brand-400: #50ad8c;
+    --brand-500: #2f8f71;
+    --brand-600: #1c6b55;
+    --brand-700: #164f41;
+    --brand-800: #123f36;
+    --brand-900: #0b2f2a;
+    --sm-ink: #12231f;
+    --sm-muted: #64706c;
+    --sm-surface: #fffdf8;
+    --sm-soft: #f4efe6;
+    --sm-border: #e4ddd0;
+    --sm-primary: #0f4f43;
+    --sm-primary-dark: #0a352f;
+    --sm-accent: #e86f45;
+    --sm-gold: #d8ad52;
+    --sm-shadow: 0 18px 46px rgba(18, 35, 31, 0.1);
+    --sm-radius: 8px;
+    --font-sans: 'Plus Jakarta Sans';
+    --font-serif: 'Fraunces';
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  /* Global Typography */
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: var(--sm-ink);
+    background-color: var(--sm-surface);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    color: var(--sm-ink);
+  }
+
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--sm-surface);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+
+  body:hover::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d0d0cc;
+    border-radius: 2px;
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@layer utilities {
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
-}
 
-/* Force light mode for form fields (text inputs, search, textareas, selects) */
-input[type="text"],
-input[type="search"],
-input[type="email"],
-input[type="tel"],
-input[type="password"],
-textarea,
-select,
-.filter-input,
-.filter-select,
-.form-input,
-.form-textarea,
-.search-input {
-  background: var(--color-surface) !important;
-  color: #111827 !important;
-  border: 1px solid var(--color-card-border) !important;
-  caret-color: var(--color-primary) !important;
-}
+  .text-brand {
+    color: var(--sm-primary);
+  }
 
-input::placeholder,
-textarea::placeholder {
-  color: #9ca3af !important;
-}
+  .bg-brand {
+    background-color: var(--sm-primary);
+  }
 
-input:focus,
-textarea:focus,
-select:focus,
-.filter-input:focus,
-.filter-select:focus,
-.search-input:focus {
-  outline: none;
-  border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12) !important;
-}
+  /* Minimal Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
-.Toastify__toast.custom-toast.Toastify__toast--success {
-  border-radius: 16px;
-  border: 1px solid #a3d9a5;
-  background: #effbf0;
-  color: #1d5f2f;
-  box-shadow: 0 20px 50px rgba(29, 95, 47, 0.12);
-}
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 
-.Toastify__toast.custom-toast {
-  padding: 16px 18px;
-}
+  /* Minimal Button */
+  .btn-minimal {
+    padding: 0.75rem 1.5rem;
+    background-color: #0a0a0a;
+    color: #fafaf8;
+    font-weight: 500;
+    border-radius: 2px;
+    border: 1px solid #0a0a0a;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
 
-.Toastify__toast-body.custom-toast-body {
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 1.4;
-}
+  .btn-minimal:hover {
+    background-color: #fafaf8;
+    color: #0a0a0a;
+    box-shadow: 0 2px 8px rgba(10, 10, 10, 0.08);
+  }
 
-.Toastify__toast-icon {
-  color: #2f7d33 !important;
-}
+  .btn-minimal:active {
+    background-color: #0a0a0a;
+    color: #fafaf8;
+  }
 
-.Toastify__progress-bar.custom-toast-progress {
-  background: #2f7d33 !important;
+  /* Card Minimal */
+  .card-minimal {
+    border-radius: 2px;
+    background-color: #ffffff;
+    border: 1px solid #e2e2de;
+    box-shadow: 0 2px 8px rgba(10, 10, 10, 0.08);
+    transition: all 0.2s;
+  }
+
+  .card-minimal:hover {
+    box-shadow: 0 4px 12px rgba(10, 10, 10, 0.08);
+    border-color: #0a0a0a;
+  }
+
+  /* Premium Input */
+  .input-minimal {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e2de;
+    border-radius: 2px;
+    background-color: #ffffff;
+    color: #0a0a0a;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    transition: all 0.2s;
+  }
+
+  .input-minimal:focus {
+    outline: none;
+    border-color: #0a0a0a;
+    box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1);
+  }
+
+  .input-minimal::placeholder {
+    color: #6b6b6b;
+  }
+
+  /* Loading Animation */
+  .animate-fade {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide {
+    animation: slideIn 0.3s ease-out;
+  }
 }

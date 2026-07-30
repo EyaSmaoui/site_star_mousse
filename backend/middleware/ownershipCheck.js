@@ -1,10 +1,12 @@
-// Ownership verification middleware
+// Middleware de vérification de propriété (Qui a le droit de modifier quoi)
 const Review = require('../models/review.model');
 const Cart = require('../models/panier.model');
 const Order = require('../models/order.model');
 const mongoose = require('mongoose');
 
-// Check if user owns the review
+// [FL SITE] : SECTION AVIS / COMMENTAIRES DU SITE
+// Vérifie si l'utilisateur est bien l'auteur de l'avis avant de l'autoriser à le MODIFIER ou à le SUPPRIMER.
+// Un client lambda ne peut pas modifier l'avis d'un autre client (sauf s'il est Admin).
 exports.verifyReviewOwnership = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -19,7 +21,7 @@ exports.verifyReviewOwnership = async (req, res, next) => {
       return res.status(404).json({ error: 'Review non trouvée' });
     }
 
-    // Allow if user is review owner or admin
+    // Sécurité : Bloque l'action (403) si le client connecté n'est pas le propriétaire de cet avis ET n'est pas Admin
     if (review.userId.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ 
         error: 'Vous n\'avez pas la permission de modifier cette review' 
@@ -27,14 +29,16 @@ exports.verifyReviewOwnership = async (req, res, next) => {
     }
 
     req.resource = review;
-    next();
+    next(); // Autorise la modification ou suppression de l'avis
   } catch (error) {
     console.error('Erreur de vérification de propriété (review):', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
 
-// Check if user owns the cart
+// [FL SITE] : INTERFACE DU PANIER D'ACHAT (Cart)
+// Assure la confidentialité des paniers. Empêche un utilisateur malveillant de modifier le contenu du panier 
+// d'un autre client connecté en manipulant les requêtes HTTP.
 exports.verifyCartOwnership = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -49,7 +53,7 @@ exports.verifyCartOwnership = async (req, res, next) => {
       return res.status(404).json({ error: 'Panier non trouvé' });
     }
 
-    // Allow if user is cart owner or admin
+    // Sécurité : Seul le propriétaire du panier ou l'administrateur a le droit de le modifier (ajouter/retirer des articles)
     if (cart.userId.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ 
         error: 'Vous n\'avez pas la permission de modifier ce panier' 
@@ -57,14 +61,16 @@ exports.verifyCartOwnership = async (req, res, next) => {
     }
 
     req.resource = cart;
-    next();
+    next(); // Autorise les modifications sur le panier
   } catch (error) {
     console.error('Erreur de vérification de propriété (cart):', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
 
-// Check if user owns the order
+// [FL SITE] : ESPACE CLIENT ("Mes Commandes") ET BACK-OFFICE ADMIN
+// Gère la confidentialité des factures et bons de commande. Un client peut voir uniquement SES propres commandes. 
+// Le personnel de l'entreprise (Admin, Manager, Employé), lui, a l'autorisation d'y accéder pour préparer la livraison.
 exports.verifyOrderOwnership = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -79,7 +85,7 @@ exports.verifyOrderOwnership = async (req, res, next) => {
       return res.status(404).json({ error: 'Commande non trouvée' });
     }
 
-    // Allow if user is order owner, employee/manager, or admin
+    // Sécurité : Bloque l'accès si ce n'est pas la commande du client connecté ET que l'utilisateur n'est pas un membre de l'équipe Star Mousse
     if (order.userId?.toString() !== req.user.id && 
         !['admin', 'manager', 'employee', 'employeur'].includes(req.user.role)) {
       return res.status(403).json({ 
@@ -88,7 +94,7 @@ exports.verifyOrderOwnership = async (req, res, next) => {
     }
 
     req.resource = order;
-    next();
+    next(); // Autorise l'affichage ou le traitement de la commande
   } catch (error) {
     console.error('Erreur de vérification de propriété (order):', error);
     res.status(500).json({ error: 'Erreur serveur' });

@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
 
 const questions = [
   {
@@ -50,7 +47,7 @@ const matelas = [
     desc: "Conçu pour les personnes légères, le Soft Plus offre un accueil moelleux et un soutien délicat qui épouse parfaitement les courbes du corps pour un sommeil réparateur.",
     price: "440,00 – 1 350,00 د.ت",
     discount: "-18%",
-    img: "/relax1.png",
+    img: "/relax_eluproduit-card.jpg",
     features: ["Accueil doux", "Léger & confortable", "Idéal morphologie fine"],
     match: (a) => a.poids === "p80",
   },
@@ -70,7 +67,7 @@ const matelas = [
     desc: "Recommandé pour les morphologies modérées et les douleurs dorsales. Le Medico Plus offre une correction posturale avancée pour un réveil sans douleurs.",
     price: "530,00 – 1 850,00 د.ت",
     discount: "-19%",
-    img: "/relax_pillow1.png",
+    img: "/relax_pillow.png",
     features: ["Correction posturale", "Fermeté modérée", "Anti-douleurs"],
     match: (a) => a.poids === "p110",
   },
@@ -80,7 +77,7 @@ const matelas = [
     desc: "Soutien ferme et ergonomique pour les morphologies lourdes. Le Relax Plus redistribue les pressions pour un sommeil profond et réparateur.",
     price: "580,00 – 2 050,00 د.ت",
     discount: "-19%",
-    img: "/relax1.png",
+    img: "/relax_eluproduit-card.jpg",
     features: ["Soutien ferme", "Technologie ergonomique", "Réversible"],
     match: (a) => a.poids === "p130",
   },
@@ -101,7 +98,6 @@ const Quiz = () => {
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selected, setSelected] = useState(null);
-  const navigate = useNavigate();
 
   const handleSelect = (value) => setSelected(value);
 
@@ -594,7 +590,6 @@ const Quiz = () => {
       `}</style>
 
       <div className="qz-page">
-        <NavBar />
 
         {/* ── INTRO ── */}
         {screen === "intro" && (
@@ -746,7 +741,6 @@ const Quiz = () => {
           </div>
         )}
 
-        <Footer />
       </div>
     </>
   );

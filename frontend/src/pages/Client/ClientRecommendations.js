@@ -44,7 +44,7 @@ const normalizeProduct = (product, index) => {
     ...localProduct,
     ...product,
     slug: product.slug || localProduct.slug,
-    image: product.image || product.img || product.images?.[0] || localProduct.images?.[0] || "/relax1.png",
+    image: product.image || product.img || product.images?.[0] || localProduct.images?.[0] || "/relax_eluproduit-card.jpg",
     category: product.category?.name || product.categoryName || product.category || localProduct.category || "Produit",
     description: product.description || product.desc || localProduct.description || "Un produit recommande pour ameliorer votre confort de sommeil.",
     displayPrice: Number(product.price ?? defaultSize?.price ?? localProduct.price ?? 0),
@@ -153,7 +153,7 @@ export default function ClientRecommendations() {
             {recommendations.map((product) => (
               <article key={product._id || product.id || product.name} style={S.card}>
                 <img
-                  src={product.image || "/relax1.png"}
+                  src={product.image || "/relax_eluproduit-card.jpg"}
                   alt={product.name}
                   style={S.cardImage}
                 />

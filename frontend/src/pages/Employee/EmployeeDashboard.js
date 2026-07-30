@@ -121,7 +121,6 @@ export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Aperçu");
   const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [time, setTime] = useState(new Date());
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 900 : false);
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -163,7 +162,7 @@ export default function EmployeeDashboard() {
         const [ordersData, productsData] = await Promise.all([getAllOrders({ limit: 50 }), getAllProducts()]);
         setOrders(Array.isArray(ordersData) ? ordersData : []);
         setProducts(Array.isArray(productsData) ? productsData : []);
-      } catch (err) {
+      } catch {
         toast.error("Impossible de récupérer les données.");
       } finally {
         setLoading(false);
@@ -174,7 +173,7 @@ export default function EmployeeDashboard() {
   }, [navigate]);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    const handleResize = () => window.innerWidth <= 900;
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -240,7 +239,7 @@ export default function EmployeeDashboard() {
     }
 
     return result;
-  }, [orders, filterConfig]);
+  }, [orders, filterConfig, q]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) =>

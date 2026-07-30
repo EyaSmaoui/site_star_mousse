@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 mongoose.set('bufferCommands', false);
+mongoose.set('sanitizeFilter', true);
 
 const getMongoUri = () =>
   process.env.url_Mongodb ||

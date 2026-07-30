@@ -1,9 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 const LegalTerms = () => {
-  const navigate = useNavigate();
 
   return (
     <div style={styles.page}>
@@ -333,7 +331,7 @@ const styles = {
     padding: '20px',
     borderRadius: '8px',
     marginTop: '15px',
-    borderLeft: '4px solid #b52f2f'
+    borderLeft: '4px solid #b78b3f'
   },
   footer: {
     marginTop: '50px',
@@ -344,10 +342,11 @@ const styles = {
     fontSize: '0.9em'
   },
   link: {
-    color: '#b52f2f',
+    color: '#b78b3f',
     textDecoration: 'none',
     marginLeft: '10px'
   }
 };
 
 export default LegalTerms;
+

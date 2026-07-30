@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const crypto = require('crypto');
 var express = require('express');
 var path = require('path');
 var morgan = require('morgan');
@@ -15,6 +16,8 @@ const mongoose = require('mongoose');
 const { connectToMongoDB } = require('./config/mongo.connection');
 const { globalSanitization } = require('./middleware/inputValidation');
 const { globalLimiter } = require('./middleware/rateLimiters');
+const errorHandler = require('./middleware/errorHandler');
+const { performanceMetricsMiddleware } = require('./middleware/performanceMetrics');
 
 var app = express();
 
@@ -44,8 +47,10 @@ const allowedOrigins = [...new Set([...corsOrigins, ...deploymentOrigins])];
 // MIDDLEWARES
 // Sentry (optional)
 if (process.env.SENTRY_DSN) {
-  Sentry.init({ dsn: process.env.SENTRY_DSN });
-  app.use(Sentry.Handlers.requestHandler());
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [Sentry.expressIntegration()],
+  });
 }
 
 // Security & performance middlewares
@@ -54,6 +59,7 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 app.use(compression());
+app.use(performanceMetricsMiddleware);
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
@@ -66,20 +72,27 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.use(morgan('dev', { stream: logger.stream }));
 }
-// Reduce body size limit from 50mb to 5mb for security
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ extended: false, limit: '5mb' }));
+// Keep API payloads small; file uploads use dedicated multer routes.
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: false, limit: '1mb' }));
 // Input sanitization and validation middleware (MUST come after express.json)
 app.use(globalSanitization);
+const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
+if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
+  logger.warn('SESSION_SECRET is not configured; generated a runtime-only secret. Set SESSION_SECRET in production for stable sessions.');
+}
+
 app.use(cookieParser());
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'star_mousse_backend_session_secret_2026',
+  secret: SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  name: 'star_mousse.sid',
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'lax',
+    maxAge: Number(process.env.SESSION_MAX_AGE_MS || 1000 * 60 * 60 * 24 * 14),
   },
 }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -94,6 +107,10 @@ app.use('/api/categories', require('./routes/category.routes'));
 app.use('/api/paniers', require('./routes/panier.routes'));
 app.use('/api/reviews', require('./routes/review.routes'));
 app.use('/api/chatbot', require('./routes/chatbot.routes'));
+app.use('/api/metrics', require('./routes/metrics.routes'));
+app.use('/api/payments', require('./routes/payment.routes'));
+app.use('/api/delivery-zones', require('./routes/deliveryZone.routes'));
+app.use('/api/ai', require('./routes/ai.routes'));
 
 app.get('/api/health', (req, res) => {
   const dbStates = ['disconnected', 'connected', 'connecting', 'disconnecting'];
@@ -108,18 +125,23 @@ app.get('/api/health', (req, res) => {
 // Frontend React: serve the built app whenever it exists, so direct links work.
 const distPath = process.env.FRONTEND_BUILD_PATH
   ? path.resolve(process.env.FRONTEND_BUILD_PATH)
-  : path.join(__dirname, '..', 'frontend', 'build');
+  : path.join(__dirname, '..', 'frontend', 'dist');
 const hasFrontendBuild = require('fs').existsSync(path.join(distPath, 'index.html'));
 
 if (process.env.NODE_ENV === 'production' || hasFrontendBuild) {
   app.use(express.static(distPath));
-  app.get('*', (req, res, next) => {
+  app.get('/{*splat}', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
     res.sendFile(path.join(distPath, 'index.html'), (err) => {
       if (err) next(err);
     });
   });
 }
+
+if (process.env.SENTRY_DSN) {
+  Sentry.setupExpressErrorHandler(app);
+}
+app.use(errorHandler);
 
 // SERVEUR
 // Use port 5000 by default for the API to avoid colliding with frontend dev server on 3000
@@ -151,12 +173,12 @@ const ensureMongoConnection = async () => {
 };
 
 const startServer = async () => {
-  await ensureMongoConnection();
+  await ensureMongoConnection().catch(() => {});
   if (mongoose.connection.readyState !== 1 && !mongoRetryTimer) {
     mongoRetryTimer = setInterval(ensureMongoConnection, 30000);
   }
 
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Serveur prêt sur le port ${PORT} avec toutes les routes activées`);
   });
 };
@@ -168,9 +190,10 @@ startServer().catch((err) => {
 
 // ─── Error handlers (debug) ───────────────────────────────────────────────────
 process.on('uncaughtException', (err) => {
-  console.error('[FATAL] Uncaught exception:', err);
+  logger.error('[FATAL] Uncaught exception:', { message: err.message, stack: err.stack });
+  setTimeout(() => process.exit(1), 1000);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('[FATAL] Unhandled rejection at:', promise, 'reason:', reason);
+  logger.error('[FATAL] Unhandled rejection:', { reason: reason?.message || reason, stack: reason?.stack });
 });

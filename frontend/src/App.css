@@ -1,12 +1,12 @@
 /* --- Variables de Design --- */
 :root {
-  --bg-dark: #fbfaf8;
+  --bg-dark: #fffdf8;
   --bg-card: #ffffff;
-  --accent-blue: #b52f2f;
-  --accent-purple: #f4c84f;
-  --text-main: #242436;
-  --text-muted: #6f7180;
-  --glass-border: rgba(21, 21, 34, 0.1);
+  --accent-blue: #0f4f43;
+  --accent-purple: #e86f45;
+  --text-main: #12231f;
+  --text-muted: #64706c;
+  --glass-border: rgba(18, 35, 31, 0.1);
   --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -51,7 +51,7 @@ body {
 
 .logo img {
   height: 70px; /* Ajustez selon votre logo */
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.3));
+  filter: drop-shadow(0 0 8px rgba(183, 139, 63, 0.3));
 }
 
 /* --- LIENS DE NAVIGATION --- */
@@ -71,7 +71,7 @@ body {
 
 .nav-links a:hover {
   color: var(--accent-blue);
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  text-shadow: 0 0 10px rgba(183, 139, 63, 0.5);
 }
 
 /* --- DROPDOWN (MENU DÉROULANT) --- */
@@ -109,7 +109,7 @@ body {
 }
 
 .dropdown-menu li a:hover {
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(183, 139, 63, 0.08);
   color: var(--accent-blue);
 }
 
@@ -183,7 +183,7 @@ body {
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: 'DM Sans', 'Inter', -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
 }
 
@@ -218,14 +218,14 @@ body {
 .badge-glow {
   display: inline-block;
   padding: 6px 16px;
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(183, 139, 63, 0.1);
   border: 1px solid var(--accent-blue);
   color: var(--accent-blue);
   border-radius: 100px;
   font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 2rem;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 20px rgba(183, 139, 63, 0.2);
 }
 
 .hero-title-main {
@@ -269,9 +269,9 @@ body {
 .button {
   --main-size: 1.4em;
   --color-text: #ffffff;
-  --color-background: #ff135a;
-  --color-background-hover: #ff1472;
-  --color-outline: #ff145a40;
+  --color-background: #3b82f6;
+  --color-background-hover: #2563eb;
+  --color-outline: #60a5fa40;
   --color-shadow: #00000040;
   cursor: pointer;
   display: flex;
@@ -887,7 +887,7 @@ html {
 }
 
 .btn-send:hover {
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 15px rgba(183, 139, 63, 0.4);
   transform: scale(1.02);
 }
 
@@ -957,7 +957,7 @@ html {
   position: absolute;
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(183, 139, 63, 0.14) 0%, transparent 70%);
   filter: blur(18px);
   top: 10%;
   left: 10%;
@@ -2653,7 +2653,9 @@ html[data-theme="dark"] .filter-input:focus,
 html[data-theme="dark"] .filter-select:focus,
 html[data-theme="dark"] .search-input:focus {
   background: #ffffff !important;
-  border-color: #b52f2f !important;
+  border-color: #b78b3f !important;
   color: #111827 !important;
-  box-shadow: 0 0 0 4px rgba(181, 47, 47, 0.1) !important;
+  box-shadow: 0 0 0 4px rgba(183, 139, 63, 0.1) !important;
 }
+
+

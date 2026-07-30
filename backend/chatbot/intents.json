@@ -3,7 +3,7 @@
     {
       "tag": "salutation",
       "patterns": ["Aslema", "Bonjour", "Salut", "Ahla", "Slt", "Marhba", "hi", "hey"],
-      "responses": ["Aslema, ena Dali mte3 Star Mousse. 9olli chnowa 7achtek w n3awnk direct."]
+      "responses": ["Aslema, ena assistant mte3 Star Mousse. 9olli chnowa 7achtek w n3awnk direct."]
     },
     {
       "tag": "gamme_orthopedique",

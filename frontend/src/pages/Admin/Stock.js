@@ -32,8 +32,6 @@ const stockBadge = (stock) => {
 const categoryName = (product) =>
   typeof product.category === "string" ? product.category : product.category?.name || "-";
 
-const pad = (n) => String(n).padStart(2, "0");
-
 export default function Stock({
   Sidebar = AdminSidebar,
   sidebarWidth = 220,
@@ -71,7 +69,7 @@ export default function Stock({
       }));
       setProducts(enrichedProducts);
       setCategories(Array.isArray(categoriesData) ? categoriesData : []);
-    } catch (error) {
+    } catch {
       toast.error("Impossible de charger le stock");
     } finally {
       setLoading(false);
@@ -194,7 +192,6 @@ export default function Stock({
   };
 
   const dateStr = time.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
-  const timeStr = `${pad(time.getHours())}:${pad(time.getMinutes())}:${pad(time.getSeconds())}`;
 
   return (
     <div style={S.root}>

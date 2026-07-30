@@ -5,6 +5,26 @@ const { withProductImage } = require('./productImages');
 
 const DEFAULT_CATALOG_RATING = 4.2;
 const MIN_CONFIDENCE_REVIEWS = 4;
+const EXCLUDED_BRANDS = ['Star mousse', 'Emma'];
+const competitorBrandRegex = new RegExp(`\\b(?:${EXCLUDED_BRANDS.join('|')})\\b`, 'i');
+const buildStarMousseFilter = (filter = {}) => ({
+  $and: [
+    filter,
+    {
+      $or: [
+        { brand: { $exists: true, $nin: EXCLUDED_BRANDS } },
+        {
+          brand: { $exists: false },
+          $or: [
+            { name: { $not: competitorBrandRegex } },
+            { description: { $not: competitorBrandRegex } },
+            { category: { $not: competitorBrandRegex } },
+          ],
+        },
+      ],
+    },
+  ],
+});
 
 const normalizeProductName = (value = '') =>
   String(value)
@@ -85,7 +105,9 @@ const scoreProduct = ({ product, reviews, catalogAverage }) => {
 
 const getProductRecommendations = async ({ limit = 6, query = '' } = {}) => {
   const maxLimit = Math.min(Math.max(Number(limit) || 6, 1), 24);
-  const products = await Product.find({ isAvctive: { $ne: false } }).lean();
+  const products = await Product.find(buildStarMousseFilter({ isActive: true }))
+    .select('name description category price stock isRecommended averageRating reviewCount sentimentScore recommendationRank image brand')
+    .lean();
   if (!products.length) return [];
 
   const productIds = products.map((product) => product._id);

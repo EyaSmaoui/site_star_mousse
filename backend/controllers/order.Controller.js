@@ -2,10 +2,14 @@
 const User = require('../models/user.model');
 const Client = require('../models/client.model');
 
+// Utilitaire de formatage monétaire pour l'affichage des montants aux normes tunisiennes
 const formatTotal = (value) => `${Number(value || 0).toLocaleString('fr-TN')} DT`;
 const CUSTOMER_ROLES = new Set(['client', 'user']);
 const isCustomerUser = (user) => CUSTOMER_ROLES.has(String(user?.role || '').toLowerCase());
 
+// [INTERFACE SITE] : TABLEAU DE BORD ADMIN (Section CRM / Gestion Clientèle)
+// Fonction asynchrone de synchronisation de la collection 'Client'. Elle agrège l'historique d'achat d'un e-mail (nombre de commandes et montant total cumulé) 
+// pour alimenter le tableau de bord de fidélité et de suivi de l'administrateur (Pattern Upsert).
 const syncClientRecord = async ({ email, name, phone }) => {
   if (!email) return;
 
@@ -27,12 +31,16 @@ const syncClientRecord = async ({ email, name, phone }) => {
         createdAt: Date.now(),
       },
     },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, new: true, setDefaultsOnInsert: true } // Upsert: Crée le client s'il n'existe pas, le met à jour sinon
   );
 };
 
+// [INTERFACE SITE] : TUNNEL DE COMMANDE / PAGE CHECKOUT (Validation du Panier)
+// Contrôleur gérant la soumission du formulaire de livraison. Il valide l'intégrité des données (téléphone, adresse), 
+// calcule de sécurité du montant total global côté serveur, et prend en charge l'authentification transparente à la volée de l'utilisateur si nécessaire.
 exports.addOrder = async (req, res) => {
   try {
+    // Sanatization et re-calcul des prix des produits soumis pour parer aux fraudes d'injection Front-end
     const products = Array.isArray(req.body.products)
       ? req.body.products
           .filter((product) => product && product.name)
@@ -47,14 +55,17 @@ exports.addOrder = async (req, res) => {
       (sum, product) => sum + Number(product.price || 0) * Number(product.quantity || 1),
       0
     );
-    const total = Number.isFinite(Number(req.body.total)) ? Number(req.body.total) : computedTotal;
+    const shippingCost = Number.isFinite(Number(req.body.shippingCost)) ? Number(req.body.shippingCost) : 0;
+    const total = Number.isFinite(Number(req.body.total)) ? Number(req.body.total) : computedTotal + shippingCost;
     const phone = String(req.body.phone || "").trim();
     const address = String(req.body.address || "").trim();
+    const region = String(req.body.region || "").trim();
+    const paymentMethod = String(req.body.paymentMethod || "cash_on_delivery").trim();
 
     if (!phone || !address || !products.length || !Number.isFinite(total)) {
       return res.status(400).json({
         message: "Informations de commande incompletes",
-        error: "Telephone, adresse, produit et total sont obligatoires.",
+        error: "Telephone, adresse, produits et total sont obligatoires.",
       });
     }
 
@@ -72,8 +83,10 @@ exports.addOrder = async (req, res) => {
       ""
     ).trim().toLowerCase();
 
-    // If the request is not authenticated but contains email+password, try to authenticate the user
     let effectiveUserId = authenticatedCustomer ? req.user._id : null;
+    
+    // [FONCTIONNALITE APPRECIABLE] : Si un client achète en tant qu'invité mais possède déjà un compte,
+    // le système l'authentifie automatiquement et rattache ses anciennes commandes d'invité à son profil
     if (!effectiveUserId && req.body.email && req.body.password) {
       try {
         const authUser = await User.Login(String(req.body.email).trim().toLowerCase(), String(req.body.password));
@@ -81,7 +94,6 @@ exports.addOrder = async (req, res) => {
           effectiveUserId = authUser._id;
         }
 
-        // Attach any previous orders made with this email to the authenticated user
         if (effectiveUserId) {
           await Order.updateMany(
             { customerEmail: authUser.email, $or: [{ userId: null }, { userId: { $exists: false } }] },
@@ -93,11 +105,9 @@ exports.addOrder = async (req, res) => {
           await User.findByIdAndUpdate(authUser._id, { $set: { phone: phone || authUser.phone, address: address || authUser.address } });
         }
       } catch (e) {
-        // If password is incorrect, return an error so the client can ask for correct credentials
         if (e?.message?.includes('Mot de passe incorrect')) {
           return res.status(401).json({ message: 'Mot de passe incorrect pour cet email.' });
         }
-        // If user not found, continue as guest (do not create duplicate accounts here)
       }
     }
 
@@ -107,9 +117,13 @@ exports.addOrder = async (req, res) => {
       customerEmail,
       phone,
       address,
+      region,
+      shippingCost,
+      paymentMethod,
       products,
+      items: products,
       total,
-      status: req.body.status || "en attente"
+      status: req.body.status || (paymentMethod === 'cash_on_delivery' ? 'en attente' : 'en attente'),
     });
 
     const savedOrder = await newOrder.save();
@@ -120,6 +134,7 @@ exports.addOrder = async (req, res) => {
       });
     }
 
+    // Synchronisation automatique des métriques CRM après validation de commande
     await syncClientRecord({ email: customerEmail, name: customerName, phone });
     console.log("✅ Commande enregistrée ! ID:", savedOrder._id);
     res.status(201).json(savedOrder);
@@ -130,60 +145,66 @@ exports.addOrder = async (req, res) => {
   }
 };
 
+exports.getOrderById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findById(id).lean();
+    if (!order) {
+      return res.status(404).json({ message: 'Commande introuvable.' });
+    }
+
+    const searchEmail = String(req.query.email || '').trim().toLowerCase();
+    const isOwner = req.user && ((order.userId && String(order.userId) === String(req.user._id)) || String(order.customerEmail || '').toLowerCase() === String(req.user.email || '').toLowerCase());
+    const hasAdminAccess = req.user && ['admin', 'manager', 'employee', 'employeur'].includes(String(req.user.role));
+
+    if (!isOwner && !hasAdminAccess && searchEmail) {
+      if (String(order.customerEmail || '').toLowerCase() !== searchEmail) {
+        return res.status(403).json({ message: 'Accès refusé à cette commande.' });
+      }
+    }
+
+    if (!isOwner && !hasAdminAccess && !searchEmail) {
+      return res.status(403).json({ message: 'Vous devez être authentifié ou fournir l’email de commande.' });
+    }
+
+    res.status(200).json(order);
+  } catch (error) {
+    console.error('Erreur récupération commande par ID :', error.message);
+    res.status(500).json({ message: 'Erreur serveur pour récupérer la commande.', error: error.message });
+  }
+};
+
+// [INTERFACE SITE] : GESTION ADMIN -> LISTE DES COMMANDES (Order Management Dashboard)
+// Récupère l'ensemble des commandes passées sur le site avec un système d'enrichissement croisé des données utilisateurs.
+// Utilise l'indexation et .lean() pour maximiser la vitesse d'affichage du tableau d'administration.
 exports.getAllOrders = async (req, res) => {
   const startedAt = Date.now();
   try {
     const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 300);
     const orders = await Order.find()
       .select('userId customerName customerEmail phone address products total status createdAt updatedAt')
-      .sort({ _id: -1 })
+      .sort({ _id: -1 }) // Les plus récentes en premier
       .limit(limit)
-      .maxTimeMS(8000)
+      .maxTimeMS(8000) // Timeout de sécurité pour éviter les requêtes bloquantes
       .lean();
 
-    const rawEmails = [
-      ...new Set(
-        orders
-          .map((order) => String(order.customerEmail || '').trim())
-          .filter(Boolean)
-      ),
-    ];
-    const emails = [
-      ...new Set(
-        rawEmails.flatMap((email) => [email, email.toLowerCase()])
-      ),
-    ];
-    const userIds = [
-      ...new Set(
-        orders
-          .map((order) => order.userId)
-          .filter(Boolean)
-          .map((id) => String(id))
-      ),
-    ];
+    const rawEmails = [...new Set(orders.map((order) => String(order.customerEmail || '').trim()).filter(Boolean))];
+    const emails = [...new Set(rawEmails.flatMap((email) => [email, email.toLowerCase()]))];
+    const userIds = [...new Set(orders.map((order) => order.userId).filter(Boolean).map((id) => String(id)))];
 
     const userQuery = [
       ...(emails.length ? [{ email: { $in: emails } }] : []),
       ...(userIds.length ? [{ _id: { $in: userIds } }] : []),
     ];
-    const users = userQuery.length
-      ? await User.find({ $or: userQuery })
-          .select('username email phone address role')
-          .lean()
-      : [];
+    const users = userQuery.length ? await User.find({ $or: userQuery }).select('username email phone address role').lean() : [];
 
-    const usersByEmail = new Map(
-      users.map((user) => [String(user.email || '').trim().toLowerCase(), user])
-    );
+    const usersByEmail = new Map(users.map((user) => [String(user.email || '').trim().toLowerCase(), user]));
     const usersById = new Map(users.map((user) => [String(user._id), user]));
 
+    // Enrichit dynamiquement le nom du client si la commande est liée à un compte enregistré
     const enrichedOrders = orders.map((order) => {
-      const user =
-        usersById.get(String(order.userId || '')) ||
-        usersByEmail.get(String(order.customerEmail || '').trim().toLowerCase());
-
+      const user = usersById.get(String(order.userId || '')) || usersByEmail.get(String(order.customerEmail || '').trim().toLowerCase());
       if (!user || !isCustomerUser(user)) return order;
-
       return {
         ...order,
         customerName: order.customerName || user.username || order.customerEmail || order.phone || 'Client',
@@ -200,9 +221,11 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
+// [INTERFACE SITE] : DRASHBOARD ADMIN (Indicateur en temps réel / Badge de notification)
+// Fournit rapidement un décompte total optimisé des documents (commandes) en base de données, idéal pour afficher les statistiques globales de vente.
 exports.getOrdersPing = async (req, res) => {
   try {
-    const count = await Order.estimatedDocumentCount().maxTimeMS(3000);
+    const count = await Order.estimatedDocumentCount().maxTimeMS(3000); // Utilise les métadonnées de MongoDB pour une réponse instantanée
     res.status(200).json({ ok: true, count });
   } catch (error) {
     console.error("❌ Erreur diagnostic commandes :", error.message);
@@ -210,43 +233,29 @@ exports.getOrdersPing = async (req, res) => {
   }
 };
 
+// [INTERFACE SITE] : ESPACE CLIENT / COMPTE UTILISATEUR -> "Mes Commandes"
+// Extrait et affiche uniquement l'historique d'achat du client connecté (via son ID de session ou son e-mail) pour alimenter sa page de profil personnel.
 exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.user._id;
     const userEmail = String(req.user.email || '').trim().toLowerCase();
     const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 500);
     
-    console.log(`[GET MY ORDERS] 👤 userId: ${userId}, 📧 email: ${userEmail}`);
+    const query = userEmail ? { $or: [{ userId }, { customerEmail: userEmail }] } : { userId };
 
-    const query = userEmail
-      ? { $or: [{ userId }, { customerEmail: userEmail }] }
-      : { userId };
-
+    // Auto-liaison des commandes anonymes vers le compte officiel du client
     if (userEmail) {
-      const linkResult = await Order.updateMany(
+      await Order.updateMany(
         { customerEmail: userEmail, $or: [{ userId: null }, { userId: { $exists: false } }] },
         { $set: { userId } }
       );
-      console.log(`[GET MY ORDERS] 🔗 Lien userId pour ${linkResult.modifiedCount} commandes sans userId`);
     }
 
     const orders = await Order.find(query)
       .select('customerName customerEmail phone address products total status createdAt updatedAt')
-      .sort({ createdAt: -1 })  // Tri par date de création (plus récent en premier)
+      .sort({ createdAt: -1 })
       .limit(limit)
-      .maxTimeMS(8000)
       .lean();
-    
-    console.log(`[GET MY ORDERS] ✅ Retour: ${orders.length} commandes pour l'utilisateur`);
-    if (orders.length > 0) {
-      console.log(`[GET MY ORDERS] 📊 Première commande:`, {
-        id: orders[0]._id,
-        customerName: orders[0].customerName,
-        phone: orders[0].phone,
-        address: orders[0].address,
-        status: orders[0].status
-      });
-    }
     
     res.status(200).json(orders);
   } catch (error) {
@@ -257,20 +266,19 @@ exports.getUserOrders = async (req, res) => {
 
 const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
 
+// [INTERFACE SITE] : GESTION ADMIN -> ACTIONS DU DASHBOARD (Bouton "Éditer / Mettre à jour" ou "Changer le statut")
+// Permet à l'administrateur de modifier les coordonnées de livraison d'une commande ou de passer son statut de "en attente" à "livré/confirmé".
+// Répercute intelligemment les changements de coordonnées sur le compte utilisateur et les autres commandes associées.
 exports.updateOrder = async (req, res) => {
   try {
     const { id } = req.params;
     const order = await Order.findById(id);
-    if (!order) {
-      return res.status(404).json({ message: "Commande non trouvée" });
-    }
+    if (!order) return res.status(404).json({ message: "Commande non trouvée" });
 
-    const allowedFields = ["customerName", "customerEmail", "phone", "address", "products", "total", "status"];
+    const allowedFields = ["customerName", "customerEmail", "phone", "address", "region", "shippingCost", "paymentMethod", "products", "total", "status"];
     const orderUpdate = {};
     allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined) {
-        orderUpdate[field] = req.body[field];
-      }
+      if (req.body[field] !== undefined) orderUpdate[field] = req.body[field];
     });
 
     const originalEmail = normalizeEmail(order.customerEmail);
@@ -290,52 +298,29 @@ exports.updateOrder = async (req, res) => {
     if (userUpdate.phone !== undefined) contactUpdate.phone = userUpdate.phone;
     if (userUpdate.address !== undefined) contactUpdate.address = userUpdate.address;
 
-    // Only update other orders if contact info changed AND we have identifying info
     if (Object.keys(contactUpdate).length > 0) {
       let linkedCustomer = null;
-      if (originalUserId) {
-        linkedCustomer = await User.findById(originalUserId).select('role').lean();
-      }
+      if (originalUserId) linkedCustomer = await User.findById(originalUserId).select('role').lean();
 
+      // Cascade d'update : Met à jour les infos du profil utilisateur en corrélation
       if (originalUserId && isCustomerUser(linkedCustomer)) {
         try {
           await User.findByIdAndUpdate(originalUserId, { $set: userUpdate });
         } catch (err) {
-          console.warn(`⚠️  Couldn't update user ${originalUserId}:`, err.message);
+          console.warn(`⚠️ Erreur mise à jour utilisateur:`, err.message);
         }
         
+        // Aligne toutes les autres commandes du même utilisateur sur sa nouvelle adresse
         try {
-          // Only update orders with the SAME original email (not by userId to avoid merging different customers)
           if (originalEmail) {
-            const result = await Order.updateMany(
-              { customerEmail: originalEmail, _id: { $ne: id } },
-              { $set: contactUpdate }
-            );
-            console.log(`✅ Updated ${result.modifiedCount} related orders for email ${originalEmail}`);
+            await Order.updateMany({ customerEmail: originalEmail, _id: { $ne: id } }, { $set: contactUpdate });
           }
         } catch (err) {
-          console.error(`❌ Error updating related orders for ${originalEmail}:`, err.message);
-        }
-      } else if (updatedEmail && updatedEmail !== originalEmail) {
-        // If email changed and no userId, try to link with existing user
-        try {
-          const linkedUser = await User.findOne({ email: updatedEmail, role: { $in: [...CUSTOMER_ROLES] } });
-          if (linkedUser) {
-            await User.findByIdAndUpdate(linkedUser._id, { $set: userUpdate });
-            // Link all old-email orders to this user
-            if (originalEmail) {
-              await Order.updateMany(
-                { customerEmail: originalEmail },
-                { $set: { userId: linkedUser._id, ...contactUpdate } }
-              );
-            }
-          }
-        } catch (err) {
-          console.warn(`⚠️  Email linking failed:`, err.message);
+          console.error(`❌ Erreur mise à jour commandes liées:`, err.message);
         }
       }
 
-      // Always sync the client record after contact update
+      // Re-synchronise l'état global du client dans la collection CRM
       try {
         await syncClientRecord({ 
           email: updatedEmail || originalEmail, 
@@ -343,7 +328,7 @@ exports.updateOrder = async (req, res) => {
           phone: updatedOrder.phone 
         });
       } catch (err) {
-        console.error(`❌ Error syncing client record:`, err.message);
+        console.error(`❌ Erreur synchro Client CRM:`, err.message);
       }
     }
 
@@ -355,13 +340,13 @@ exports.updateOrder = async (req, res) => {
   }
 };
 
+// [INTERFACE SITE] : GESTION ADMIN -> ACTION DU DASHBOARD (Bouton Annuler / Supprimer - Icône de corbeille)
+// Supprime définitivement une commande de la base de données (généralement réservé à l'administrateur en cas d'erreur de saisie ou d'annulation client).
 exports.deleteOrder = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedOrder = await Order.findByIdAndDelete(id);
-    if (!deletedOrder) {
-      return res.status(404).json({ message: "Commande non trouvée" });
-    }
+    if (!deletedOrder) return res.status(404).json({ message: "Commande non trouvée" });
     console.log("✅ Commande supprimée ! ID:", id);
     res.status(200).json({ message: "Commande supprimée avec succès" });
   } catch (error) {

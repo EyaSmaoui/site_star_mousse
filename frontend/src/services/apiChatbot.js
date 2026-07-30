@@ -1,8 +1,7 @@
 import axios from "axios";
+import { API_URL, CHATBOT_API_URL, CHATBOT_USE_MOCK, IS_DEV } from "../utils/env";
 
-const CHATBOT_API_URL = process.env.REACT_APP_CHATBOT_API_URL || "https://starmousse-chatbot.onrender.com";
-const API_URL = process.env.REACT_APP_API_URL || "";
-const useMock = process.env.REACT_APP_CHATBOT_USE_MOCK === "true";
+const useMock = CHATBOT_USE_MOCK;
 const LEGACY_GREETING = "Bonjour, je suis l'assistant Star Mousse. Je peux vous recommander un matelas ou un oreiller selon votre besoin.";
 const LEGACY_FALLBACK = "Je peux vous aider. Précisez votre besoin : mal de dos, budget, luxe, oreiller, bébé, ou dimension souhaitée.";
 const DALI_GREETING = "Bonjour, je suis l'assistant Star Mousse. Comment puis-je vous aider aujourd'hui ?";
@@ -69,7 +68,7 @@ const CATALOGUE_PRICES = {
       id: "relax-plus",
       name: "Matelas Relax Plus",
       path: "/product/relax-plus",
-      image: "/relax1.png",
+      image: "/relax_eluproduit-card.jpg",
       description: "Confort ergonomique haut de gamme.",
       prices: {
         "80x190": 515,
@@ -113,7 +112,7 @@ const GREETING_WORDS = new Set([
   "ahla",
 ]);
 
-if (process.env.NODE_ENV === "development") {
+if (IS_DEV) {
   console.debug("[Chatbot] API:", CHATBOT_API_URL || "/api/chatbot");
 }
 
@@ -502,7 +501,7 @@ export const sendChatMessage = async (message) => {
     });
     return adaptChatbotReply(message, data);
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
+    if (IS_DEV) {
       console.warn("[Chatbot] Serveur indisponible, reponse locale utilisee.", error);
     }
     return mockResponse(message);
@@ -523,7 +522,7 @@ export const getRecommendations = async (query, limit = 3) => {
     });
     return Array.isArray(data) ? data : data.recommendations || [];
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
+    if (IS_DEV) {
       console.warn("[Chatbot] Recommendations serveur indisponibles, reponse locale utilisee.", error);
     }
     const local = await mockResponse(query);

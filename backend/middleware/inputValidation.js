@@ -1,6 +1,6 @@
 // Input validation and sanitization middleware
 const { body, param, query, validationResult } = require('express-validator');
-const mongoSanitize = require('express-mongo-sanitize');
+const mongoSanitizeMiddleware = require('./mongoSanitize');
 
 // Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => {
@@ -69,10 +69,7 @@ const validators = {
 };
 
 // Apply sanitization globally
-const globalSanitization = [
-  mongoSanitize(),  // Prevent NoSQL injection
-  mongoSanitize({ replaceWith: '_' }),  // Replace $ and . in keys
-];
+const globalSanitization = [mongoSanitizeMiddleware];
 
 module.exports = {
   handleValidationErrors,

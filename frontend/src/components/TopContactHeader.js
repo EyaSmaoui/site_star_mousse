@@ -1,194 +1,182 @@
 import React from "react";
-import { FiPhone, FiMessageCircle, FiMail, FiMapPin } from "react-icons/fi";
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FiClock, FiPhone } from "react-icons/fi";
 
 function TopContactHeader() {
-  const whatsappUrl =
-    "https://wa.me/21622900207?text=Bonjour%20Star%20Mousse%2C%20je%20voudrais%20des%20informations%20sur%20vos%20matelas.";
+  const phoneNumber = "+21622900131";
+  const whatsappUrl = "https://wa.me/21622900131";
 
   return (
     <div className="ssn-top-header">
       <style>{`
         .ssn-top-header {
-          background: linear-gradient(135deg, #b52f2f 0%, #8f2424 100%);
+          background: #0a0a0a;
           color: #ffffff;
-          padding: 12px 40px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 24px;
+          border-bottom: 1px solid rgba(255,255,255,0.12);
           font-size: 13px;
-          font-weight: 600;
-          border-bottom: 1px solid rgba(255,255,255,0.1);
-          flex-wrap: wrap;
-          position: sticky;
-          top: 0;
+          font-weight: 700;
+          position: relative;
           z-index: 5001;
+        }
+        .ssn-top-header-inner {
+          width: 100%;
+          max-width: 1440px;
+          min-height: 38px;
+          margin: 0 auto;
+          padding: 7px 40px;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: center;
+          gap: 18px;
         }
         .ssn-top-header-section {
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 14px;
           flex-wrap: wrap;
         }
-        .ssn-contact-btn {
+        .ssn-contact-link {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          background: rgba(255,255,255,0.15);
-          border: none;
+          gap: 7px;
           color: #ffffff;
-          padding: 6px 12px;
-          border-radius: 999px;
-          cursor: pointer;
+          opacity: 0.94;
           font-size: 12px;
-          font-weight: 700;
-          transition: all 0.2s ease;
+          font-weight: 800;
           text-decoration: none;
-          white-space: normal;
-          min-width: 0;
-          overflow-wrap: break-word;
+          white-space: nowrap;
+          transition: color 0.18s ease, opacity 0.18s ease;
         }
-        .ssn-contact-btn:hover {
-          background: rgba(255,255,255,0.25);
-          color: #ffffff;
-          transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        .ssn-contact-link:hover {
+          color: #f5d78e;
+          opacity: 1;
         }
-        .ssn-contact-btn svg,
-        .ssn-top-header-location svg {
+        .ssn-contact-link svg,
+        .ssn-social-link svg {
           width: 14px;
           height: 14px;
+          flex-shrink: 0;
         }
-        .ssn-top-header-location {
-          display: flex;
+        .ssn-top-header-separator {
+          width: 1px;
+          height: 16px;
+          background: rgba(255,255,255,0.28);
+          flex: 0 0 auto;
+        }
+        .ssn-top-header-socials {
+          display: inline-flex;
           align-items: center;
-          gap: 6px;
-          opacity: 0.95;
+          justify-content: flex-end;
+          gap: 12px;
         }
-        
-        .contact-text {
-          display: inline;
-          word-break: break-word;
+        .ssn-social-link {
+          width: 28px;
+          height: 28px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          color: #ffffff;
+          background: rgba(255,255,255,0.1);
+          text-decoration: none;
+          transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
         }
-        
-        .contact-email {
-          max-width: 150px;
+        .ssn-social-link:hover {
+          background: #ffffff;
+          color: #0a0a0a;
+          transform: translateY(-1px);
         }
-        
+
         @media (max-width: 768px) {
-          .ssn-top-header {
+          .ssn-top-header-inner {
+            grid-template-columns: 1fr;
+            justify-items: center;
             padding: 8px 12px;
-            font-size: 11px;
-            gap: 8px;
-            flex-direction: column;
-            align-items: stretch;
+            gap: 6px;
           }
           .ssn-top-header-section {
-            gap: 6px;
-            flex-direction: column;
-            align-items: stretch;
-          }
-          .ssn-contact-btn {
-            padding: 4px 8px;
-            font-size: 10px;
             justify-content: center;
-            flex-basis: 100%;
+            gap: 8px;
           }
-          .ssn-top-header-location {
-            font-size: 10px;
-            justify-content: center;
-            gap: 4px;
-          }
-          .ssn-top-header-location svg {
-            width: 12px;
-            height: 12px;
+          .ssn-contact-link {
+            font-size: 11px;
           }
         }
-        
+
         @media (max-width: 480px) {
-          .ssn-top-header {
-            padding: 6px 8px;
-            font-size: 9px;
-            gap: 4px;
+          .ssn-top-header-inner {
+            padding: 7px 8px;
           }
           .ssn-top-header-section {
-            gap: 4px;
+            gap: 7px;
           }
-          .ssn-contact-btn {
-            padding: 3px 6px;
-            font-size: 9px;
+          .ssn-contact-link {
+            font-size: 10.5px;
           }
-          .ssn-contact-btn svg {
-            width: 12px;
-            height: 12px;
+          .ssn-top-header-separator {
+            display: none;
           }
         }
       `}</style>
 
-      <div className="ssn-top-header-section">
-        <a 
-          className="ssn-contact-btn" 
-          href="tel:+21622900131" 
-          title="Appeler Star Mousse"
-          onClick={() => {
-            if (window.trackPhoneCall) {
-              window.trackPhoneCall('+21622900131');
-            }
-          }}
-        >
-          <FiPhone /> <span className="contact-text">22.900.131</span>
-        </a>
-        <a 
-          className="ssn-contact-btn" 
-          href={whatsappUrl} 
-          title="WhatsApp Star Mousse"
-          onClick={() => {
-            if (window.trackWhatsApp) {
-              window.trackWhatsApp('general-inquiry', 'TopContactHeader');
-            }
-          }}
-        >
-          <FiMessageCircle /> <span className="contact-text">22.900.207</span>
-        </a>
-        <a 
-          className="ssn-contact-btn" 
-          href="/contact" 
-          title="Email Star Mousse"
-          onClick={() => {
-            if (window.trackWhatsApp) {
-              window.trackWhatsApp('email-inquiry', 'TopContactHeader');
-            }
-          }}
-        >
-          <FiMail /> <span className="contact-text contact-email">Email</span>
-        </a>
-        <a 
-          className="ssn-contact-btn" 
-          href="/contact" 
-          title="Page Contact"
-          onClick={() => {
-            if (window.trackContactForm) {
-              window.trackContactForm('page-contact-link');
-            }
-          }}
-        >
-          ✉️ Contact
-        </a>
-      </div>
+      <div className="ssn-top-header-inner">
+        <div className="ssn-top-header-section">
+          <a
+            className="ssn-contact-link"
+            href={`tel:${phoneNumber}`}
+            title="Appeler Star Mousse"
+            onClick={() => {
+              if (window.trackPhoneCall) {
+                window.trackPhoneCall(phoneNumber);
+              }
+            }}
+          >
+            <FiPhone /> <span>(+216) 22900131</span>
+          </a>
+          <span className="ssn-top-header-separator" aria-hidden="true"></span>
+          <span className="ssn-contact-link" title="Horaire">
+            <FiClock /> <span>Lun - Sam 8h00 - 19h00</span>
+          </span>
+        </div>
 
-      <a
-        className="ssn-top-header-location"
-        href="https://www.google.com/maps/search/?api=1&query=Borj%20Chakir%20Tunisie"
-        style={{ color: "#ffffff", textDecoration: "none" }}
-        onClick={() => {
-          if (window.trackMapClick) {
-            window.trackMapClick('Borj Chakir');
-          }
-        }}
-      >
-        <FiMapPin />
-        <span>Borj Chakir, Tunisie</span>
-      </a>
+        <div className="ssn-top-header-socials" aria-label="Reseaux sociaux">
+          <a
+            className="ssn-social-link"
+            href="https://www.facebook.com/superstar.mousse"
+            target="_blank"
+            rel="nofollow noreferrer"
+            title="Facebook"
+            aria-label="Facebook"
+          >
+            <FaFacebookF />
+          </a>
+          <a
+            className="ssn-social-link"
+            href="https://www.instagram.com/superstar.mousse/"
+            target="_blank"
+            rel="nofollow noreferrer"
+            title="Instagram"
+            aria-label="Instagram"
+          >
+            <FaInstagram />
+          </a>
+          <a
+            className="ssn-social-link"
+            href={whatsappUrl}
+            target="_blank"
+            rel="nofollow noreferrer"
+            title="Whatsapp"
+            aria-label="Whatsapp"
+            onClick={() => {
+              if (window.trackWhatsApp) {
+                window.trackWhatsApp("general-inquiry", "TopContactHeader");
+              }
+            }}
+          >
+            <FaWhatsapp />
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { getProductBySlug } from "../data/products";
+import { SITE_URL } from "../utils/env";
 
-const SITE_URL = (process.env.REACT_APP_SITE_URL || "https://site-star-mousse.vercel.app").replace(/\/$/, "");
-const DEFAULT_IMAGE = `${SITE_URL}/relax_eluproduit.jpg`;
+const DEFAULT_IMAGE = `${SITE_URL}/relax_eluproduit-card.jpg`;
 
 const ROUTE_META = {
   "/": {
     title: "Matelas Tunisie - Star Mousse Relax Plus | Borj Chakir",
-    description: "Star Mousse propose des matelas orthopediques, oreillers et literie premium en Tunisie avec paiement a la livraison, showroom a Borj Chakir et garantie jusqu'a 10 ans.",
+    description: "Matelas orthopediques Star Mousse en Tunisie : Relax Plus, oreillers, livraison, paiement a la livraison et showroom Borj Chakir.",
   },
   "/products": {
     title: "Tous les matelas et oreillers Star Mousse en Tunisie",
@@ -26,9 +26,25 @@ const ROUTE_META = {
     title: "A propos de Star Mousse - Fabrication locale en Tunisie",
     description: "En savoir plus sur Star Mousse, expert tunisien du sommeil, des matelas orthopediques et de la literie premium.",
   },
+  "/b2b-export": {
+    title: "Matelas hotellerie, B2B et export - Star Mousse Tunisie",
+    description: "Devis professionnel Star Mousse pour hotels, cliniques, distributeurs et projets export : matelas en volume, dimensions sur mesure et livraison.",
+  },
+  "/roadmap-international": {
+    title: "Roadmap internationale 2026 - Star Mousse",
+    description: "Plan de developpement Star Mousse pour domaine propre, multilingue, SEO, B2B export, IA, 3D, paiement et dashboard professionnel.",
+  },
   "/help": {
     title: "Aide, livraison et garantie - Star Mousse",
     description: "Informations sur la livraison, la garantie, le paiement a la livraison et le service client Star Mousse.",
+  },
+  "/checkout": {
+    title: "Checkout - Star Mousse Tunisie",
+    description: "Finalisez votre commande Star Mousse en choisissant la livraison et la méthode de paiement sécurisée.",
+  },
+  "/order-confirmation": {
+    title: "Confirmation de commande - Star Mousse Tunisie",
+    description: "Merci pour votre commande Star Mousse. Consultez les détails et le suivi de votre commande en Tunisie.",
   },
   "/contact": {
     title: "Contact Star Mousse - Showroom Borj Chakir",
@@ -57,14 +73,16 @@ function upsertMeta(selector, attributes) {
   Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
 }
 
-function upsertLink(rel, href) {
-  let element = document.head.querySelector(`link[rel="${rel}"]`);
+function upsertLink(rel, href, attributes = {}) {
+  const attributeSelector = attributes.hreflang ? `[hreflang="${attributes.hreflang}"]` : "";
+  let element = document.head.querySelector(`link[rel="${rel}"]${attributeSelector}`);
   if (!element) {
     element = document.createElement("link");
     element.setAttribute("rel", rel);
     document.head.appendChild(element);
   }
   element.setAttribute("href", href);
+  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
 }
 
 function setJsonLd(id, data) {
@@ -93,6 +111,7 @@ function buildLocalBusinessSchema() {
       "@type": "PostalAddress",
       streetAddress: "Borj Chakir",
       addressLocality: "Tunis",
+      addressRegion: "Tunis",
       addressCountry: "TN",
     },
     areaServed: "Tunisie",
@@ -104,7 +123,33 @@ function buildLocalBusinessSchema() {
         closes: "18:00",
       },
     ],
-    sameAs: ["https://wa.me/21622900207"],
+    sameAs: [
+      "https://www.facebook.com/SuperSiestaBorjChakir/",
+      "https://www.instagram.com/super_siesta_tunis/",
+      "https://www.youtube.com/@StarMousseTunisie",
+      "https://wa.me/21622900207",
+    ],
+  };
+}
+
+function buildBreadcrumbSchema(canonicalUrl, title) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Accueil",
+        item: `${SITE_URL}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: title,
+        item: canonicalUrl,
+      },
+    ],
   };
 }
 
@@ -138,22 +183,26 @@ function buildProductSchema(product, canonicalUrl) {
 }
 
 export default function SEO() {
-  const location = useLocation();
-  const productMatch = location.pathname.match(/^\/product\/([^/]+)\/?$/);
-  const slug = productMatch ? decodeURIComponent(productMatch[1]) : null;
-  const product = slug ? getProductBySlug(slug) : null;
+ const location = useLocation();
+ const productMatch = location.pathname.match(/^\/product\/([^/]+)\/?$/);
+ const slug = productMatch ? decodeURIComponent(productMatch[1]) : null;
+ const product = slug ? getProductBySlug(slug) : null;
 
-  const meta = useMemo(() => {
-    if (product) {
-      return {
-        title: `${product.name} - Prix et commande | Star Mousse Tunisie`,
-        description: product.description,
-        image: product.images?.[0] ? `${SITE_URL}${product.images[0]}` : DEFAULT_IMAGE,
-      };
-    }
+ const meta = useMemo(() => {
+   if (product) {
+     return {
+       title: `${product.name} - Prix et commande | Star Mousse Tunisie`,
+       description: product.description,
+       image: product.images?.[0] ? `${SITE_URL}${product.images[0]}` : DEFAULT_IMAGE,
+     };
+   }
 
-    return ROUTE_META[location.pathname] || ROUTE_META["/"];
-  }, [location.pathname, product]);
+   if (location.pathname.startsWith('/order-confirmation')) {
+     return ROUTE_META['/order-confirmation'];
+   }
+
+   return ROUTE_META[location.pathname] || ROUTE_META['/'];
+ }, [location.pathname, product]);
 
   useEffect(() => {
     const cleanPath = location.pathname === "/" ? "/" : location.pathname.replace(/\/$/, "");
@@ -163,14 +212,18 @@ export default function SEO() {
     document.title = meta.title;
     upsertMeta('meta[name="description"]', { name: "description", content: meta.description });
     upsertMeta('meta[name="robots"]', { name: "robots", content: "index, follow" });
+    upsertMeta('meta[property="og:type"]', { property: "og:type", content: product ? 'product' : 'website' });
     upsertMeta('meta[property="og:title"]', { property: "og:title", content: meta.title });
     upsertMeta('meta[property="og:description"]', { property: "og:description", content: meta.description });
     upsertMeta('meta[property="og:url"]', { property: "og:url", content: canonicalUrl });
     upsertMeta('meta[property="og:image"]', { property: "og:image", content: image });
+    upsertMeta('meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
     upsertMeta('meta[name="twitter:title"]', { name: "twitter:title", content: meta.title });
     upsertMeta('meta[name="twitter:description"]', { name: "twitter:description", content: meta.description });
     upsertMeta('meta[name="twitter:image"]', { name: "twitter:image", content: image });
     upsertLink("canonical", canonicalUrl);
+    upsertLink("alternate", canonicalUrl, { hreflang: "fr-TN" });
+    upsertLink("alternate", canonicalUrl, { hreflang: "x-default" });
 
     setJsonLd("star-mousse-local-business-schema", buildLocalBusinessSchema());
 
@@ -190,6 +243,8 @@ export default function SEO() {
         },
       });
     }
+
+    setJsonLd("star-mousse-breadcrumb-schema", buildBreadcrumbSchema(canonicalUrl, meta.title));
   }, [location.pathname, meta, product]);
 
   return null;

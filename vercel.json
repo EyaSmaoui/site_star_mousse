@@ -1,9 +1,7 @@
 {
-  "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/build",
-  "public": "frontend/build",
-  "cleanUrls": true,
-  "trailingSlash": false,
+  "installCommand": "npm install --prefix frontend --legacy-peer-deps",
+  "buildCommand": "npm run build --prefix frontend",
+  "outputDirectory": "frontend/dist",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -31,8 +29,8 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "@starmousse_backend_url",
-    "NODE_ENV": "production"
-  },
-  "buildCommand": "npm install --prefix frontend && npm run build --prefix frontend"
+    "VITE_API_URL": "https://starmousse-backend.onrender.com",
+    "VITE_CHATBOT_API_URL": "https://starmousse-backend.onrender.com",
+    "VITE_SITE_URL": "https://site-star-mousse.vercel.app"
+  }
 }

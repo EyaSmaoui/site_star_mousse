@@ -1,8 +1,7 @@
-﻿import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
-import ProductShowcase from "../components/ProductShowcase";
+import { FaUniversity } from "react-icons/fa";
+import { FiAward, FiCheck, FiMoon, FiShoppingBag, FiTruck } from "react-icons/fi";
 import { getAll as getAllProducts, getRecommended as getRecommendedProducts } from "../services/apiProduct";
 import formatPrice from '../utils/formatPrice';
 
@@ -14,29 +13,29 @@ const FALLBACK_BEST_SELLERS = [
     desc: "Accueil moelleux et soutien ergonomique pour un sommeil profond.",
     price: "510 DT",
     oldPrice: "850 DT",
-    discount: "Jusqu'à -40%",
+    discount: "Jusqu'a -40%",
     badges: ["Meilleure offre", "Best seller"],
-    features: ["Hauteur 28 cm", "Ressorts ensachés", "Réversible été/hiver"],
+    features: ["Hauteur 28 cm", "Ressorts ensaches", "Reversible ete/hiver"],
   },
   {
     id: 2,
     img: "/medico.jpg",
     name: "Medico Plus",
-    desc: "Soutien orthopédique pensé pour garder le dos bien aligné.",
+    desc: "Soutien orthopedique pense pour garder le dos bien aligne.",
     price: "420 DT",
     oldPrice: "700 DT",
-    discount: "Jusqu'à -40%",
-    badges: ["Orthopédique", "Offre limitée"],
+    discount: "Jusqu'a -40%",
+    badges: ["Orthopedique", "Offre limitee"],
     features: ["Hauteur 25 cm", "Ressorts Bonnell", "Double face mi-ferme"],
   },
   {
     id: 3,
-    img: "/tendresse.jpg",
+    img: "/venise.jpg",
     name: "Tendresse",
-    desc: "Un confort enveloppant avec une sensation premium dès la première nuit.",
+    desc: "Un confort enveloppant avec une sensation premium des la premiere nuit.",
     price: "700 DT",
     oldPrice: "1 100 DT",
-    discount: "Jusqu'à -35%",
+    discount: "Jusqu'a -35%",
     badges: ["Confort premium", "Favori client"],
     features: ["Hauteur prestige de 30 cm", "Tissu haute couture anti-acarien", "Confort enveloppant"],
   },
@@ -50,11 +49,11 @@ const getFallbackImageByName = (name = "") => {
   if (normalizedName.includes("soft")) return "/bebe_soft.jpg";
   if (normalizedName.includes("medico")) return "/medico.jpg";
   if (normalizedName.includes("tendresse")) return "/tendresse.jpg";
-  if (normalizedName.includes("relax")) return "/relax1.png";
+  if (normalizedName.includes("relax")) return "/relax_eluproduit-card.jpg";
   if (normalizedName.includes("pillow")) return "/relax_pillow.png";
-  if (normalizedName.includes("baby") || normalizedName.includes("bébé")) return "/bebe_confort.jpg";
+  if (normalizedName.includes("baby") || normalizedName.includes("bebe")) return "/bebe_confort.jpg";
 
-  return "/relax1.png";
+  return "/relax_eluproduit-card.jpg";
 };
 
 const normalizeProductImage = (image, productName) => {
@@ -73,17 +72,449 @@ const normalizeProductImage = (image, productName) => {
 const removeProductDimension = (name = "") =>
   name.replace(/\s+\d{2,3}x\d{2,3}$/i, "").trim();
 
-const pickBestSellerProducts = (products) => {
-  const bestSellerNames = ["Relax Plus", "Medico Plus", "Tendresse"];
+const PROMO_END_DATE = new Date("2026-07-31T23:59:59+01:00").getTime();
 
-  return bestSellerNames
-    .map((sellerName) =>
-      products.find((product) =>
-        removeProductDimension(product.name || "").toLowerCase() === sellerName.toLowerCase()
-      )
-    )
-    .filter(Boolean);
+const getPromoCountdown = () => {
+  const remaining = Math.max(PROMO_END_DATE - Date.now(), 0);
+  const days = Math.floor(remaining / 86400000);
+  const hours = Math.floor((remaining % 86400000) / 3600000);
+  const minutes = Math.floor((remaining % 3600000) / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+  const pad = (value) => String(value).padStart(2, "0");
+
+  return {
+    days: pad(days),
+    hours: pad(hours),
+    minutes: pad(minutes),
+    seconds: pad(seconds),
+  };
 };
+
+const HERO_SLIDES = [
+  {
+    eyebrow: "L'art de Dormir",
+    title: "Star Mousse",
+    text: "",
+    image: "/home6.png",
+    thumb: "/home6.png",
+    cta: "En savoir plus",
+    route: "/products",
+    theme: "light",
+  },
+  {
+    eyebrow: "Achetez en toute simplicite",
+    title: "Offres Pack",
+    text: "",
+    image: "/home6.png",
+    thumb: "/home6.png",
+    cta: "Voir la boutique",
+    route: "/products",
+    theme: "dark",
+  },
+  {
+    eyebrow: "Sommeil de qualite",
+    title: "Confort absolu",
+    text: "",
+    image: "/home6.png",
+    thumb: "/home6.png",
+    cta: "Decouvrir",
+    route: "/products",
+    theme: "light",
+  },
+];
+
+const USP_ITEMS = [
+  {
+    icon: FiMoon,
+    title: "Jusqu'à 5 nuits d'essai",
+  },
+  {
+    icon: FiTruck,
+    title: "Livraison  gratuits",
+  },
+  {
+    icon: FiAward,
+    title: "Jusqu'à 11 ans de garantie",
+  },
+  {
+    icon: FaUniversity,
+    title: "Paiement a le livraison",
+  },
+];
+
+const HIGHLIGHT_BANNER = {
+  headline: "+5 millions de clients livrés dans le monde",
+  headlineNote: "3",
+  description: "+140.000 avis 5 étoiles dans le monde",
+  descriptionNote: "2",
+};
+
+const CATALOG_DEALS = [
+  {
+    title: "SUPER PACK Soldes d'Ete",
+    image: "pack1.png",
+    
+    tags: ["Soldes d'Ete"],
+    bullets: ["Matelas Super Orthopediques", "Oreillers ", "Protege-Matelas"],
+    price: "649 DT",
+    oldPrice: "1 230 DT",
+    route: "/products",
+  },
+  {
+    title: "Offre de la semaine - Pret a Rever",
+    image: "litCAPITONNE-gris.jpg",
+
+    promo: "Offre de la semaine",
+    tags: ["50% de reduction"],
+    bullets: ["LIT À TÊTE CAPITONNÉE", "Matelas Orthopediques", "2 Oreillers gratuites , Protege-matelas"],
+    price: "1 614 DT",
+    oldPrice: "2 900 DT",
+    note: "Prix base sur la taille 160x190",
+    route: "/product/relax-plus",
+  },
+  {
+    title: "Matelas Relax Plus",
+    image: "relax.png",
+
+    tags: ["elu de l'année"],
+    bullets: [
+      "Ressorts ensachés (independance de couchage)",
+      "Hauteur 27 cm",
+      " Jusqu’à 130kg par personne, 2 Face (mi-ferme,relaxante), Tissu 100% coton anti-acarien",
+    ],
+    price: "A partir de 590 DT ",
+    oldPrice: "619 DT",
+    route: "/product/medico-plus",
+  },
+  {
+    title: " Matelas orthopédique",
+
+    image: "soft.png",
+    tags: ["Jusqu'a -35%"],
+    bullets: [
+      "Jusqu’à 80kg par personne",
+      "22 cm",
+      "Matelas réversible (été/hiver)",
+      "Tissus 80% coton anti-acarien",
+      " Garantie 3 ans"
+    ],
+    price: "A partir de 260 DT",
+    oldPrice: "438 DT",
+    route: "/products",
+  },
+];
+
+const GENERIC_CAROUSEL_CARDS = [
+  {
+    id: "5a081442-d038-42b7-a5be-7230d6590cb0",
+    
+    route: "/products",
+    mediaType: "image",
+    poster: "/showroom1.jpg",
+    src: "/caroussel1.png",
+    alt: "Collection Star Mousse Performance",
+  },
+  {
+    id: "fedfc136-a828-4497-b098-21c822456ac5",
+   
+    route: "/products",
+    mediaType: "image",
+    poster: "/showroom3.jpg",
+    src: "/caroussel0.png",
+    alt: "Matelas Star Mousse confort durable",
+  },
+  {
+    id: "5d5b8ca5-3829-4583-908f-034dcad19c0b",
+    
+    route: "/product/relax-plus",
+    mediaType: "image",
+    poster: "/relax_eluproduit-card.jpg",
+    src: "/caroussel3.png",
+    alt: "Matelas Relax Plus Star Mousse",
+  },
+  {
+    id: "2d7f74e5-34ac-46ef-823c-b2d5ea972a76",
+    
+    route: "/magasins/",
+    mediaType: "image",
+    src: "/caroussel4.jpg",
+    alt: "Boutique Star Mousse",
+  },
+  {
+    id: "c14aecff-4809-4653-95a6-7e0f6137f4eb",
+   
+    route: "/matelas-reconditionnes/",
+    mediaType: "image",
+    src: "/caroussel0.png",
+    alt: "Produits reconditionnés Star Mousse",
+  },
+];
+
+const STAR_MOUSSE_PRODUCTS = [
+  {
+    id: 7978,
+    category: "matelas",
+    title: "Relax Plus",
+    image: "/relax.png",
+    alt: "Matelas Relax Plus",
+    price: "510 DT",
+    route: "/product/relax-plus",
+    badge: "Best seller",
+  },
+  {
+    id: 8299,
+    category: "matelas",
+    title: "Medico Plus",
+    image: "/medico.jpg",
+    alt: "Matelas Medico Plus",
+    price: "420 DT",
+    route: "/product/medico-plus",
+    badge: "PROMO",
+  },
+  {
+    id: 7979,
+    category: "matelas",
+    title: "Tendresse",
+    image: "/tendresse.jpg",
+    alt: "Matelas Tendresse",
+    price: "700 DT",
+    route: "/product/tendresse",
+    badge: "PROMO",
+  },
+  {
+    id: 8798,
+    category: "matelas",
+    title: "Venise Plus",
+    image: "/venise.jpg",
+    alt: "Matelas Venise Plus",
+    price: "310 DT",
+    route: "/product/venise-plus",
+    badge: "PROMO",
+  },
+  {
+    id: 7976,
+    category: "matelas",
+    title: "Soft Plus",
+    image: "/venise2.png",
+    alt: "Matelas Soft Plus",
+    price: "260 DT",
+    route: "/product/soft-plus",
+    badge: "PROMO",
+  },
+  {
+    id: 7976,
+    category: "matelas",
+    title: "Relax pillow top",
+    image: "/relax_pillow.png",
+    alt: "Matelas Relax pillow top",
+    price: "1800 DT",
+    route: "/product/soft-plus",
+    badge: "PROMO",
+  },
+   {
+    id: 7976,
+    category: "matelas",
+    title: "Medico pillow top",
+    image: "/medico_pillow.png",
+    alt: "Matelas Medico pillow top",
+    price: "1500 DT",
+    route: "/product/soft-plus",
+    badge: "PROMO",
+  },
+   {
+    id: 7976,
+    category: "matelas",
+    title: "Confort Plus",
+    image: "/confort.png",
+    alt: "Matelas Confort Plus",
+    price: "260 DT",
+    route: "/product/confort-plus",
+    badge: "PROMO",
+  },
+  {
+    id: 8313,
+    category: "oreillers",
+    title: "Oreiller Gel pillow",
+    image: "/oreiller_gel_pillow.jpg",
+    alt: "Oreiller Gel pillow",
+    price: "209 DT",
+    route: "/product/relax-pillow",
+    badge: "PROMO",
+  },
+  {
+    id: 8421,
+    category: "oreillers",
+    title: "Lot de 2 Oreillers en Fibre",
+    image: "/oreillers2.jpg",
+    alt: "Lot de 2 Oreillers en Fibre",
+    price: "50 DT",
+    route: "/product/oreiller-fibre",
+    badge: "PROMO",
+  },
+  {
+    id: 8422,
+    category: "oreillers",
+    title: "Lot de 5 Oreillers en Fibre",
+    image: "/oreillers5.jpg",
+    alt: "Lot de 5 Oreillers en Fibre",
+    price: "115 DT",
+    route: "/product/lot-de-5-oreillers-en-fibre",
+    badge: "PROMO",
+  },
+  {
+    id: 8423,
+    category: "oreillers",
+    title: "Oreillers en Fibre",
+    image: "/oreillers.jpg",
+    alt: "Oreillers en Fibre",
+    price: "25 DT",
+    route: "/product/oreillers-en-fibre",
+    badge: "PROMO",
+  },
+  {
+    id: 8424,
+    category: "oreillers",
+    title: "Oreillers sac",
+    image: "/oreillessac.png",
+    alt: "Oreillers sac",
+    price: "80 DT",
+    route: "/product/oreiller-classic",
+    badge: "PROMO",
+  },
+  {
+    id: 8424,
+    category: "oreillers",
+    title: "Oreiller Médical Aroma Therapy Lavande",
+    image: "/oreiller_lavande.png",
+    alt: "oreiller_lavande",
+    price: "175 DT",
+    route: "/product/oreiller-classic",
+    badge: "PROMO",
+  },
+   {
+    id: 8424,
+    category: "oreillers",
+    title: "Oreiller Médical Aroma Therapy Menthe",
+    image: "/oreiller_menthe.png",
+    alt: "oreiller_menthe",
+    price: "175 DT",
+    route: "/product/oreiller-classic",
+    badge: "PROMO",
+  },
+   {
+    id: 8424,
+    category: "oreillers",
+    title: "Oreiller Médical Aroma Therapy Océan Puff",
+    image: "/oreiller_puff.png",
+    alt: "oreiller_puff",
+    price: "175 DT",
+    route: "/product/oreiller-classic",
+    badge: "PROMO",
+  },
+   
+  {
+    id: 9001,
+    category: "lits",
+    title: "Lit Bandes",
+    image: "/Lit-Bandes-2.jpg",
+    alt: "Lit Bandes",
+    price: "647,000 DT - 1.230,000 DT",
+    route: "/product/lit-bandes",
+    badge: "NOUVEAU",
+  },
+  {
+    id: 9002,
+    category: "lits",
+    title: "Lit Capitonne",
+    image: "/Lit-Capitonne-1.jpg",
+    alt: "Lit Capitonne",
+    price: "647,000 DT - 1.230,000 DT",
+    route: "/product/lit-capitonne",
+    badge: "NOUVEAU",
+  },
+  {
+    id: 9003,
+    category: "lits",
+    title: "Lit Carreaux",
+    image: "/Lit-Carreaux-1.jpg",
+    alt: "Lit Carreaux",
+    price: "647,000 DT - 1.230,000 DT",
+    route: "/product/lit-carreaux",
+    badge: "NOUVEAU",
+  },
+  {
+    id: 9004,
+    category: "lits",
+    title: "Lit Mercurey",
+    image: "/Lit-Mercury-1.jpg",
+    alt: "Lit Mercurey",
+    price: "1.220,000 DT - 1.960,000 DT",
+    route: "/product/lit-mercurey",
+    badge: "NOUVEAU",
+  },
+  {
+    id: 9005,
+    category: "lits",
+    title: "Commode Harmony",
+    image: "/Commode-Harmony-1.jpg",
+    alt: "Commode Harmony",
+    price: "845,000 DT",
+    route: "/product/commode-harmony",
+    badge: "NOUVEAU",
+  },
+  {
+    id: 9006,
+    category: "lits",
+    title: "Commode Rivera",
+    image: "/Commode-Rivera-Blanc-6.jpg",
+    alt: "Commode Rivera",
+    price: "810,000 DT",
+    route: "/product/commode-rivera",
+    badge: "NOUVEAU",
+  },
+  {
+    id: 9007,
+    category: "lits",
+    title: "Table de Nuit Harmony",
+    image: "/Table-de-Nuit-Harmony-1.jpg",
+    alt: "Table de Nuit Harmony",
+    price: "300,000 DT",
+    route: "/product/table-de-nuit-harmony",
+    badge: "NOUVEAU",
+  },
+  {
+    id: 9008,
+    category: "lits",
+    title: "Table de Nuit Rivera",
+    image: "/Table-de-Nuit-Rivera-Blanc-1.jpg",
+    alt: "Table de Nuit Rivera",
+    price: "320,000 DT",
+    route: "/product/table-de-nuit-rivera",
+    badge: "NOUVEAU",
+  },
+  
+];
+
+const BRAND_FEATURES = [
+  {
+    title: "",
+    text: "",
+    action: "En savoir plus",
+    route: "/nos-matelas",
+    image: "/pillow1.png",
+    tone: "light",
+  },
+  {
+    title: "",
+    text: "",
+    action: "Voir plus de produits",
+    route: "/products",
+    image: "/pillow2.png",
+    tone: "dark",
+  },
+];
+
+
 
 const getBestSellerMeta = (name = "", price) => {
   const normalizedName = removeProductDimension(name).toLowerCase();
@@ -94,18 +525,18 @@ const getBestSellerMeta = (name = "", price) => {
 
   if (normalizedName.includes("medico")) {
     return {
-      desc: "Soutien orthomedical pensé pour garder le dos bien aligné.",
-      discount: "Jusqu'à -40%",
-      badges: ["Orthopédique", "Offre limitée"],
-      features: ["Garantie 9 ans ", "Soutien du dos", "Respirabilité renforcée"],
+      desc: "Soutien orthomedical pense pour garder le dos bien aligne.",
+      discount: "Jusqu'a -40%",
+      badges: ["Orthopedique", "Offre limitee"],
+      features: ["Garantie 9 ans ", "Soutien du dos", "Respirabilite renforcee"],
       oldPrice: getOldPrice(0.4),
     };
   }
 
   if (normalizedName.includes("tendresse")) {
     return {
-      desc: "Un confort enveloppant avec une sensation premium dès la première nuit.",
-      discount: "Jusqu'à -35%",
+      desc: "Un confort enveloppant avec une sensation premium des la premiere nuit.",
+      discount: "Jusqu'a -35%",
       badges: ["Confort premium", "Favori client"],
       features: ["garantie 11 ans", "Soutien durable", "Finition haut confort"],
       oldPrice: getOldPrice(0.35),
@@ -114,18 +545,22 @@ const getBestSellerMeta = (name = "", price) => {
 
   return {
     desc: "Accueil moelleux et soutien ergonomique pour un sommeil profond.",
-    discount: "Jusqu'à -40%",
+    discount: "Jusqu'a -40%",
     badges: ["Meilleure offre", "Best seller"],
-    features: ["garantie 5 ans", "Mousse haute densité", "Soutien quotidien"],
+    features: ["garantie 5 ans", "Mousse haute densite", "Soutien quotidien"],
     oldPrice: getOldPrice(0.4),
   };
 };
 
 const Home = () => {
   const observerRef = useRef(null);
+  const genericCarouselViewportRef = useRef(null);
   const navigate = useNavigate();
   const [bestSellers, setBestSellers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [promoCountdown, setPromoCountdown] = useState(getPromoCountdown);
+  const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+  const [genericSlideIndex, setGenericSlideIndex] = useState(0);
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
@@ -148,6 +583,42 @@ const Home = () => {
     const fadeElements = document.querySelectorAll(".ssn-fade");
     fadeElements.forEach((el) => observerRef.current.observe(el));
   }, [loading, bestSellers.length]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setPromoCountdown(getPromoCountdown());
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setHeroSlideIndex((currentIndex) => (currentIndex + 1) % HERO_SLIDES.length);
+    }, 5200);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setGenericSlideIndex((currentIndex) => (currentIndex + 1) % GENERIC_CAROUSEL_CARDS.length);
+    }, 4200);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    const viewport = genericCarouselViewportRef.current;
+    const target = viewport?.querySelectorAll(".generic-card")?.[genericSlideIndex];
+
+    if (!viewport || !target) return;
+
+    viewport.scrollTo({
+      left: target.offsetLeft,
+      behavior: "smooth",
+    });
+  }, [genericSlideIndex]);
 
   // Charger les produits populaires depuis l'API
   useEffect(() => {
@@ -207,7 +678,7 @@ const Home = () => {
             price: `${Number(product.price).toLocaleString("fr-FR")} DT`,
             oldPrice: meta.oldPrice,
             discount: product.discount || meta.discount,
-            badges: reviewCount > 0 ? ["Avis clients", "Recommandé"] : meta.badges,
+            badges: reviewCount > 0 ? ["Avis clients", "Recommande"] : meta.badges,
             features: meta.features,
             rating,
             reviewCount,
@@ -231,17 +702,15 @@ const Home = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=Playfair+Display:wght@600;700&display=swap');
-
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         .ssn-page {
-          background: #fbfaf8;
-          font-family: 'DM Sans', sans-serif;
-          color: #2a2a3d;
+          background: #fffdf8;
+          font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          color: #12231f;
         }
 
-        /* ── FADE ANIMATION ── */
+        /* -- FADE ANIMATION -- */
         .ssn-fade {
           opacity: 0;
           transform: translateY(28px);
@@ -254,254 +723,891 @@ const Home = () => {
         .ssn-fade:nth-child(2) { transition-delay: 0.1s; }
         .ssn-fade:nth-child(3) { transition-delay: 0.2s; }
 
-        /* ── HERO ── */
+        /* -- HERO -- */
         .ssn-hero-shell {
-          background:
-            linear-gradient(115deg, rgba(251,250,248,0.94) 0%, rgba(251,250,248,0.86) 46%, rgba(255,255,255,0.68) 100%),
-            url('/showroom4.jpg') center/cover no-repeat;
-          border-bottom: 1px solid #ece7e1;
           position: relative;
           overflow: hidden;
+          background: linear-gradient(180deg, #f7f1e8 0%, #fffdf8 100%);
+          border-bottom: 1px solid #e4ddd0;
+          padding: 28px 24px;
         }
-        .ssn-hero-shell::after {
+        .ssn-hero-gradient {
           content: "";
           position: absolute;
-          inset: auto 0 0;
-          height: 160px;
-          background: linear-gradient(180deg, rgba(251,250,248,0), #fbfaf8);
+          inset: 0;
+          background:
+            linear-gradient(90deg, rgba(245,239,230,0.94) 0%, rgba(245,239,230,0.62) 46%, rgba(245,239,230,0.2) 100%),
+            radial-gradient(circle at 18% 18%, rgba(232,111,69,0.16), transparent 26%);
           pointer-events: none;
+          z-index: 1;
+        }
+        .ssn-hero-grid {
+          width: min(1180px, 100%);
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr;
+          position: relative;
+          z-index: 2;
         }
         .ssn-hero {
-          display: flex;
+          min-height: clamp(520px, 68vh, 650px);
+          display: grid;
+          grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
           align-items: center;
-          justify-content: space-between;
-          gap: 60px;
-          padding: 92px 40px 76px;
-          max-width: 1280px;
-          margin: 0 auto;
           position: relative;
-          z-index: 1;
+          overflow: hidden;
+          border-radius: 8px;
+          background: #f1e8dc;
+          box-shadow: 0 24px 70px rgba(18,35,31,0.11);
+          border: 1px solid rgba(18,35,31,0.08);
+        }
+        .ssn-hero.split-b {
+          min-height: 0;
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(260px, 1fr);
+          align-content: stretch;
+          background: #eaf1ed;
         }
 
         .ssn-hero-content {
-          flex: 1;
-          max-width: 580px;
+          max-width: 560px;
+          padding: 64px 52px;
+          position: relative;
+          z-index: 3;
+        }
+        .ssn-hero.split-b .ssn-hero-content {
+          max-width: none;
+          padding: 30px 28px 22px;
         }
 
-        .ssn-badge {
+        .ssn-hero-countdown {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          flex-wrap: wrap;
+          margin-bottom: 22px;
+        }
+        .ssn-hero-countdown-label {
+          display: inline-flex;
+          align-items: center;
+          min-height: 28px;
+          padding: 0 11px;
+          border-radius: 999px;
+          background: #d9362b;
+          color: #ffffff;
+          font-size: 12px;
+          font-weight: 900;
+        }
+        .ssn-hero-countdown-time {
           display: inline-flex;
           align-items: center;
           gap: 7px;
-          background: rgba(255,255,255,0.78);
-          color: #9b2c2c;
-          border: 1px solid rgba(181,47,47,0.16);
-          font-size: 13px;
+          color: #12231f;
+          font-size: 15px;
           font-weight: 800;
-          padding: 8px 15px;
-          border-radius: 50px;
-          margin-bottom: 28px;
-          letter-spacing: 0.1px;
-          box-shadow: 0 14px 35px rgba(26,26,46,0.08);
+        }
+        .ssn-hero-countdown-time span {
+          min-width: 42px;
+          padding: 7px 8px;
+          border-radius: 8px;
+          background: rgba(255,255,255,0.78);
+          border: 1px solid rgba(18,35,31,0.08);
+          text-align: center;
+          box-shadow: 0 10px 24px rgba(18,35,31,0.07);
         }
 
         .ssn-hero-title {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(2.7rem, 5.4vw, 4.9rem);
-          font-weight: 700;
-          color: #151522;
-          line-height: 1.04;
-          margin-bottom: 22px;
+          font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          font-size: clamp(2.35rem, 4.4vw, 4.45rem);
+          font-weight: 500;
+          color: #12231f;
+          line-height: 1.02;
+          margin-bottom: 18px;
           letter-spacing: 0;
         }
-
-        .ssn-hero-title .accent {
-          color: #b52f2f;
-          font-style: italic;
+        .ssn-hero.split-b .ssn-hero-title {
+          font-size: clamp(1.55rem, 2vw, 2.05rem);
+          line-height: 1.08;
+          margin-bottom: 12px;
         }
 
         .ssn-hero-desc {
-          font-size: 16px;
-          line-height: 1.8;
-          color: #555568;
-          margin-bottom: 36px;
-          max-width: 520px;
+          font-size: clamp(15px, 1.2vw, 18px);
+          line-height: 1.65;
+          color: #34413d;
+          margin-bottom: 28px;
+          max-width: 510px;
+          font-weight: 700;
+        }
+        .ssn-hero-promo-note {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 18px;
+          color: #34413d;
+          font-size: 13px;
+          font-weight: 800;
+        }
+        .ssn-hero-promo-note::before {
+          content: "";
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #d9362b;
+          box-shadow: 0 0 0 4px rgba(217,54,43,0.12);
+        }
+        .ssn-hero.split-b .ssn-hero-desc {
+          font-size: 14px;
+          line-height: 1.55;
+          margin-bottom: 20px;
+          max-width: 340px;
         }
 
         .ssn-hero-btns {
           display: flex;
           gap: 12px;
           flex-wrap: wrap;
-          margin-bottom: 44px;
+          margin-bottom: 0;
         }
 
         .ssn-btn-primary {
-          background: #151522;
+          background: #12231f;
           color: #fff;
           border: none;
-          padding: 15px 24px;
-          border-radius: 999px;
-          font-size: 14.5px;
-          font-weight: 800;
-          font-family: 'DM Sans', sans-serif;
+          min-height: 48px;
+          padding: 0 24px;
+          border-radius: 8px;
+          font-size: 15px;
+          font-weight: 900;
+          font-family: inherit;
           cursor: pointer;
           transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
           letter-spacing: 0.1px;
         }
         .ssn-btn-primary:hover {
-          background: #b52f2f;
+          background: #0a0a0a;
           transform: translateY(-1px);
-          box-shadow: 0 12px 30px rgba(181,47,47,0.23);
+          box-shadow: 0 12px 30px rgba(18,35,31,0.22);
         }
 
-        .ssn-btn-secondary {
-          background: rgba(255,255,255,0.72);
-          color: #2a2a3d;
-          border: 1.5px solid rgba(26,26,46,0.12);
-          padding: 15px 24px;
-          border-radius: 999px;
-          font-size: 14.5px;
-          font-weight: 800;
-          font-family: 'DM Sans', sans-serif;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        .ssn-btn-secondary:hover {
-          border-color: rgba(181,47,47,0.3);
-          color: #b52f2f;
-          box-shadow: 0 0 0 4px rgba(181,47,47,0.08);
-        }
-
-        /* Stats bar */
-        .ssn-stats {
-          display: flex;
-          align-items: center;
-          gap: 0;
-          background: rgba(255,255,255,0.78);
-          border: 1px solid rgba(26,26,46,0.08);
-          border-radius: 18px;
-          padding: 18px 28px;
-          width: fit-content;
-          box-shadow: 0 18px 45px rgba(26,26,46,0.08);
-          backdrop-filter: blur(14px);
-        }
-        .ssn-stat {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 0 24px;
-          text-align: center;
-        }
-        .ssn-stat:first-child { padding-left: 0; }
-        .ssn-stat:last-child { padding-right: 0; }
-        .ssn-stat strong {
-          font-size: 17px;
-          font-weight: 700;
-          color: #1a1a2e;
-          display: block;
-          margin-bottom: 2px;
-        }
-        .ssn-stat span {
-          font-size: 12.5px;
-          color: #9090b0;
-          font-weight: 400;
-        }
-        .ssn-stat-divider {
-          width: 1px;
-          height: 36px;
-          background: #ddddf0;
-          flex-shrink: 0;
-        }
-
-        /* Hero visual */
         .ssn-hero-visual {
-          flex: 1;
-          max-width: 520px;
+          align-self: stretch;
           position: relative;
+          min-height: inherit;
+          overflow: hidden;
+        }
+        .ssn-hero-visual::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          background: linear-gradient(90deg, rgba(241,232,220,0.62), rgba(241,232,220,0.04) 48%);
+          pointer-events: none;
+        }
+        .ssn-hero.split-b .ssn-hero-visual::before {
+          background: linear-gradient(180deg, rgba(234,241,237,0.18), rgba(234,241,237,0.02) 42%);
+        }
+        .ssn-hero-img {
+          width: 100%;
+          height: 100%;
+          min-height: inherit;
+          object-fit: cover;
+          object-position: center;
+          display: block;
+        }
+        .ssn-hero.split-a .ssn-hero-img {
+          object-position: center;
+        }
+        .ssn-hero.split-b .ssn-hero-img {
+          object-position: center 38%;
+        }
+        .ssn-hero-badge-card {
+          position: absolute;
+          left: 28px;
+          bottom: 28px;
+          z-index: 4;
+          width: min(260px, 62%);
+          padding: 14px 16px;
+          border-radius: 8px;
+          background: rgba(255,255,255,0.9);
+          border: 1px solid rgba(18,35,31,0.1);
+          box-shadow: 0 20px 45px rgba(18,35,31,0.16);
+          color: #12231f;
+        }
+        .ssn-hero-badge-card strong {
+          display: block;
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+        .ssn-hero-badge-card span {
+          color: #64706c;
+          font-size: 12px;
+          font-weight: 700;
+        }
+        .ssn-hero.split-b .ssn-btn-primary {
+          width: 100%;
+        }
+        .ssn-hero-award {
+          position: absolute;
+          left: 24px;
+          bottom: 24px;
+          z-index: 4;
+          display: grid;
+          gap: 6px;
+          width: min(230px, 62%);
+          padding: 12px 14px;
+          border-radius: 8px;
+          background: rgba(255,255,255,0.92);
+          border: 1px solid rgba(18,35,31,0.1);
+          box-shadow: 0 18px 40px rgba(18,35,31,0.14);
+          color: #12231f;
+        }
+        .ssn-hero-award-mark {
+          display: inline-flex;
+          width: max-content;
+          max-width: 100%;
+          align-items: center;
+          justify-content: center;
+          min-height: 28px;
+          padding: 0 10px;
+          border-radius: 6px;
+          background: #ffe35f;
+          color: #143e86;
+          border: 2px solid #143e86;
+          font-size: 13px;
+          font-weight: 900;
+        }
+        .ssn-hero-award small {
+          color: #64706c;
+          font-size: 12px;
+          font-weight: 800;
+        }
+
+        .ssn-hero-shell {
+          padding: 0;
+          background: #f2eee9;
+          border-bottom: none;
+        }
+        .ssn-hero-gradient {
+          display: none;
+        }
+        .ssn-hero-grid {
+          width: 100%;
+          max-width: none;
+        }
+        .ssn-hero-slider {
+          position: relative;
+          height: 650px;
+          min-height: 650px;
+          overflow: hidden;
+          background: #121212;
+        }
+        .ssn-hero-slide {
+          position: absolute;
+          inset: 0;
+          display: grid;
+          place-items: center;
+          padding: 84px 28px 74px;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.7s ease, visibility 0.7s ease;
+        }
+        .ssn-hero-bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          overflow: hidden;
+          pointer-events: none;
+          background: transparent;
+        }
+        .ssn-hero-bg img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          object-position: center;
+        }
+        .ssn-hero-slide.active {
+          opacity: 1;
+          visibility: visible;
+          z-index: 2;
+        }
+        .ssn-hero-slide::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(90deg, rgba(0,0,0,0.36), rgba(0,0,0,0.08) 48%, rgba(0,0,0,0.32)),
+            linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.28));
+          z-index: 0;
+        }
+        .ssn-hero-slide.light::before {
+          background:
+            linear-gradient(90deg, rgba(0,0,0,0.28), rgba(255,255,255,0.08) 50%, rgba(0,0,0,0.22)),
+            linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.24));
+        }
+        .ssn-hero-copy {
+          position: relative;
+          z-index: 2;
+          width: min(880px, 100%);
+          text-align: center;
+          color: #ffffff;
+          display: grid;
+          justify-items: center;
+        }
+        .ssn-hero-script {
+          font-family: "Brush Script MT", "Segoe Script", cursive;
+          font-size: clamp(3rem, 6.6vw, 6rem);
+          line-height: 0.9;
+          color:black;
+          font-weight: 400;
+          text-shadow: 0 8px 22px rgba(0,0,0,0.3);
+          margin-bottom: 10px;
+        }
+        .ssn-hero-main-title {
+          font-family: var(--font-sans), system-ui, sans-serif;
+          font-size: clamp(3rem, 8vw, 6.6rem);
+          line-height: 0.92;
+          text-transform: uppercase;
+          color: black;
+          font-weight: 900;
+          letter-spacing: 0;
+          text-shadow: 0 10px 30px rgba(0,0,0,0.34);
+          margin-bottom: 24px;
+        }
+        .ssn-hero-copy p {
+          max-width: 820px;
+          color: rgba(255,255,255,0.94);
+          font-size: clamp(1.2rem, 2.4vw, 2rem);
+          line-height: 1.35;
+          font-weight: 600;
+          text-shadow: 0 5px 18px rgba(0,0,0,0.28);
+          margin-bottom: 34px;
+        }
+        .ssn-hero-slider-btn {
+          min-height: 54px;
+          padding: 0 42px;
+          border: none;
+          border-radius: 0;
+          background: #0a0a0a;
+          color: gris;
+          text-transform: uppercase;
+          font-size: 15px;
+          font-weight: 800;
+          letter-spacing: 0.03em;
+          cursor: pointer;
+          transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .ssn-hero-slider-btn:hover {
+          background: #d9362b;
+          transform: translateY(-2px);
+        }
+        .ssn-hero-shape {
+          position: absolute;
+          z-index: 1;
+          border-radius: 999px;
+          pointer-events: none;
+        }
+        .ssn-hero-shape.one {
+          width: 170px;
+          height: 170px;
+          right: 7%;
+          top: 18%;
+          border: 18px solid rgba(255,255,255,0.34);
+        }
+        
+        .ssn-hero-count-pill {
+          position: absolute;
+          right: 12%;
+          bottom: 16%;
+          z-index: 3;
+          width: 118px;
+          height: 118px;
+          border-radius: 50%;
+          display: grid;
+          place-items: center;
+          background: #b70202;
+          color: #ffffff;
+          text-align: center;
+          font-weight: 900;
+          text-transform: uppercase;
+          box-shadow: 0 18px 45px rgba(0,0,0,0.2);
+        }
+        .ssn-hero-count-pill strong {
+          display: block;
+          font-size: 32px;
+          line-height: 0.95;
+        }
+        .ssn-hero-count-pill span {
+          display: block;
+          font-size: 13px;
+          line-height: 1;
+        }
+        .ssn-hero-dots {
+          position: absolute;
+          left: 50%;
+          bottom: 24px;
+          z-index: 4;
+          display: flex;
+          gap: 10px;
+          transform: translateX(-50%);
+        }
+        .ssn-hero-dot {
+          width: 50px;
+          height: 100px;
+          border: none;
+          border-radius: 0;
+          background: transparent;
+          cursor: pointer;
+          padding: 0;
+          opacity: 0.72;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .ssn-hero-dot.active {
+          opacity: 1;
+          transform: translateY(-6px);
+        }
+        .tp-title-wrap {
+          width: 50px;
+          height: 100px;
+          touch-action: manipulation;
+        }
+        .sr7-nav-img {
+          width: 50px;
+          height: 100px;
+          position: relative;
+          overflow: hidden;
+          background: rgba(255,255,255,0.22);
+          box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+          touch-action: manipulation;
+        }
+        .sr7-nav-img-live {
+          position: absolute;
+          inset: 0;
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center center;
+          opacity: 1;
+          transform: translate(0%);
+          transition: transform 0.25s ease, opacity 0.25s ease;
+          touch-action: manipulation;
+        }
+        .ssn-hero-dot:not(.active) .sr7-nav-img-live {
+          opacity: 0.66;
+          transform: scale(0.96);
+        }
+        .ssn-hero-dot.active .sr7-nav-img {
+          outline: 3px solid #ffffff;
+          outline-offset: 3px;
+        }
+
+        /* -- USP BAR -- */
+        .ssn-usp-section {
+          background: #ffffff;
+          border-bottom: none;
+        }
+        .ssn-usp-list {
+          width: min(1780px, 100%);
+          margin: 0 auto;
+          padding: 46px 76px 44px;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: clamp(28px, 5vw, 90px);
+          list-style: none;
+        }
+        .ssn-usp-item {
+          min-height: 62px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 24px;
+          padding: 0;
+          border: none;
+          border-radius: 0;
+          background: transparent;
+          color: #25211f;
+          box-shadow: none;
+        }
+        .ssn-usp-item svg {
+          width: 36px;
+          height: 36px;
+          flex: 0 0 auto;
+          color: #4d4641;
+        }
+        .ssn-usp-item span {
+          max-width: 350px;
+          font-size: clamp(18px, 1.2vw, 22px);
+          line-height: 1.35;
+          font-weight: 900;
+        }
+
+        /* -- HIGHLIGHT BANNER -- */
+        .ssn-highlight-banner {
+          background: #f7f5f3;
+          border-bottom: none;
+          height: 128px;
+          padding: 0 24px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
-        .ssn-hero-blob {
-          position: absolute;
-          inset: 30px 0 0 auto;
-          width: 82%;
-          height: 78%;
-          border-radius: 28px;
-          background: #efe8df;
-          z-index: 0;
+        .ssn-highlight-content {
+          width: auto;
+          min-height: 0;
+          margin: 0;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 30px;
+          padding: 0;
+          border-radius: 0;
+          background: transparent;
+          border: none;
+          box-shadow: none;
+          color: #25211f;
+          text-align: left;
         }
-        .ssn-hero-img {
-          position: relative;
-          z-index: 1;
-          width: 100%;
-          max-width: 475px;
-          aspect-ratio: 4 / 4.6;
-          border-radius: 28px;
-          object-fit: cover;
-          box-shadow: 0 28px 80px rgba(26,26,46,0.18);
-          animation: ssn-float 4s ease-in-out infinite;
+        .ssn-highlight-icon {
+          width: 54px;
+          height: 58px;
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0;
+          background: transparent;
+          color: #4d4641;
+          border: none;
         }
-        .ssn-hero-card {
-          position: absolute;
-          left: 0;
-          bottom: 26px;
-          z-index: 2;
-          width: min(260px, 72%);
-          background: rgba(255,255,255,0.9);
-          border: 1px solid rgba(26,26,46,0.08);
-          border-radius: 18px;
-          padding: 16px;
-          box-shadow: 0 22px 50px rgba(26,26,46,0.14);
-          backdrop-filter: blur(16px);
+        .ssn-highlight-icon svg {
+          width: 54px;
+          height: 54px;
+          stroke-width: 1.8;
         }
-        .ssn-hero-card strong {
-          display: block;
-          color: #151522;
+        .ssn-highlight-text h2 {
+          margin: 0 0 9px;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 32px;
+          line-height: 1;
+          font-weight: 900;
+          letter-spacing: 0;
+          color: #25211f;
+        }
+        .ssn-highlight-text p {
+          margin: 0;
+          color: #25211f;
           font-size: 15px;
-          margin-bottom: 5px;
+          line-height: 1.25;
+          font-weight: 900;
         }
-        .ssn-hero-card span {
-          color: #66677a;
-          font-size: 12.5px;
-          line-height: 1.5;
+        .ssn-highlight-text p::before {
+          content: "★";
+          display: inline-block;
+          margin-right: 9px;
+          color: #f2bd22;
+          font-size: 14px;
+          transform: translateY(-1px);
         }
-        .ssn-hero-mini-video {
-          position: absolute;
-          right: 8px;
-          top: 34px;
-          z-index: 2;
-          width: 150px;
-          aspect-ratio: 1 / 1;
-          border-radius: 22px;
+        .ssn-highlight-text sup {
+          margin-left: 2px;
+          font-size: 0.42em;
+          line-height: 0;
+          color: #25211f;
+          vertical-align: super;
+        }
+
+        /* -- CATALOG CAROUSEL -- */
+        .ssn-catalog-section {
+          background: #ffffff;
+          padding: 34px 0 72px;
+          border-bottom: 1px solid #ece8e3;
+        }
+        .ssn-catalog-heading {
+          width: min(1720px, calc(100% - 136px));
+          margin: 0 auto 26px;
+        }
+        .ssn-catalog-heading h2 {
+          margin: 0;
+          color: #25211f;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: clamp(2.05rem, 2.6vw, 3rem);
+          line-height: 1.08;
+          font-weight: 900;
+          letter-spacing: 0;
+        }
+        .ssn-catalog-viewport {
+          width: min(1720px, calc(100% - 136px));
+          margin: 0 auto;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          scrollbar-width: thin;
+          scrollbar-color: #cfc8c1 transparent;
+          padding-bottom: 10px;
+        }
+        .ssn-catalog-track {
+          display: grid;
+          grid-auto-flow: column;
+          grid-auto-columns: minmax(294px, 1fr);
+          grid-template-columns: repeat(4, minmax(294px, 1fr));
+          gap: 18px;
+          align-items: stretch;
+        }
+        .ssn-catalog-card {
+          min-width: 0;
+          border: 0;
+          border-radius: 8px;
+          background: #f7f4f1;
+          color: #25211f;
           overflow: hidden;
-          border: 4px solid rgba(255,255,255,0.82);
-          box-shadow: 0 20px 48px rgba(26,26,46,0.18);
-          background: #efe8df;
+          display: flex;
+          flex-direction: column;
+          text-decoration: none;
+          scroll-snap-align: start;
+          text-align: left;
+          font: inherit;
+          cursor: pointer;
+          transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
-        .ssn-hero-mini-video video {
+        .ssn-catalog-card:hover {
+          box-shadow: 0 14px 34px rgba(37,33,31,0.1);
+          transform: translateY(-2px);
+        }
+        .ssn-catalog-image {
+          aspect-ratio: 4 / 3;
+          position: relative;
+          background: #f8f7f5;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .ssn-catalog-image img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           display: block;
+          transition: transform 0.35s ease;
         }
-        .ssn-hero-mini-video::after {
+        .ssn-catalog-card:hover .ssn-catalog-image img {
+          transform: scale(1.035);
+        }
+        .ssn-catalog-tags {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          right: 10px;
+          z-index: 2;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .ssn-catalog-tag {
+          display: inline-flex;
+          align-items: center;
+          min-height: 22px;
+          max-width: 100%;
+          padding: 4px 9px;
+          border-radius: 999px;
+          background: #e11900;
+          color: #ffffff;
+          font-size: 12px;
+          line-height: 1;
+          font-weight: 900;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .ssn-catalog-tag.strong {
+          background: #ffc832;
+          color: #2b261f;
+        }
+        .ssn-catalog-badge {
+          position: absolute;
+          right: 14px;
+          bottom: 24px;
+          z-index: 2;
+          width: 94px;
+          height: auto;
+          object-fit: contain;
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+        }
+        .ssn-catalog-promo {
+          min-height: 26px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 5px 12px;
+          background: #e11900;
+          color: #ffffff;
+          font-size: 12px;
+          line-height: 1.2;
+          font-weight: 900;
+          text-align: center;
+        }
+        .ssn-catalog-promo:empty {
+          display: none;
+        }
+        .ssn-catalog-body {
+          padding: 13px 13px 14px;
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+        }
+        .ssn-catalog-title {
+          margin: 0 0 12px;
+          color: #25211f;
+          font-size: 16px;
+          line-height: 1.25;
+          font-weight: 900;
+          letter-spacing: 0;
+        }
+        .ssn-catalog-bullets {
+          list-style: none;
+          padding: 0;
+          margin: 0 0 18px;
+          display: grid;
+          gap: 8px;
+        }
+        .ssn-catalog-bullets li {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          color: #3b3531;
+          font-size: 13px;
+          line-height: 1.35;
+          font-weight: 600;
+        }
+        .ssn-catalog-bullets svg {
+          width: 16px;
+          height: 16px;
+          flex: 0 0 auto;
+          margin-top: 1px;
+          color: #25211f;
+          stroke-width: 2.4;
+        }
+        .ssn-catalog-price {
+          margin-top: auto;
+          display: flex;
+          align-items: baseline;
+          gap: 5px;
+          flex-wrap: wrap;
+        }
+        .ssn-catalog-price-label {
+          width: auto;
+          color: #625b56;
+          font-size: 13px;
+          line-height: 1.1;
+          font-weight: 600;
+        }
+        .ssn-catalog-current {
+          color: #e11900;
+          font-size: 16px;
+          line-height: 1;
+          font-weight: 900;
+          white-space: nowrap;
+        }
+        .ssn-catalog-old {
+          color: #25211f;
+          font-size: 14px;
+          font-weight: 700;
+          text-decoration: line-through;
+          white-space: nowrap;
+        }
+        .ssn-catalog-note {
+          width: 100%;
+          margin-top: 4px;
+          color: #3b3531;
+          font-size: 12px;
+          line-height: 1.25;
+          font-weight: 600;
+        }
+
+        /* -- BRAND FEATURE STRIP -- */
+        .ssn-brand-strip {
+          background: #ffffff;
+          border-bottom: 1px solid #e4ddd0;
+        }
+        .ssn-brand-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          min-height: 550px;
+        }
+        .ssn-brand-panel {
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          padding: 64px clamp(28px, 6vw, 86px);
+          color: #0a0a0a;
+          isolation: isolate;
+        }
+        .ssn-brand-panel.dark {
+          color: #ffffff;
+        }
+        .ssn-brand-panel img {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: -2;
+          transform: scale(1.02);
+        }
+        .ssn-brand-panel::before {
           content: "";
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, rgba(21,21,34,0), rgba(21,21,34,0.16));
-          pointer-events: none;
+          z-index: -1;
+          
         }
-        @keyframes ssn-float {
-          0%, 100% { transform: translateY(0); }
-          50%       { transform: translateY(-10px); }
+        
+        .ssn-brand-content {
+          max-width: 520px;
+        }
+        .ssn-brand-content h2 {
+          font-size: clamp(2rem, 3.2vw, 3.3rem);
+          line-height: 1.15;
+          font-weight: 900;
+          letter-spacing: 0;
+          margin-bottom: 16px;
+        }
+        .ssn-brand-content h2 span {
+          color: #b70202;
+        }
+        .ssn-brand-content p {
+          font-size: clamp(1.05rem, 1.8vw, 1.55rem);
+          line-height: 1.45;
+          font-weight: 800;
+          color: inherit;
+          max-width: 500px;
+          margin-bottom: 26px;
+        }
+        .ssn-brand-panel.dark .ssn-brand-content p {
+          color: black;
+        }
+        .ssn-brand-action {
+          min-height: 46px;
+          padding: 0 26px;
+          border: 0;
+          border-radius: 0;
+          background: #0a0a0a;
+          color: #ffffff;
+          text-transform: uppercase;
+          font-weight: 900;
+          cursor: pointer;
+          transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .ssn-brand-action:hover {
+          background: #b70202;
+          transform: translateY(-2px);
         }
 
-        /* ── MOTION SHOWCASE ── */
+        /* -- MOTION SHOWCASE -- */
         .ssn-motion-section {
           padding: 12px 40px 100px;
           background:
-            radial-gradient(circle at 12% 20%, rgba(181,47,47,0.08), transparent 28%),
-            linear-gradient(180deg, #fbfaf8 0%, #ffffff 100%);
+            radial-gradient(circle at 12% 20%, rgba(15,79,67,0.07), transparent 28%),
+            linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
         }
         .ssn-motion-reel {
           max-width: 1280px;
@@ -511,7 +1617,7 @@ const Home = () => {
         }
         .ssn-motion-copy {
           width: min(520px, 100%);
-          color: #151522;
+          color: #12231f;
           padding: 0 0 26px;
           position: relative;
           z-index: 3;
@@ -524,7 +1630,7 @@ const Home = () => {
           z-index: 1;
         }
         .ssn-motion-copy h2 {
-          font-family: 'Playfair Display', serif;
+          font-family: Georgia, "Times New Roman", serif;
           font-size: clamp(2.3rem, 4vw, 4rem);
           line-height: 1.08;
           margin-bottom: 18px;
@@ -571,8 +1677,8 @@ const Home = () => {
           border-radius: 22px;
           overflow: hidden;
           position: relative;
-          background: #151522;
-          box-shadow: 0 18px 45px rgba(26,26,46,0.12);
+          background: #12231f;
+          box-shadow: 0 18px 45px rgba(18,35,31,0.12);
           border: 1px solid rgba(255,255,255,0.16);
         }
         .ssn-video-tile.large {
@@ -618,7 +1724,7 @@ const Home = () => {
           align-items: center;
           justify-content: center;
           background: rgba(255,255,255,0.92);
-          color: #151522;
+          color: #12231f;
           font-size: 18px;
           box-shadow: 0 14px 34px rgba(0,0,0,0.2);
           animation: ssn-play-pulse 2.2s ease-in-out infinite;
@@ -698,7 +1804,7 @@ const Home = () => {
           flex-wrap: wrap;
         }
         .ssn-video-chip {
-          color: #151522;
+          color: #12231f;
           background: rgba(255,255,255,0.9);
           border-radius: 999px;
           padding: 7px 11px;
@@ -730,7 +1836,7 @@ const Home = () => {
           to { transform: scaleX(1); }
         }
 
-        /* ── EDITORIAL VIDEO CARDS ── */
+        /* -- EDITORIAL VIDEO CARDS -- */
         .ssn-video-gallery {
           max-width: 1720px;
           margin: 0 auto;
@@ -743,8 +1849,8 @@ const Home = () => {
           border-radius: 8px;
           overflow: hidden;
           position: relative;
-          background: #151522;
-          box-shadow: 0 22px 58px rgba(21,21,34,0.16);
+          background: #12231f;
+          box-shadow: 0 22px 58px rgba(18,35,31,0.16);
           isolation: isolate;
           cursor: pointer;
           transform: translateZ(0);
@@ -800,7 +1906,7 @@ const Home = () => {
         }
         .ssn-editorial-content h2,
         .ssn-editorial-content h3 {
-          font-family: 'DM Sans', sans-serif;
+          font-family: inherit;
           font-size: clamp(1.65rem, 2.4vw, 2.25rem);
           line-height: 1.12;
           letter-spacing: 0;
@@ -830,8 +1936,8 @@ const Home = () => {
           box-shadow: 0 10px 22px rgba(0,0,0,0.2);
         }
         .ssn-editorial-pill.gold {
-          background: #f4c84f;
-          color: #151522;
+          background: #ffd36a;
+          color: #12231f;
         }
         .ssn-editorial-pill.dark {
           background: rgba(21,21,34,0.74);
@@ -857,17 +1963,477 @@ const Home = () => {
         }
         .ssn-editorial-video-card:hover .ssn-editorial-arrow {
           transform: translateX(4px);
-          background: #f4c84f;
-          color: #151522;
+          background: #ffd36a;
+          color: #12231f;
         }
 
-        /* ── SECTION PRODUCTS ── */
+        /* -- STAR MOUSSE GENERIC CAROUSEL -- */
+        .ssn-motion-section.star-generic-section {
+          padding: 52px 0 96px;
+          background: #ffffff;
+          overflow: hidden;
+        }
+        .carousel-catalog__wrapper {
+          width: min(1720px, calc(100% - 96px));
+          margin: 0 auto;
+        }
+        .section-heading__desktop.carousel-catalog__heading {
+          min-height: 0;
+          margin: 0;
+        }
+        .star-carousel {
+          position: relative;
+        }
+        .star-carousel__viewport {
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          scrollbar-width: thin;
+          scrollbar-color: #cfc8c1 transparent;
+          padding-bottom: 12px;
+        }
+        .star-carousel__container {
+          display: grid;
+          grid-auto-flow: column;
+          grid-auto-columns: minmax(286px, 1fr);
+          grid-template-columns: repeat(5, minmax(286px, 1fr));
+          gap: 24px;
+          align-items: stretch;
+        }
+        .generic-card {
+          min-height: clamp(520px, 70vh, 720px);
+          border-radius: 8px;
+          overflow: hidden;
+          position: relative;
+          background: #181513;
+          color: #ffffff;
+          isolation: isolate;
+          scroll-snap-align: start;
+          box-shadow: 0 16px 42px rgba(18, 35, 31, 0.12);
+        }
+        .generic-card__gradient {
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          background:
+            linear-gradient(180deg, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.28) 34%, rgba(0,0,0,0.08) 56%, rgba(0,0,0,0.54) 100%),
+            linear-gradient(90deg, rgba(0,0,0,0.22), transparent 52%);
+          pointer-events: none;
+        }
+        .generic-card__content {
+          position: absolute;
+          top: 24px;
+          left: 22px;
+          right: 22px;
+          z-index: 4;
+        }
+        .generic-card__title {
+          margin: 0 0 8px;
+          max-width: 330px;
+          color: #ffffff;
+          font-size: clamp(1.55rem, 2vw, 2.15rem);
+          line-height: 1.1;
+          font-weight: 900;
+          letter-spacing: 0;
+        }
+        .generic-card__description {
+          margin: 0 0 14px;
+          max-width: 300px;
+          color: rgba(255,255,255,0.94);
+          font-size: 15px;
+          line-height: 1.35;
+          font-weight: 800;
+        }
+        .generic-card__tag {
+          display: inline-flex;
+          align-items: center;
+          min-height: 30px;
+          width: fit-content;
+          padding: 7px 12px;
+          border-radius: 999px;
+          background: #4d4db7;
+          color: #ffffff;
+          font-size: 13px;
+          font-weight: 900;
+          box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+        }
+        .generic-card__tag.critical {
+          background: #e11900;
+        }
+        .generic-card__button {
+          position: absolute;
+          right: 18px;
+          bottom: 18px;
+          z-index: 5;
+          width: 54px;
+          height: 54px;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: #25211f;
+          background: rgba(255,255,255,0.96);
+          box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+          text-decoration: none;
+          transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .generic-card__button svg {
+          width: 24px;
+          height: 24px;
+          fill: currentColor;
+        }
+        .generic-card:hover .generic-card__button {
+          transform: translateX(3px);
+          background: #ffd36a;
+        }
+        .generic-card.active .generic-card__button {
+          background: #ffd36a;
+        }
+        .generic-card__asset-wrapper,
+        .generic-card__asset,
+        .video-player,
+        .aspect-ratio,
+        .video-player__contained,
+        .picture_ratio {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+        }
+        .generic-card__asset video,
+        .generic-card__asset img,
+        .generic-card__asset-wrapper video,
+        .generic-card__asset-wrapper img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transform: scale(1.02);
+          transition: transform 0.6s ease, filter 0.4s ease;
+          filter: saturate(1.04) contrast(1.02);
+        }
+        .generic-card:hover video,
+        .generic-card:hover img {
+          transform: scale(1.08);
+          filter: saturate(1.1) contrast(1.05);
+        }
+        .video-player__button {
+          position: absolute;
+          left: 18px;
+          bottom: 18px;
+          z-index: 5;
+        }
+        .media-control__button {
+          width: 42px;
+          height: 42px;
+          border: 0;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255,255,255,0.92);
+          color: #25211f;
+          cursor: pointer;
+          box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+        }
+        .media-control__button svg {
+          width: 20px;
+          height: 20px;
+          fill: currentColor;
+        }
+        .star-carousel__nav {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 18px;
+        }
+        .star-carousel__dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          border: 0;
+          background: #d6d0ca;
+          cursor: pointer;
+          padding: 0;
+          transition: width 0.2s ease, background 0.2s ease;
+        }
+        .star-carousel__dot.active {
+          width: 28px;
+          border-radius: 999px;
+          background: #25211f;
+        }
+        @media (max-width: 900px) {
+          .ssn-motion-section.star-generic-section {
+            padding: 36px 0 64px;
+          }
+          .carousel-catalog__wrapper {
+            width: calc(100% - 32px);
+          }
+          .star-carousel__container {
+            display: flex;
+            gap: 16px;
+          }
+          .generic-card {
+            min-width: min(82vw, 380px);
+            min-height: 560px;
+          }
+        }
+        @media (max-width: 520px) {
+          .carousel-catalog__wrapper {
+            width: calc(100% - 20px);
+          }
+          .generic-card {
+            min-width: 88vw;
+            min-height: 500px;
+          }
+          .generic-card__content {
+            top: 20px;
+            left: 18px;
+            right: 18px;
+          }
+          .generic-card__title {
+            font-size: 1.55rem;
+          }
+          .generic-card__button {
+            width: 50px;
+            height: 50px;
+          }
+        }
+
+        /* -- INSTAGRAM PREVIEW -- */
+        .ssn-instagram-section {
+          padding: 76px 40px;
+          background: #ffffff;
+          border-top: 1px solid #e4ddd0;
+          border-bottom: 1px solid #e4ddd0;
+        }
+        .ssn-instagram-head {
+          max-width: 1180px;
+          margin: 0 auto 28px;
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 22px;
+        }
+        .ssn-instagram-head h2 {
+          font-size: clamp(1.9rem, 3vw, 2.7rem);
+          line-height: 1.15;
+          margin: 10px 0 0;
+          color: #12231f;
+          letter-spacing: 0;
+        }
+        .ssn-instagram-head p {
+          color: #64706c;
+          font-size: 15px;
+          line-height: 1.65;
+          max-width: 560px;
+          margin-top: 8px;
+        }
+        .ssn-instagram-link {
+          min-height: 42px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 16px;
+          border-radius: 8px;
+          background: #408bd1;
+          color: #ffffff;
+          text-decoration: none;
+          font-weight: 900;
+          white-space: nowrap;
+          transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .ssn-instagram-link:hover {
+          background: #0a0a0a;
+          transform: translateY(-2px);
+        }
+        .ssn-instagram-grid {
+          max-width: 1180px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 12px;
+        }
+        .ssn-instagram-card {
+          aspect-ratio: 1 / 1;
+          position: relative;
+          overflow: hidden;
+          border-radius: 8px;
+          background: #12231f;
+          color: #ffffff;
+        }
+        .ssn-instagram-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.45s ease;
+        }
+        .ssn-instagram-card:hover img {
+          transform: scale(1.08);
+        }
+        .ssn-instagram-card span {
+          position: absolute;
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+          z-index: 2;
+          font-size: 13px;
+          font-weight: 900;
+          text-shadow: 0 4px 16px rgba(0,0,0,0.45);
+        }
+        .ssn-instagram-card::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.68));
+        }
+
+        .ssn-star-mousse-section {
+          background: #ffffff;
+          padding: 74px 32px 78px;
+          border-top: 1px solid #f2f2f2;
+        }
+        .ssn-star-mousse-inner {
+          max-width: 1040px;
+          margin: 0 auto;
+        }
+        .ssn-star-mousse-head {
+          text-align: center;
+          margin-bottom: 26px;
+        }
+        .ssn-star-mousse-head h2 {
+          color: #2a2a2a;
+          font-family: 'Lato', 'DM Sans', sans-serif;
+          font-size: 24px;
+          line-height: 1.35;
+          font-weight: 800;
+          letter-spacing: 0;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+        }
+        .ssn-star-mousse-head p {
+          color: #4c4c4c;
+          font-size: 13px;
+          line-height: 1.65;
+          margin: 0;
+        }
+        .ssn-star-mousse-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 22px 28px;
+        }
+        .ssn-star-mousse-card {
+          min-width: 0;
+          text-align: center;
+        }
+        .ssn-star-mousse-image {
+          position: relative;
+          display: block;
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          overflow: hidden;
+          background: #eeeeee;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+        }
+        .ssn-star-mousse-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.26s ease;
+        }
+        .ssn-star-mousse-card:hover .ssn-star-mousse-image img {
+          transform: scale(1.035);
+        }
+        .ssn-star-mousse-badge {
+          position: absolute;
+          top: 15px;
+          left: 15px;
+          min-height: 20px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4px 7px;
+          background: #c0006f;
+          color: #ffffff;
+          font-size: 10px;
+          font-weight: 800;
+          line-height: 1;
+          text-transform: uppercase;
+          z-index: 1;
+        }
+        .ssn-star-mousse-title {
+          margin: 13px 0 6px;
+          border: none;
+          background: transparent;
+          color: #222222;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 500;
+          line-height: 1.35;
+          min-height: 18px;
+          padding: 0;
+        }
+        .ssn-star-mousse-title:hover {
+          color: #c0006f;
+        }
+        .ssn-star-mousse-price {
+          color: #777777;
+          font-size: 12px;
+          line-height: 1.4;
+          margin-bottom: 10px;
+          white-space: nowrap;
+        }
+        .ssn-star-mousse-actions {
+          display: inline-flex;
+          align-items: stretch;
+          justify-content: center;
+          height: 30px;
+        }
+        .ssn-star-mousse-step,
+        .ssn-star-mousse-qty,
+        .ssn-star-mousse-cart {
+          width: 30px;
+          height: 30px;
+          border: 1px solid #dfdfdf;
+          background: #ffffff;
+          color: #333333;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          line-height: 1;
+        }
+        .ssn-star-mousse-step {
+          cursor: pointer;
+        }
+        .ssn-star-mousse-qty {
+          border-left: 0;
+          border-right: 0;
+          width: 34px;
+          font-weight: 500;
+        }
+        .ssn-star-mousse-cart {
+          margin-left: 8px;
+          cursor: pointer;
+        }
+        .ssn-star-mousse-step:hover,
+        .ssn-star-mousse-cart:hover {
+          border-color: #c0006f;
+          color: #c0006f;
+        }
+
+        /* -- SECTION PRODUCTS -- */
         .ssn-section-products {
           background:
-            linear-gradient(180deg, #ffffff 0%, #f7f3ee 48%, #ffffff 100%);
-          padding: 100px 40px;
-          border-top: 1px solid #ebe6df;
-          border-bottom: 1px solid #ebe6df;
+            linear-gradient(180deg, #ffffff 0%, #f4efe6 48%, #ffffff 100%);
+          padding: 88px 40px;
+          border-top: 1px solid #e4ddd0;
+          border-bottom: 1px solid #e4ddd0;
           position: relative;
           overflow: hidden;
         }
@@ -876,8 +2442,8 @@ const Home = () => {
           position: absolute;
           inset: 34px 40px auto;
           height: 170px;
-          border-radius: 28px;
-          background: linear-gradient(120deg, rgba(181,47,47,0.08), rgba(243,168,87,0.14), rgba(255,255,255,0));
+          border-radius: 14px;
+          background: linear-gradient(120deg, rgba(15,79,67,0.09), rgba(232,111,69,0.13), rgba(255,255,255,0));
           pointer-events: none;
         }
         .ssn-container {
@@ -898,13 +2464,13 @@ const Home = () => {
           font-family: 'Playfair Display', serif;
           font-size: clamp(2rem, 4vw, 3.15rem);
           font-weight: 700;
-          color: #1a1a2e;
+          color: #12231f;
           margin-bottom: 8px;
           letter-spacing: 0;
         }
         .ssn-section-header p {
           font-size: 15.5px;
-          color: #60607a;
+          color: #64706c;
           font-weight: 500;
         }
         .ssn-section-kicker {
@@ -914,10 +2480,10 @@ const Home = () => {
           width: fit-content;
           margin-bottom: 12px;
           padding: 7px 12px;
-          border: 1px solid rgba(181,47,47,0.14);
-          border-radius: 999px;
+          border: 1px solid rgba(15,79,67,0.16);
+          border-radius: 8px;
           background: rgba(255,255,255,0.78);
-          color: #b52f2f;
+          color: #0f4f43;
           font-size: 12px;
           font-weight: 800;
           letter-spacing: 0.6px;
@@ -928,13 +2494,13 @@ const Home = () => {
           align-items: center;
           gap: 8px;
           flex-shrink: 0;
-          min-height: 40px;
+          min-height: 44px;
           padding: 10px 15px;
-          border: 1px solid #e8e9f6;
-          border-radius: 999px;
+          border: 1px solid #e4ddd0;
+          border-radius: 8px;
           background: rgba(255,255,255,0.84);
-          color: #565675;
-          box-shadow: 0 12px 30px rgba(26,26,46,0.06);
+          color: #51615c;
+          box-shadow: 0 12px 30px rgba(18,35,31,0.06);
           font-size: 13px;
           font-weight: 700;
         }
@@ -949,27 +2515,27 @@ const Home = () => {
         /* Product card */
         .ssn-card {
           background: #ffffff;
-          border: 1px solid #e7e7ef;
+          border: 1px solid #e4ddd0;
           border-radius: 8px;
           overflow: hidden;
           transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
           cursor: pointer;
           position: relative;
-          box-shadow: 0 16px 44px rgba(26,26,46,0.08);
+          box-shadow: 0 16px 44px rgba(18,35,31,0.08);
           display: flex;
           flex-direction: column;
           min-height: 100%;
         }
         .ssn-card:hover {
-          border-color: rgba(181,47,47,0.25);
-          box-shadow: 0 26px 70px rgba(26,26,46,0.14);
+          border-color: rgba(15,79,67,0.25);
+          box-shadow: 0 26px 70px rgba(18,35,31,0.14);
           transform: translateY(-6px);
         }
         .ssn-card-img {
           width: 100%;
           height: 255px;
           overflow: hidden;
-          background: linear-gradient(145deg, #f7f3ee 0%, #ffffff 58%, #eef2f7 100%);
+          background: linear-gradient(145deg, #f4efe6 0%, #ffffff 58%, #e9f4ee 100%);
           position: relative;
           display: flex;
           align-items: center;
@@ -983,7 +2549,7 @@ const Home = () => {
           width: 190px;
           height: 190px;
           border-radius: 42% 58% 46% 54%;
-          background: #f3a857;
+          background: #e86f45;
           opacity: 0.24;
         }
         .ssn-card-img img {
@@ -1013,19 +2579,19 @@ const Home = () => {
           align-items: center;
           min-height: 28px;
           padding: 6px 10px;
-          border-radius: 999px;
-          background: #b52f2f;
+          border-radius: 8px;
+          background: #0f4f43;
           color: #ffffff;
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 0.2px;
-          box-shadow: 0 10px 22px rgba(181,47,47,0.22);
+          box-shadow: 0 10px 22px rgba(15,79,67,0.2);
         }
         .ssn-offer-pill.light {
           background: rgba(255,255,255,0.92);
-          color: #1a1a2e;
-          border: 1px solid rgba(26,26,46,0.08);
-          box-shadow: 0 10px 22px rgba(26,26,46,0.08);
+          color: #12231f;
+          border: 1px solid rgba(18,35,31,0.08);
+          box-shadow: 0 10px 22px rgba(18,35,31,0.08);
         }
         .ssn-card-body {
           padding: 22px 22px 24px;
@@ -1042,32 +2608,32 @@ const Home = () => {
         }
         .ssn-rating {
           font-size: 12px;
-          color: #565675;
+          color: #4f625d;
           display: flex;
           align-items: center;
           gap: 5px;
-          background: #fff8df;
-          border: 1px solid #ffe9a8;
-          border-radius: 999px;
+          background: #fff5dc;
+          border: 1px solid #ffe4a3;
+          border-radius: 8px;
           padding: 5px 10px;
           font-weight: 800;
         }
         .ssn-rating.muted {
           background: #f6f6f7;
           border-color: #e7e7ec;
-          color: #6c6f7d;
+          color: #555866;
         }
         .ssn-card-body h3 {
           font-size: 22px;
           font-weight: 800;
-          color: #1a1a2e;
+          color: #12231f;
           margin-bottom: 8px;
           letter-spacing: 0;
           line-height: 1.25;
         }
         .ssn-card-body p {
           font-size: 14px;
-          color: #5f6377;
+          color: #64706c;
           line-height: 1.55;
           margin-bottom: 16px;
           min-height: 44px;
@@ -1083,7 +2649,7 @@ const Home = () => {
           display: flex;
           align-items: center;
           gap: 9px;
-          color: #2f3142;
+          color: #263a35;
           font-size: 13.5px;
           font-weight: 700;
         }
@@ -1092,12 +2658,12 @@ const Home = () => {
           width: 7px;
           height: 7px;
           border-radius: 50%;
-          background: #b52f2f;
-          box-shadow: 0 0 0 4px rgba(181,47,47,0.1);
+          background: #0f4f43;
+          box-shadow: 0 0 0 4px rgba(15,79,67,0.1);
           flex-shrink: 0;
         }
         .ssn-recommendation-reason {
-          color: #64677a;
+          color: #64706c;
           font-size: 12.5px;
           line-height: 1.5;
           margin: -6px 0 16px;
@@ -1109,7 +2675,7 @@ const Home = () => {
           justify-content: space-between;
           gap: 14px;
           padding-top: 18px;
-          border-top: 1px solid #eeeef7;
+          border-top: 1px solid #e4ddd0;
           margin-top: auto;
         }
         .ssn-price-block {
@@ -1117,7 +2683,7 @@ const Home = () => {
         }
         .ssn-price-label {
           display: block;
-          color: #777b91;
+          color: #64706c;
           font-size: 12px;
           font-weight: 800;
           margin-bottom: 2px;
@@ -1126,34 +2692,35 @@ const Home = () => {
           display: inline-block;
           font-size: 24px;
           font-weight: 900;
-          color: #1a1a2e;
+          color: #0f4f43;
           letter-spacing: 0;
           white-space: nowrap;
         }
         .ssn-old-price {
           display: inline-block;
           margin-left: 8px;
-          color: #9a9cac;
+          color: #7d8581;
           font-size: 13px;
           font-weight: 800;
           text-decoration: line-through;
           white-space: nowrap;
         }
         .ssn-btn-card {
-          background: #1a1a2e;
+          background: #0f4f43;
           color: #fff;
           border: none;
+          min-height: 44px;
           padding: 12px 16px;
           border-radius: 12px;
           font-size: 13px;
           font-weight: 800;
-          font-family: 'DM Sans', sans-serif;
+          font-family: inherit;
           cursor: pointer;
           transition: background 0.18s, color 0.18s, transform 0.18s;
           white-space: nowrap;
         }
         .ssn-btn-card:hover {
-          background: #7a7a7a;
+          background: #e86f45;
           color: #fff;
           transform: translateX(2px);
         }
@@ -1163,17 +2730,90 @@ const Home = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #60607a;
+          color: #64706c;
           background: rgba(255,255,255,0.72);
-          border: 1px dashed #dfe1f2;
-          border-radius: 22px;
+          border: 1px dashed #e4ddd0;
+          border-radius: 12px;
           font-weight: 700;
         }
 
-        /* ── AVIS CLIENTS AVANT LE QUIZ ── */
+        /* -- SEO CONTENT -- */
+        .ssn-seo-section {
+          padding: 72px 40px;
+          background: #ffffff;
+          border-top: 1px solid #e4ddd0;
+          border-bottom: 1px solid #e4ddd0;
+        }
+        .ssn-seo-inner {
+          max-width: 1080px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+          gap: 42px;
+          align-items: start;
+        }
+        .ssn-seo-kicker {
+          display: inline-flex;
+          width: fit-content;
+          margin-bottom: 14px;
+          padding: 7px 12px;
+          border-radius: 8px;
+          background: #fff1d1;
+          color: #0f4f43;
+          font-size: 12px;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .ssn-seo-section h2 {
+          margin: 0 0 16px;
+          color: #12231f;
+          font-size: clamp(1.8rem, 3vw, 2.5rem);
+          line-height: 1.16;
+          letter-spacing: 0;
+        }
+        .ssn-seo-section h3 {
+          margin: 22px 0 8px;
+          color: #12231f;
+          font-size: 18px;
+          line-height: 1.3;
+        }
+        .ssn-seo-section p {
+          color: #51615c;
+          font-size: 15.5px;
+          line-height: 1.85;
+          margin: 0 0 14px;
+        }
+        .ssn-seo-list {
+          display: grid;
+          gap: 10px;
+          margin: 18px 0 0;
+          padding: 0;
+          list-style: none;
+        }
+        .ssn-seo-list li {
+          position: relative;
+          padding-left: 22px;
+          color: #263a35;
+          font-size: 14.5px;
+          line-height: 1.65;
+          font-weight: 700;
+        }
+        .ssn-seo-list li::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 10px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #0f4f43;
+        }
+
+        /* -- AVIS CLIENTS AVANT LE QUIZ -- */
         .ssn-reviews-section {
           padding: 72px 40px;
-          background: #f2f2f2;
+          background: #f4efe6;
         }
         .ssn-reviews-inner {
           max-width: 1180px;
@@ -1187,10 +2827,10 @@ const Home = () => {
         .ssn-reviews-header h2 {
           font-size: clamp(2rem, 2.7vw, 2.8rem);
           margin: 18px auto 12px;
-          color: #151522;
+          color: #12231f;
         }
         .ssn-reviews-header p {
-          color: #5c5c6f;
+          color: #64706c;
           font-size: 15px;
           line-height: 1.8;
         }
@@ -1201,21 +2841,21 @@ const Home = () => {
         }
         .ssn-review-card {
           background: #ffffff;
-          border: 1px solid rgba(21,21,34,0.08);
-          border-radius: 24px;
-          padding: 28px;
-          box-shadow: 0 16px 46px rgba(119,119,119,0.08);
+          border: 1px solid rgba(18,35,31,0.08);
+          border-radius: 12px;
+          padding: 26px;
+          box-shadow: 0 16px 46px rgba(18,35,31,0.08);
           display: flex;
           flex-direction: column;
           gap: 18px;
         }
         .ssn-review-stars {
-          color: #7a7a7a;
+          color: #e86f45;
           font-size: 1rem;
           letter-spacing: 0.1em;
         }
         .ssn-review-card p {
-          color: #4e4e63;
+          color: #51615c;
           line-height: 1.8;
           font-size: 15px;
           margin: 0;
@@ -1226,26 +2866,26 @@ const Home = () => {
           justify-content: space-between;
           gap: 10px;
           align-items: center;
-          color: #151522;
+          color: #12231f;
           font-weight: 700;
           font-size: 14px;
         }
         .ssn-review-author span {
-          color: #7f7f91;
+          color: #64706c;
           font-weight: 500;
         }
 
-        /* ── QUIZ BANNER ── */
+        /* -- QUIZ BANNER -- */
         .ssn-section-quiz {
           padding: 92px 40px;
-          background: #eef3fb;
+          background: #e9f4ee;
         }
         .ssn-quiz-card {
           max-width: 1280px;
           margin: 0 auto;
-          background: #151522;
+          background: #0f4f43;
           border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 28px;
+          border-radius: 14px;
           display: grid;
           grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr);
           align-items: center;
@@ -1253,7 +2893,7 @@ const Home = () => {
           padding: 34px;
           overflow: hidden;
           position: relative;
-          box-shadow: 0 28px 80px rgba(21,21,34,0.18);
+          box-shadow: 0 28px 80px rgba(18,35,31,0.18);
         }
         .ssn-quiz-card::before {
           content: '';
@@ -1270,7 +2910,7 @@ const Home = () => {
         .ssn-quiz-img img {
           width: 100%;
           height: 420px;
-          border-radius: 22px;
+          border-radius: 12px;
           box-shadow: 0 18px 45px rgba(0,0,0,0.24);
           object-fit: cover;
         }
@@ -1280,7 +2920,7 @@ const Home = () => {
           padding-right: 18px;
         }
         .ssn-quiz-content h2 {
-          font-family: 'Playfair Display', serif;
+          font-family: Georgia, "Times New Roman", serif;
           font-size: clamp(2rem, 3.4vw, 3rem);
           font-weight: 700;
           color: #ffffff;
@@ -1289,12 +2929,12 @@ const Home = () => {
           letter-spacing: 0;
         }
         .ssn-quiz-content h2 em {
-          color: #f4c38a;
+          color: #ffd36a;
           font-style: italic;
         }
         .ssn-quiz-content p {
           font-size: 15.5px;
-          color: #d9d7d2;
+          color: #e9f4ee;
           line-height: 1.7;
           margin-bottom: 28px;
           max-width: 520px;
@@ -1313,14 +2953,14 @@ const Home = () => {
           color: #f2eee9;
           background: rgba(255,255,255,0.08);
           border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 999px;
+          border-radius: 8px;
           padding: 8px 12px 8px 8px;
         }
         .ssn-quiz-step-num {
           width: 24px; height: 24px;
           border-radius: 50%;
-          background: #f4c38a;
-          color: #151522;
+          background: #ffd36a;
+          color: #12231f;
           font-size: 11px;
           font-weight: 700;
           display: flex;
@@ -1329,21 +2969,39 @@ const Home = () => {
           flex-shrink: 0;
         }
 
-        /* ── RESPONSIVE ── */
+        /* -- RESPONSIVE -- */
         @media (max-width: 900px) {
-          .ssn-hero {
-            flex-direction: column;
-            padding: 54px 24px 58px;
-            gap: 40px;
-            text-align: center;
+          .ssn-hero-shell { padding: 16px; }
+          .ssn-hero-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
           }
-          .ssn-hero-content { max-width: 100%; }
+          .ssn-hero {
+            grid-template-columns: 1fr;
+            min-height: auto;
+          }
+          .ssn-hero.split-b {
+            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+            grid-template-rows: none;
+          }
+          .ssn-hero-content {
+            max-width: 100%;
+            padding: 42px 28px 30px;
+            text-align: left;
+          }
+          .ssn-hero.split-b .ssn-hero-content {
+            padding: 32px 24px;
+          }
+          .ssn-hero-countdown { justify-content: flex-start; }
           .ssn-hero-desc { max-width: 100%; }
-          .ssn-hero-btns { justify-content: center; }
-          .ssn-stats { width: 100%; justify-content: center; flex-wrap: wrap; }
-          .ssn-hero-visual { max-width: 420px; width: 100%; }
-          .ssn-hero-card { left: 18px; bottom: 18px; text-align: left; }
-          .ssn-hero-mini-video { width: 118px; right: 2px; top: 24px; }
+          .ssn-hero-btns { justify-content: flex-start; }
+          .ssn-hero-visual { min-height: 420px; }
+          .ssn-hero.split-b .ssn-hero-visual { min-height: 320px; }
+          .ssn-hero-gradient {
+            background:
+              linear-gradient(180deg, rgba(244,239,230,0.98) 0%, rgba(244,239,230,0.82) 48%, rgba(244,239,230,0) 100%),
+              radial-gradient(circle at 50% 16%, rgba(232,111,69,0.16), transparent 32%);
+          }
           .ssn-motion-section { padding: 0 24px 64px; overflow: hidden; }
           .ssn-motion-reel { min-height: auto; }
           .ssn-motion-copy { padding: 0 0 24px; }
@@ -1377,7 +3035,11 @@ const Home = () => {
           }
           .ssn-video-progress { width: 100%; }
 
+          .ssn-star-mousse-section { padding: 56px 24px 60px; }
+          .ssn-star-mousse-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
           .ssn-section-products { padding: 60px 24px; }
+          .ssn-seo-section { padding: 56px 24px; }
+          .ssn-seo-inner { grid-template-columns: 1fr; gap: 22px; }
           .ssn-section-products::before { inset: 22px 16px auto; height: 140px; }
           .ssn-section-header {
             display: block;
@@ -1423,212 +3085,354 @@ const Home = () => {
           .ssn-video-meta { left: 16px; right: 16px; bottom: 16px; }
           .ssn-video-meta strong { font-size: 1.45rem; }
           .ssn-play-button { width: 46px; height: 46px; left: 16px; bottom: 150px; }
-          .ssn-stats { align-items: stretch; flex-direction: column; }
-          .ssn-stat { padding: 0; }
-          .ssn-stat-divider { width: 100%; height: 1px; }
-          .ssn-hero-title { font-size: clamp(2.35rem, 12vw, 3.3rem); }
-          .ssn-hero-mini-video { width: 94px; border-radius: 18px; }
+          .ssn-hero-shell { padding: 10px; }
+          .ssn-hero {
+            border-radius: 8px;
+          }
+          .ssn-hero.split-b {
+            grid-template-columns: 1fr;
+          }
+          .ssn-hero-content,
+          .ssn-hero.split-b .ssn-hero-content {
+            padding: 28px 18px 22px;
+          }
+          .ssn-hero-title { font-size: clamp(2rem, 10vw, 2.75rem); }
+          .ssn-hero.split-b .ssn-hero-title { font-size: clamp(1.55rem, 8vw, 2.1rem); }
+          .ssn-hero-countdown-time { width: 100%; justify-content: flex-start; }
+          .ssn-hero-countdown-time span { min-width: 40px; }
+          .ssn-hero-visual { min-height: 320px; }
+          .ssn-hero.split-b .ssn-hero-visual { min-height: 260px; }
+          .ssn-hero-badge-card { left: 16px; bottom: 16px; width: min(250px, 76%); text-align: left; }
+          .ssn-hero-award { left: 16px; bottom: 16px; width: min(230px, 76%); text-align: left; }
+          .ssn-reviews-grid { grid-template-columns: 1fr; }
+          .ssn-star-mousse-section { padding: 42px 16px 46px; }
+          .ssn-star-mousse-head h2 { font-size: 21px; }
+          .ssn-star-mousse-grid { gap: 18px 14px; }
+          .ssn-star-mousse-price { font-size: 11px; white-space: normal; }
+          .ssn-section-products { padding: 28px 16px 44px; }
+          .ssn-seo-section { padding: 42px 16px; }
+          .ssn-section-products::before { inset: 14px 12px auto; height: 110px; }
+          .ssn-section-header { margin-bottom: 18px; text-align: center; }
+          .ssn-section-header h2 { text-align: center; }
+          .ssn-section-chip { margin-top: 10px; }
+        }
+        @media (max-width: 420px) {
+          .ssn-hero-title { font-size: clamp(1.82rem, 10vw, 2.45rem); }
+          .ssn-hero-btns { gap: 10px; }
+          .ssn-hero-btns button { width: 100%; justify-content: center; }
+          .ssn-product-grid { gap: 14px; }
+          .ssn-card-body { padding: 16px 14px; }
+          .ssn-card-body h3 { font-size: 17px; }
+          .ssn-price { font-size: 20px; }
+          .ssn-editorial-arrow { width: 46px; height: 46px; }
+          .ssn-editorial-video-card { min-width: 88vw; min-height: 440px; }
+          .ssn-video-tile, .ssn-video-tile.large { min-height: 180px; border-radius: 18px; }
+          .ssn-video-tile.large { min-height: 300px; }
+        }
+        @media (max-width: 380px) {
+          .ssn-hero-content,
+          .ssn-hero.split-b .ssn-hero-content { padding: 24px 14px 20px; }
+          .ssn-star-mousse-grid { grid-template-columns: 1fr; }
+          .ssn-product-grid { grid-template-columns: 1fr; }
+          .ssn-section-products { padding: 22px 10px 36px; }
+          .ssn-card-body { padding: 14px 10px; }
+          .ssn-card-body h3 { font-size: 15px; }
+          .ssn-price { font-size: 18px; }
+          .ssn-editorial-content h3 { font-size: 1.4rem; }
+        }
+        @media (max-width: 900px) {
+          .ssn-hero-shell { padding: 0; }
+          .ssn-hero-slider { min-height: 560px; }
+          .ssn-hero-slide { padding: 76px 22px 66px; }
+          .ssn-hero-shape.one {
+            width: 118px;
+            height: 118px;
+            right: -26px;
+            top: 44px;
+            border-width: 14px;
+          }
+          .ssn-hero-shape.two {
+            width: 96px;
+            height: 96px;
+            left: -24px;
+            bottom: 80px;
+          }
+          .ssn-hero-count-pill {
+            width: 94px;
+            height: 94px;
+            right: 18px;
+            bottom: 82px;
+          }
+          .ssn-hero-count-pill strong { font-size: 25px; }
+          .ssn-hero-count-pill span { font-size: 11px; }
+          .ssn-usp-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            padding: 18px 16px;
+          }
+          .ssn-highlight-banner {
+            height: auto;
+            min-height: 128px;
+            padding: 24px 16px;
+          }
+          .ssn-highlight-content {
+            align-items: center;
+            justify-content: flex-start;
+            gap: 22px;
+            padding: 0;
+          }
+          .ssn-highlight-icon {
+            width: 54px;
+            height: 58px;
+          }
+          .ssn-highlight-icon svg {
+            width: 54px;
+            height: 54px;
+          }
+          .ssn-brand-grid {
+            grid-template-columns: 1fr;
+          }
+          .ssn-brand-panel {
+            min-height: 330px;
+            padding: 46px 24px;
+          }
+          .ssn-instagram-head {
+            display: block;
+            text-align: center;
+          }
+          .ssn-instagram-link {
+            margin-top: 18px;
+          }
+          .ssn-instagram-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+        @media (max-width: 560px) {
+          .ssn-hero-slider { min-height: 520px; }
+          .ssn-hero-slide { padding: 70px 18px 64px; }
+          .ssn-hero-script { font-size: clamp(2.35rem, 13vw, 3.6rem); }
+          .ssn-hero-main-title { font-size: clamp(2.3rem, 15vw, 4rem); }
+          .ssn-hero-copy p {
+            font-size: 1.05rem;
+            line-height: 1.45;
+            margin-bottom: 26px;
+          }
+          .ssn-hero-slider-btn {
+            width: min(260px, 100%);
+            padding: 0 24px;
+          }
+          .ssn-hero-dots { bottom: 14px; gap: 8px; }
+          .ssn-hero-dot,
+          .tp-title-wrap,
+          .sr7-nav-img {
+            width: 38px;
+            height: 76px;
+          }
+          .ssn-brand-panel {
+            min-height: 300px;
+            padding: 38px 18px;
+          }
+          .ssn-brand-content p {
+            font-size: 1.04rem;
+          }
+          .ssn-instagram-section {
+            padding: 52px 16px;
+          }
+          .ssn-instagram-grid {
+            gap: 8px;
+          }
+          .ssn-usp-list {
+            grid-template-columns: 1fr;
+            padding: 14px 12px;
+            gap: 10px;
+          }
+          .ssn-usp-item {
+            min-height: 70px;
+            justify-content: flex-start;
+          }
+          .ssn-highlight-content {
+            display: grid;
+            justify-items: center;
+            text-align: center;
+            padding: 0;
+          }
+          .ssn-highlight-text h2 {
+            font-size: 25px;
+            line-height: 1.08;
+          }
+          .ssn-highlight-text p {
+            font-size: 13px;
+          }
         }
       `}</style>
 
       <div className="ssn-page">
-        <NavBar />
 
-        {/* ── HERO ── */}
+        {/* -- HERO -- */}
         <section className="ssn-hero-shell">
-          <div className="ssn-hero">
-            <div className="ssn-hero-content ssn-fade">
-              <div className="ssn-badge">
-                Livraison offerte partout en Tunisie
-              </div>
-
-              <h1 className="ssn-hero-title">
-                Confort et bien-être, <span className="accent">chaque nuit</span>
-              </h1>
-
-              <p className="ssn-hero-desc">
-                Profitez d'un sommeil plus confortable avec Relax Plus : un matelas ergonomique
-                pensé pour mieux dormir, soutenir votre corps et vous offrir un repos profond chaque nuit.
-              </p>
-
-              <div className="ssn-hero-btns">
-                <button className="ssn-btn-primary" onClick={() => navigate('/nos-matelas')}>Découvrir Relax Plus</button>
-                <button className="ssn-btn-secondary" onClick={() => window.open('https://wa.me/21622900207', '_blank')}>💬 WhatsApp</button>
-              </div>
-
-              <div className="ssn-stats">
-                <div className="ssn-stat">
-                  <strong>10 ans</strong>
-                  <span>Garantie</span>
+          <div className="ssn-hero-slider" aria-label="Promotions et univers Star Mousse">
+            {HERO_SLIDES.map((slide, index) => (
+              <article
+                className={`ssn-hero-slide ${slide.theme} ${index === heroSlideIndex ? "active" : ""}`}
+                key={slide.title}
+                aria-hidden={index !== heroSlideIndex}
+              >
+                <div className="ssn-hero-bg" aria-hidden="true">
+                  <img
+                    src={slide.image}
+                    alt=""
+                    width="1857"
+                    height="812"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
                 </div>
-                <div className="ssn-stat-divider"></div>
-                <div className="ssn-stat">
-                   <strong>24h</strong>
-                  <span>Service Client</span>
+                <span className="ssn-hero-shape one" aria-hidden="true"></span>
+                <span className="ssn-hero-shape two" aria-hidden="true"></span>
+                {index === 1 && (
+                  <div className="ssn-hero-count-pill" aria-label="Plus de quatre-vingts produits">
+                    <div>
+                      <strong>80+</strong>
+                      <span>Produits</span>
+                    </div>
+                  </div>
+                )}
+                <div className="ssn-hero-copy">
+                  <div className="ssn-hero-script">{slide.eyebrow}</div>
+                  <h1 className="ssn-hero-main-title">{slide.title}</h1>
+                  <p>{slide.text}</p>
+                  <button className="ssn-hero-slider-btn" onClick={() => navigate(slide.route)}>
+                    {slide.cta}
+                  </button>
                 </div>
-                <div className="ssn-stat-divider"></div>
-                <div className="ssn-stat">
-                 
-                  <strong>Paiement </strong>
-                  <span>à la livraison</span>
-                </div>
-              </div>
-            </div>
+              </article>
+            ))}
 
-            <div className="ssn-hero-visual ssn-fade">
-              <div className="ssn-hero-blob"></div>
-              <img
-                src="/IMAGEHOME.jpg"
-                alt="Matelas Star Mousse Premium"
-                className="ssn-hero-img"
-              />
-              <div className="ssn-hero-mini-video" aria-label="Vidéo courte Star Mousse">
-                <video
-                  src="/video3.mp4"
-                  poster="/showroom2.jpg"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                />
-              </div>
-              <div className="ssn-hero-card">
-                <strong>Confort essayé, livraison rapide</strong>
-                <span>Des matelas conçus pour le climat tunisien, avec paiement à la livraison.</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── PRODUITS VEDETTES ── */}
-        <ProductShowcase />
-
-        {/* ── PRODUITS ── */}
-        <section className="ssn-section-products">
-          <div className="ssn-container">
-            <header className="ssn-section-header ssn-fade">
-              <div>
-                <span className="ssn-section-kicker">Sélection intelligente</span>
-                <h2>Nos produits recommandés</h2>
-                <p>Des produits mis en avant selon les avis clients et les besoins les plus fréquents.</p>
-              </div>
-              <span className="ssn-section-chip">⭐ Recommandations par avis</span>
-            </header>
-
-            <div className="ssn-product-grid">
-              {loading ? (
-                <div className="ssn-loading">Chargement des produits...</div>
-              ) : (
-                bestSellers.map((product) => (
-                  <div className="ssn-card ssn-fade" key={product.id}>
-                    <div className="ssn-card-img">
-                      <div className="ssn-card-offer">
-                        <span className="ssn-offer-pill">{product.discount}</span>
-                        {product.badges?.slice(0, 1).map((badge) => (
-                          <span className="ssn-offer-pill light" key={badge}>{badge}</span>
-                        ))}
-                      </div>
-                      <img
-                        src={product.img}
-                        alt={product.name}
-                        onError={(event) => {
-                          event.currentTarget.src = "/relax1.png";
-                        }}
+            <div className="ssn-hero-dots" aria-label="Choisir une slide">
+              {HERO_SLIDES.map((slide, index) => (
+                <button
+                  className={`ssn-hero-dot ${index === heroSlideIndex ? "active" : ""}`}
+                  key={slide.title}
+                  onClick={() => setHeroSlideIndex(index)}
+                  aria-label={`Afficher ${slide.title}`}
+                  type="button"
+                >
+                  <div className="tp-title-wrap">
+                    <div className="sr7-nav-img">
+                      <span
+                        className="sr7-nav-img-live"
+                        style={{ backgroundImage: `url(${slide.thumb})` }}
+                        aria-hidden="true"
                       />
                     </div>
-                    <div className="ssn-card-body">
-                      <div className="ssn-card-top">
-                        <span className="ssn-offer-pill light">
-                          {product.badges?.[1] || "Best seller"}
-                        </span>
-                        {product.reviewCount > 0 ? (
-                          <div className="ssn-rating">⭐ {Number(product.rating).toFixed(1)} · {product.reviewCount} avis</div>
-                        ) : (
-                          <div className="ssn-rating muted">Sélection catalogue</div>
-                        )}
-                      </div>
-                      <h3>{product.name}</h3>
-                      <p>{product.desc}</p>
-                      {product.reason && (
-                        <div className="ssn-recommendation-reason">{product.reason}</div>
-                      )}
-                      <ul className="ssn-card-features">
-                        {product.features?.map((feature) => (
-                          <li key={feature}>{feature}</li>
-                        ))}
-                      </ul>
-                      <div className="ssn-card-footer">
-                        <div className="ssn-price-block">
-                          <span className="ssn-price-label">Dès</span>
-                          <span className="ssn-price">{formatPrice(product.price)}</span>
-                          {product.oldPrice && <span className="ssn-old-price">{formatPrice(product.oldPrice)}</span>}
-                        </div>
-                        <button className="ssn-btn-card" onClick={() => navigate('/products')}>Voir le produit →</button>
-                      </div>
-                    </div>
                   </div>
-                ))
-              )}
+                </button>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="ssn-motion-section">
-          <div className="ssn-video-gallery ssn-fade" aria-label="Univers vidéo Star Mousse">
-            {[
-              {
-                title: "Dormez mieux, vivez mieux",
-                text: "Découvrez notre univers confort",
-                pill: "Gamme Premium",
-                pillClass: "",
-                src: "/video3.mp4",
-                poster: "/showroom2.jpg",
-              },
-              {
-                title: "Des produits de qualité, accessibles à tous",
-                text: "Découvrez la gamme complète",
-                pill: "Gamme Original",
-                pillClass: "gold",
-                src: "/video1.mp4",
-                poster: "/showroom4.jpg",
-              },
-              {
-                title: "Matelas Performance",
-                text: "La nouvelle référence du confort",
-                pill: "Récupération physique",
-                pillClass: "",
-                src: "/video2.mp4",
-                poster: "/sleeping_home.jpg",
-              },
-              {
-                title: "Nos magasins",
-                text: "Trouvez le magasin le plus proche de chez vous",
-                pill: "Showroom Star Mousse",
-                pillClass: "dark",
-                src: "/videoshowroom.mp4",
-                poster: "/showroom1.jpg",
-              },
-            ].map((item) => (
-              <article className="ssn-editorial-video-card" key={item.title}>
-                <video
-                  src={item.src}
-                  poster={item.poster}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  aria-label={item.title}
-                />
-                <div className="ssn-editorial-content">
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.text}</p>
-                    <span className={`ssn-editorial-pill ${item.pillClass}`}>{item.pill}</span>
+        <section className="ssn-usp-section" aria-label="Avantages Star Mousse">
+          <ul className="ssn-usp-list">
+            {USP_ITEMS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <li className="ssn-usp-item ssn-fade" key={item.title}>
+                  <Icon aria-hidden="true" />
+                  <span>{item.title}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <section className="ssn-highlight-banner" aria-label="Preuve sociale Star Mousse">
+          <div className="ssn-highlight-content ssn-fade">
+            <span className="ssn-highlight-icon" aria-hidden="true">
+              <FiAward />
+            </span>
+            <div className="ssn-highlight-text">
+              <h2>
+                {HIGHLIGHT_BANNER.headline}
+                <sup>{HIGHLIGHT_BANNER.headlineNote}</sup>
+              </h2>
+              <p>
+                {HIGHLIGHT_BANNER.description}
+                <sup>{HIGHLIGHT_BANNER.descriptionNote}</sup>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="ssn-catalog-section" aria-label="Best sellers soldes">
+          <div className="ssn-catalog-heading ssn-fade">
+            <h2>Découvrez nos Best Sellers Soldés</h2>
+          </div>
+
+          <div className="ssn-catalog-viewport">
+            <div className="ssn-catalog-track">
+              {CATALOG_DEALS.map((deal) => (
+                <button
+                  className="ssn-catalog-card ssn-fade"
+                  key={deal.title}
+                  type="button"
+                  onClick={() => navigate(deal.route)}
+                  aria-label={`Voir ${deal.title}`}
+                >
+                  <div className="ssn-catalog-image">
+                    <div className="ssn-catalog-tags">
+                      {deal.tags.map((tag, index) => (
+                        <span className={`ssn-catalog-tag ${index > 0 ? "strong" : ""}`} key={tag}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <img src={deal.image} alt="" width="420" height="315" loading="lazy" decoding="async" />
+                    {deal.badgeImage && (
+                      <img className="ssn-catalog-badge" src={deal.badgeImage} alt="" width="94" height="42" loading="lazy" decoding="async" />
+                    )}
                   </div>
-                  <button className="ssn-editorial-arrow" onClick={() => navigate('/products')} aria-label={`Voir ${item.title}`}>
-                    →
+                  {deal.promo && <div className="ssn-catalog-promo">{deal.promo}</div>}
+                  <div className="ssn-catalog-body">
+                    <h3 className="ssn-catalog-title">{deal.title}</h3>
+                    <ul className="ssn-catalog-bullets">
+                      {deal.bullets.map((bullet) => (
+                        <li key={bullet}>
+                          <FiCheck aria-hidden="true" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="ssn-catalog-price">
+                      <span className="ssn-catalog-price-label">Dès</span>
+                      <span className="ssn-catalog-current">{deal.price}</span>
+                      <span className="ssn-catalog-old">{deal.oldPrice}</span>
+                      {deal.note && <span className="ssn-catalog-note">{deal.note}</span>}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="ssn-brand-strip" aria-label="Star Mousse Tunisie">
+          <div className="ssn-brand-grid">
+            {BRAND_FEATURES.map((feature) => (
+              <article className={`ssn-brand-panel ${feature.tone} ssn-fade`} key={feature.title}>
+                <img src={feature.image} alt="" width="720" height="420" loading="lazy" decoding="async" />
+                <div className="ssn-brand-content">
+                  <h2>
+                    {feature.title.includes("Tunisie") ? (
+                      <>
+                        Star Mousse <span>Tunisie</span>
+                      </>
+                    ) : (
+                      feature.title
+                    )}
+                  </h2>
+                  <p>{feature.text}</p>
+                  <button className="ssn-brand-action" type="button" onClick={() => navigate(feature.route)}>
+                    {feature.action}
                   </button>
                 </div>
               </article>
@@ -1636,44 +3440,313 @@ const Home = () => {
           </div>
         </section>
 
-        {/* ── AVIS CLIENTS AVANT LE QUIZ ── */}
+        <section className="ssn-star-mousse-section" aria-label="Matelas Star Mousse">
+          <div className="ssn-star-mousse-inner">
+            <header className="ssn-star-mousse-head ssn-fade">
+              <h2>Matelas Star Mousse</h2>
+              <p>Produits de 1ere gamme, conception tunisie, confort durable et savoir-faire local.</p>
+            </header>
+
+            <div className="ssn-star-mousse-grid">
+              {STAR_MOUSSE_PRODUCTS.filter((product) => product.category === "matelas").map((product) => (
+                <article className="ssn-star-mousse-card ssn-fade" key={product.id}>
+                  <button
+                    type="button"
+                    className="ssn-star-mousse-image"
+                    onClick={() => navigate(product.route)}
+                    aria-label={`Voir ${product.title}`}
+                  >
+                    <span className="ssn-star-mousse-badge">{product.badge}</span>
+                    <img
+                      src={product.image}
+                      alt={product.alt}
+                      width="300"
+                      height="300"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="ssn-star-mousse-title"
+                    onClick={() => navigate(product.route)}
+                  >
+                    {product.title}
+                  </button>
+                  <div className="ssn-star-mousse-price">{product.price}</div>
+                  <div className="ssn-star-mousse-actions" aria-label={`Quantite ${product.title}`}>
+                    <button type="button" className="ssn-star-mousse-step" aria-label="Diminuer la quantite">-</button>
+                    <span className="ssn-star-mousse-qty">1</span>
+                    <button type="button" className="ssn-star-mousse-step" aria-label="Augmenter la quantite">+</button>
+                    <button
+                      type="button"
+                      className="ssn-star-mousse-cart"
+                      onClick={() => navigate(product.route)}
+                      aria-label={`Commander ${product.title}`}
+                    >
+                      <FiShoppingBag aria-hidden="true" />
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="ssn-star-mousse-section" aria-label="Oreillers et accessoires Star Mousse">
+          <div className="ssn-star-mousse-inner">
+            <header className="ssn-star-mousse-head ssn-fade">
+              <h2>Nos Oreillers et Autre</h2>
+              <p>Oreillers et accessoires pensés pour compléter votre confort de sommeil.</p>
+            </header>
+
+            <div className="ssn-star-mousse-grid">
+              {STAR_MOUSSE_PRODUCTS.filter((product) => product.category === "oreillers").map((product) => (
+                <article className="ssn-star-mousse-card ssn-fade" key={product.id}>
+                  <button
+                    type="button"
+                    className="ssn-star-mousse-image"
+                    onClick={() => navigate(product.route)}
+                    aria-label={`Voir ${product.title}`}
+                  >
+                    <span className="ssn-star-mousse-badge">{product.badge}</span>
+                    <img
+                      src={product.image}
+                      alt={product.alt}
+                      width="300"
+                      height="300"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="ssn-star-mousse-title"
+                    onClick={() => navigate(product.route)}
+                  >
+                    {product.title}
+                  </button>
+                  <div className="ssn-star-mousse-price">{product.price}</div>
+                  <div className="ssn-star-mousse-actions" aria-label={`Quantite ${product.title}`}>
+                    <button type="button" className="ssn-star-mousse-step" aria-label="Diminuer la quantite">-</button>
+                    <span className="ssn-star-mousse-qty">1</span>
+                    <button type="button" className="ssn-star-mousse-step" aria-label="Augmenter la quantite">+</button>
+                    <button
+                      type="button"
+                      className="ssn-star-mousse-cart"
+                      onClick={() => navigate(product.route)}
+                      aria-label={`Commander ${product.title}`}
+                    >
+                      <FiShoppingBag aria-hidden="true" />
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="ssn-star-mousse-section" aria-label="Lits & Meubles Star Mousse">
+          <div className="ssn-star-mousse-inner">
+            <header className="ssn-star-mousse-head ssn-fade">
+              <h2>Lits & Meubles</h2>
+              <p>Éléments de literie et mobilier conçus pour une chambre complète et harmonieuse.</p>
+            </header>
+
+            <div className="ssn-star-mousse-grid">
+              {STAR_MOUSSE_PRODUCTS.filter((product) => product.category === "lits").map((product) => (
+                <article className="ssn-star-mousse-card ssn-fade" key={product.id}>
+                  <button
+                    type="button"
+                    className="ssn-star-mousse-image"
+                    onClick={() => navigate(product.route)}
+                    aria-label={`Voir ${product.title}`}
+                  >
+                    <span className="ssn-star-mousse-badge">{product.badge}</span>
+                    <img
+                      src={product.image}
+                      alt={product.alt}
+                      width="300"
+                      height="300"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="ssn-star-mousse-title"
+                    onClick={() => navigate(product.route)}
+                  >
+                    {product.title}
+                  </button>
+                  <div className="ssn-star-mousse-price">{product.price}</div>
+                  <div className="ssn-star-mousse-actions" aria-label={`Quantite ${product.title}`}>
+                    <button type="button" className="ssn-star-mousse-step" aria-label="Diminuer la quantite">-</button>
+                    <span className="ssn-star-mousse-qty">1</span>
+                    <button type="button" className="ssn-star-mousse-step" aria-label="Augmenter la quantite">+</button>
+                    <button
+                      type="button"
+                      className="ssn-star-mousse-cart"
+                      onClick={() => navigate(product.route)}
+                      aria-label={`Commander ${product.title}`}
+                    >
+                      <FiShoppingBag aria-hidden="true" />
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Product recommendations removed per request */}
+
+        <section className="ssn-motion-section star-generic-section">
+          <div className="carousel-catalog__wrapper ssn-fade" data-v-9d43e96d="">
+            <div className="section-heading__desktop align--left themed themed--default-minor section-heading-wrapper carousel-catalog__heading frame--container" />
+            <div className="advanced-carousel-catalog__carousel-slot">
+              <div className="carousel-catalog" data-test="carousel-catalog">
+                <div className="star-carousel star-carousel--catalog themed themed--default-minor star-carousel--with-pagination star-carousel--with-navigation" data-testid="star-carousel">
+                  <span className="visually-hidden">Diapositive {genericSlideIndex + 1} sur {GENERIC_CAROUSEL_CARDS.length}</span>
+                  <div
+                    className="star-carousel__viewport"
+                    ref={genericCarouselViewportRef}
+                    role="region"
+                    aria-label="Carrousel"
+                    aria-roledescription="carousel"
+                  >
+                    <div className="star-carousel__container" role="list">
+                      {GENERIC_CAROUSEL_CARDS.map((card, index) => (
+                        <article
+                          className={`generic-card generic-card__desktop generic-card-carousel generic-card-large ${index === 0 ? "first-card" : ""} ${index === GENERIC_CAROUSEL_CARDS.length - 1 ? "last-card" : ""} ${index === genericSlideIndex ? "active" : ""}`}
+                          id={card.id}
+                          key={card.id}
+                          role="group"
+                          aria-roledescription="slide"
+                          aria-label={`Diapositive ${index + 1} sur ${GENERIC_CAROUSEL_CARDS.length}`}
+                          aria-labelledby={`generic-card-title-${index}`}
+                          tabIndex={0}
+                        >
+                          <div className="generic-card__gradient">
+                            <div className="generic-card__content">
+                              <h3 className="typography body-l-600 md-heading-xs-600 generic-card__title body-l-600" id={`generic-card-title-${index}`}>
+                                {card.title}
+                              </h3>
+                              <p className="typography body-xs-600 md-body-s-600 generic-card__description" id={`generic-card-desc-${index}`}>
+                                {card.description}
+                              </p>
+                              {card.tag && (
+                                <span className={`tag themed tag--no-icon generic-card__tag ${card.tagTone}`}>
+                                  <span className="typography body-xs-600 tag__label">{card.tag}</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <a
+                            href={card.route}
+                            className="themed themed--default-minor button button--medium button--icon-filled generic-card__button"
+                            aria-describedby={`generic-card-desc-${index}`}
+                            aria-label={card.title}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              navigate(card.route);
+                            }}
+                          >
+                            <svg aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24">
+                              <path d="M21.5303 11.4697L13.5303 3.46973C13.2373 3.17676 12.7627 3.17676 12.4697 3.46973C12.1768 3.7627 12.1768 4.23731 12.4697 4.53028L19.1894 11.25H3C2.58594 11.25 2.25 11.5859 2.25 12C2.25 12.4141 2.58594 12.75 3 12.75H19.1894L12.4697 19.4697C12.1768 19.7627 12.1768 20.2373 12.4697 20.5303C12.6162 20.6768 12.8076 20.75 13 20.75C13.1924 20.75 13.3838 20.6768 13.5303 20.5303L21.5303 12.5303C21.666 12.3945 21.75 12.207 21.75 12C21.75 11.793 21.666 11.6055 21.5303 11.4697Z" />
+                            </svg>
+                          </a>
+
+                          <div className="generic-card__asset-wrapper">
+                            {card.mediaType === "video" ? (
+                              <div className="video-player generic-card__asset">
+                                <div className="aspect-ratio aspect-ratio_xs_9x16 video-player__contained">
+                                  {card.alt && (
+                                    <div id={`generic-card-alt-${index}`} tabIndex="-1" className="visually-hidden">
+                                      {card.alt}
+                                    </div>
+                                  )}
+                                  <video aria-labelledby={card.alt ? `generic-card-alt-${index}` : undefined} playsInline muted loop autoPlay poster={card.poster} preload="none">
+                                    <source type="video/mp4" src={card.src} media="(min-width: 0px)" />
+                                  </video>
+                                  <div className="video-player__button video-player__button--shifted-left">
+                                    <button className="button button--medium button--icon-filled themed themed--default-major media-control__button" type="button" aria-label="Lecture vidéo">
+                                      <svg aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24">
+                                        <path d="M19.4717 9.64206L10.3584 4.17429C9.49805 3.6572 8.46094 3.6445 7.58838 4.13913C6.71484 4.63376 6.19336 5.52829 6.19336 6.5322V17.4677C6.19336 18.4717 6.71484 19.3662 7.58838 19.8603C8.01465 20.1025 8.47998 20.2226 8.94434 20.2226C9.43164 20.2226 9.91797 20.0898 10.3584 19.8261L19.4727 14.3584C20.3076 13.8564 20.8066 12.9746 20.8066 11.9995C20.8057 11.0244 20.3076 10.143 19.4717 9.64206ZM18.7002 13.0722L9.58692 18.539C9.19581 18.7763 8.7251 18.7793 8.32764 18.5556C7.93018 18.33 7.69336 17.9238 7.69336 17.4677V6.5322C7.69336 6.07615 7.93018 5.66941 8.32764 5.4448C8.52149 5.33494 8.73291 5.28025 8.94385 5.28025C9.16553 5.28025 9.38623 5.34031 9.58692 5.46043L18.7002 10.9282C19.0801 11.1557 19.3067 11.5566 19.3067 12C19.3067 12.4433 19.0801 12.8447 18.7002 13.0722Z" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <picture className="picture_ratio picture_ratio_xs_9x16 image-visible generic-card__asset">
+                                <img src={card.src} alt="" loading="lazy" fetchpriority="auto" />
+                              </picture>
+                            )}
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="star-carousel__nav" aria-label="Pagination du carrousel">
+                    {GENERIC_CAROUSEL_CARDS.map((card, index) => (
+                      <button
+                        className={`star-carousel__dot ${index === genericSlideIndex ? "active" : ""}`}
+                        key={`${card.id}-dot`}
+                        type="button"
+                        aria-label={`Afficher la diapositive ${index + 1}`}
+                        onClick={() => setGenericSlideIndex(index)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Instagram section removed per request */}
+
+        {/* -- AVIS CLIENTS AVANT LE QUIZ -- */}
         <section className="ssn-reviews-section">
           <div className="ssn-reviews-inner">
             <header className="ssn-reviews-header">
               <span className="ssn-section-kicker">Avis Client</span>
+              <h2>Ils dorment mieux avec Star Mousse</h2>
               
-              <p>Des retours authentiques de clients tunisiens qui ont déjà essayé nos matelas.</p>
+              <p>Des retours authentiques de clients tunisiens qui ont deja essaye nos matelas.</p>
             </header>
             <div className="ssn-reviews-grid">
               <article className="ssn-review-card ssn-fade">
-                <div className="ssn-review-stars">⭐⭐⭐⭐</div>
-                <p>« J’ai retrouvé un sommeil profond dès la première semaine. Le matelas est équilibré, confortable et adapté aux nuits chaudes. »</p>
+                <div className="ssn-review-stars">4/5</div>
+                <p>"J'ai retrouve un sommeil profond des la premiere semaine. Le matelas est equilibre, confortable et adapte aux nuits chaudes."</p>
                 <div className="ssn-review-author"><strong>Amel B.</strong><span>Tunis</span></div>
               </article>
               <article className="ssn-review-card ssn-fade">
-                <div className="ssn-review-stars">⭐⭐⭐⭐⭐</div>
-                <p>« Très bon soutien pour le dos. Livraison rapide et service client disponible. Je recommande sans hésiter. »</p>
+                <div className="ssn-review-stars">5/5</div>
+                <p>"Tres bon soutien pour le dos. Livraison rapide et service client disponible. Je recommande sans hesiter."</p>
                 <div className="ssn-review-author"><strong>Sami H.</strong><span>Sfax</span></div>
               </article>
               <article className="ssn-review-card ssn-fade">
-                <div className="ssn-review-stars">⭐⭐⭐⭐</div>
-                <p>« Le matelas est très confortable, il respire bien et j’ai moins mal au cou le matin. Achat facile et livraison soignée. »</p>
+                <div className="ssn-review-stars">4/5</div>
+                <p>"Le matelas est tres confortable, il respire bien et j'ai moins mal au cou le matin. Achat facile et livraison soignee."</p>
                 <div className="ssn-review-author"><strong>Leila R.</strong><span>La Marsa</span></div>
               </article>
             </div>
           </div>
         </section>
 
-        {/* ── QUIZ BANNER ── */}
+        {/* -- QUIZ BANNER -- */}
         <section className="ssn-section-quiz">
           <div className="ssn-quiz-card ssn-fade">
             <div className="ssn-quiz-img">
-              <img src="/sleeping_home.jpg" alt="Quiz Sommeil" />
+              <img src="/sleeping_home.jpg" alt="Quiz Sommeil" width="600" height="420" loading="lazy" decoding="async" />
             </div>
             <div className="ssn-quiz-content">
               <h2>Quel matelas <em>vous correspond</em> ?</h2>
               <p>
-                Répondez à 3 questions rapides et trouvez le soutien idéal
+                Repondez a 3 questions rapides et trouvez le soutien ideal
                 pour votre corps et votre position de sommeil.
               </p>
               <div className="ssn-quiz-steps">
@@ -1686,12 +3759,11 @@ const Home = () => {
                   )
                 )}
               </div>
-              <button className="ssn-btn-primary" onClick={() => navigate('/quiz')}>Lancer le quiz →</button>
+              <button className="ssn-btn-primary" onClick={() => navigate('/quiz')}>Lancer le quiz</button>
             </div>
           </div>
         </section>
 
-        <Footer />
       </div>
     </>
   );

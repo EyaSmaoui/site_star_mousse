@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import GoogleMapsEmbed from '../components/GoogleMapsEmbed';
 
 export default function Contact() {
@@ -26,7 +27,7 @@ export default function Contact() {
     e.preventDefault();
     // Validate phone if provided
     if (formData.phone && formData.phone.toString().replace(/\D/g, '').length !== 8) {
-      alert('Le numéro de téléphone doit contenir exactement 8 chiffres.');
+      toast.error('Le numéro de téléphone doit contenir exactement 8 chiffres.');
       return;
     }
     // For now, just show success message
@@ -112,8 +113,8 @@ export default function Contact() {
         .form-group input:focus,
         .form-group textarea:focus {
           outline: none;
-          border-color: #b52f2f;
-          box-shadow: 0 0 0 3px rgba(181, 47, 47, 0.1);
+          border-color: #b78b3f;
+          box-shadow: 0 0 0 3px rgba(183, 139, 63, 0.1);
         }
 
         .form-group textarea {
@@ -130,7 +131,7 @@ export default function Contact() {
         .btn-submit {
           flex: 1;
           padding: 14px 24px;
-          background: #b52f2f;
+          background: #b78b3f;
           color: white;
           border: none;
           border-radius: 6px;
@@ -141,9 +142,9 @@ export default function Contact() {
         }
 
         .btn-submit:hover {
-          background: #8f2424;
+          background: #9f7d3d;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(181, 47, 47, 0.3);
+          box-shadow: 0 4px 12px rgba(183, 139, 63, 0.3);
         }
 
         .btn-reset {
@@ -159,8 +160,8 @@ export default function Contact() {
         }
 
         .btn-reset:hover {
-          border-color: #b52f2f;
-          color: #b52f2f;
+          border-color: #b78b3f;
+          color: #b78b3f;
         }
 
         .success-message {
@@ -186,7 +187,7 @@ export default function Contact() {
           background: #fbfaf8;
           padding: 24px;
           border-radius: 12px;
-          border-left: 4px solid #b52f2f;
+          border-left: 4px solid #b78b3f;
           text-align: center;
         }
 
@@ -209,7 +210,7 @@ export default function Contact() {
         }
 
         .contact-info-value a {
-          color: #b52f2f;
+          color: #b78b3f;
           text-decoration: none;
           font-weight: 600;
           transition: color 0.2s ease;
@@ -394,3 +395,4 @@ export default function Contact() {
     </div>
   );
 }
+

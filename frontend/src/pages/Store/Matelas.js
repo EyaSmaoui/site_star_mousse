@@ -1,11 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import NavBar from '../../components/NavBar';
-import Footer from '../../components/Footer';
-import { FiCheckCircle, FiTruck, FiPhone, FiMessageCircle } from 'react-icons/fi';
+import { FiCheckCircle, FiPhone, FiMessageCircle } from 'react-icons/fi';
 
 function Matelas() {
-  const navigate = useNavigate();
 
   const contactWhatsApp = () => {
     window.open('https://wa.me/21622900207?text=Bonjour%2C%20je%20suis%20intéressé%20par%20le%20Relax%20Plus', '_blank');
@@ -29,7 +25,7 @@ function Matelas() {
         }
 
         .matelas-hero {
-          background: linear-gradient(135deg, rgba(181,47,47,0.08) 0%, rgba(255,255,255,0.5) 100%);
+          background: linear-gradient(135deg, rgba(183, 139, 63,0.08) 0%, rgba(255,255,255,0.5) 100%);
           padding: 60px 40px;
           margin: 0 auto;
           max-width: 1280px;
@@ -49,7 +45,7 @@ function Matelas() {
         }
 
         .matelas-intro .accent {
-          color: #b52f2f;
+          color: #b78b3f;
           font-weight: 700;
         }
 
@@ -113,13 +109,13 @@ function Matelas() {
           padding: 12px;
           background: rgba(255,255,255,0.6);
           border-radius: 8px;
-          border: 1px solid rgba(181,47,47,0.1);
+          border: 1px solid rgba(183, 139, 63,0.1);
         }
 
         .matelas-feature svg {
           width: 20px;
           height: 20px;
-          color: #b52f2f;
+          color: #b78b3f;
           flex-shrink: 0;
           margin-top: 2px;
         }
@@ -158,33 +154,33 @@ function Matelas() {
         }
 
         .btn-primary {
-          background: #b52f2f;
+          background: #b78b3f;
           color: #fff;
         }
 
         .btn-primary:hover {
-          background: #8f2424;
+          background: #9f7d3d;
           transform: translateY(-2px);
-          box-shadow: 0 12px 30px rgba(181,47,47,0.3);
+          box-shadow: 0 12px 30px rgba(183, 139, 63,0.3);
         }
 
         .btn-secondary {
-          background: rgba(181,47,47,0.1);
-          color: #b52f2f;
-          border: 2px solid #b52f2f;
+          background: rgba(183, 139, 63,0.1);
+          color: #b78b3f;
+          border: 2px solid #b78b3f;
         }
 
         .btn-secondary:hover {
-          background: rgba(181,47,47,0.2);
+          background: rgba(183, 139, 63,0.2);
           transform: translateY(-2px);
         }
 
         .matelas-guarantee {
-          background: linear-gradient(135deg, rgba(181,47,47,0.08) 0%, rgba(255,255,255,0.5) 100%);
+          background: linear-gradient(135deg, rgba(183, 139, 63,0.08) 0%, rgba(255,255,255,0.5) 100%);
           padding: 40px;
           border-radius: 16px;
           margin-bottom: 40px;
-          border: 1px solid rgba(181,47,47,0.15);
+          border: 1px solid rgba(183, 139, 63,0.15);
         }
 
         .matelas-guarantee h3 {
@@ -204,7 +200,7 @@ function Matelas() {
         .guarantee-item svg {
           width: 24px;
           height: 24px;
-          color: #b52f2f;
+          color: #b78b3f;
           flex-shrink: 0;
           margin-top: 2px;
         }
@@ -327,7 +323,6 @@ function Matelas() {
       `}</style>
 
       <div className="matelas-page">
-        <NavBar />
 
         {/* HERO */}
         <section className="matelas-hero">
@@ -437,10 +432,10 @@ function Matelas() {
           </div>
         </div>
 
-        <Footer />
       </div>
     </>
   );
 }
 
 export default Matelas;
+

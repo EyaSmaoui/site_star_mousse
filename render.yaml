@@ -2,23 +2,23 @@ services:
   - type: web
     name: starmousse-backend
     runtime: node
-    plan: standard
+    plan: free
+    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 5000
+        value: 10000
       - key: MONGODB_URI
-        fromDatabase:
-          name: starmousse_db
-          property: connectionString
-    routes:
-      - path: /api
-        destination: /api
-
-databases:
-  - name: starmousse_db
-    engine: mongodb
-    plan: standard
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://site-star-mousse.vercel.app
+      - key: CORS_ORIGINS
+        value: https://site-star-mousse.vercel.app,https://www.site-star-mousse.vercel.app
+      - key: ALLOW_NO_DB
+        value: false

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEdit, FaFlag, FaTrash } from "react-icons/fa";
 import EmployeeSidebar from "./EmployeeSidebar";
-import AdvancedFilters from "../../components/AdvancedFilters";
 import { addOrder, checkOrdersConnection, deleteOrder as removeOrder, getAllOrders, getCachedOrders, invalidateOrdersCache, updateOrder } from "../../services/apiOrder";
 import { PROFILE_CHANGED_EVENT, PROFILE_SYNC_KEY } from "../../services/profileSyncService";
 
@@ -19,7 +18,6 @@ const STATUS_CONFIG = {
 const DEFAULT_STATUS = { label: "Inconnu", color: "#374151", bg: "#f3f4f6", border: "#d1d5db" };
 const STATUS_KEYS    = Object.keys(STATUS_CONFIG);
 const STATUS_FILTERS = ["Tous", ...STATUS_KEYS];
-const PERIOD_OPTIONS = ["7 derniers jours", "30 derniers jours", "Ce mois-ci", "Ce trimestre", "Cette année"];
 
 const DIMENSIONS   = ["80×190", "90×190", "120×190", "140×190", "160×190"];
 const EMPTY_PRODUCT = { name: "", quantity: 1, dimension: DIMENSIONS[0] };
@@ -53,33 +51,6 @@ const getOrderCustomerEmail = (order) => {
 
 const getOrderCustomerPhone = (order) => {
   return order?.phone?.trim() || "";
-};
-
-const matchesPeriod = (order, period) => {
-  if (!order?.createdAt) return true;
-  const orderDate = new Date(order.createdAt);
-  if (Number.isNaN(orderDate.getTime())) return true;
-
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const diffDays = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
-  const orderQuarter = Math.floor(orderDate.getMonth() / 3);
-  const currentQuarter = Math.floor(now.getMonth() / 3);
-
-  switch (period) {
-    case "7 derniers jours":
-      return diffDays < 7;
-    case "30 derniers jours":
-      return diffDays < 30;
-    case "Ce mois-ci":
-      return orderDate.getFullYear() === now.getFullYear() && orderDate.getMonth() === now.getMonth();
-    case "Ce trimestre":
-      return orderDate.getFullYear() === now.getFullYear() && orderQuarter === currentQuarter;
-    case "Cette année":
-      return orderDate.getFullYear() === now.getFullYear();
-    default:
-      return true;
-  }
 };
 
 const getOrderDimensions = (order) => {
@@ -899,14 +870,12 @@ function OrderRow({ order, onView, onEdit, onStatus, onDelete }) {
 
 export default function ManageOrders({
   Sidebar = EmployeeSidebar,
-  sidebarWidth = 220,
   sidebarProps = {},
 }) {
   const navigate = useNavigate();
   const [orders,        setOrders]        = useState([]);
   const [search,        setSearch]        = useState("");
   const [filterStatus,  setFilterStatus]  = useState("Tous");
-  const [selectedPeriod, setSelectedPeriod] = useState("Ce mois-ci");
   const [loading,       setLoading]       = useState(false);
   const [refreshing,    setRefreshing]    = useState(false);
   const [loadError,     setLoadError]     = useState("");
@@ -994,7 +963,7 @@ export default function ManageOrders({
       await fetchOrders(true);
       setShowAdd(false);
       toast.success("Commande créée avec succès.");
-    } catch (err) {
+    } catch {
       toast.error("Impossible de créer la commande.");
     }
   };
@@ -1040,8 +1009,7 @@ export default function ManageOrders({
     const clientReference = ((order.customerName || "") + " " + (order.customerEmail || "") + " " + (order.phone || "")).toLowerCase();
     return (
       (!q || [clientReference, order._id].some(v => (v || "").toLowerCase().includes(q))) &&
-      (filterStatus === "Tous" || order.status === filterStatus) &&
-      matchesPeriod(order, selectedPeriod)
+      (filterStatus === "Tous" || order.status === filterStatus)
     );
   });
 

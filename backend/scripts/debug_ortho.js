@@ -14,7 +14,7 @@ async function main() {
     process.exit(1);
   }
 
-  const products = await Product.find({ isAvctive: { $ne: false } }).lean();
+  const products = await Product.find({ isActive: true }).lean();
   console.log(`📦 ${products.length} produits actifs trouvés`);
 
   // Test catégorie orthopedique

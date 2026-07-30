@@ -1,6 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
 
 const Promos = () => {
   const observerRef = useRef(null);
@@ -34,10 +32,10 @@ const Promos = () => {
       discount: "-40%",
       oldPrice: "550,00 د.ت",
       newPrice: "330,00 د.ت",
-      img: "/relax1.png",
+      img: "/relax_eluproduit-card.jpg",
       timeLeft: "Plus que 2 jours",
       tag: "VENTE FLASH",
-      tagColor: "#b52f2f",
+      tagColor: "#b78b3f",
     },
     {
       id: 2,
@@ -48,7 +46,7 @@ const Promos = () => {
       img: "/oreiller_gel_pillow.jpg",
       timeLeft: "Vente Flash",
       tag: "VENTE FLASH",
-      tagColor: "#b52f2f",
+      tagColor: "#b78b3f",
     },
   ];
 
@@ -62,7 +60,7 @@ const Promos = () => {
       discount: "-25%",
       oldPrice: "1 200,00 د.ت",
       newPrice: "900,00 د.ت",
-      img: "/relax1.png",
+      img: "/relax_eluproduit-card.jpg",
       items: [
         { icon: "🛏️", label: "Matelas Relax Plus", desc: "Confort ergonomique pour deux" },
         { icon: "🪶", label: "Oreiller Médical x2", desc: "Soutien optimal de la nuque" },
@@ -133,7 +131,7 @@ const Promos = () => {
           align-items: center;
           gap: 7px;
           background: #fff3f3;
-          color: #b52f2f;
+          color: #b78b3f;
           border: 1px solid #f5c6c6;
           font-size: 13px;
           font-weight: 700;
@@ -152,7 +150,7 @@ const Promos = () => {
           margin-bottom: 14px;
           letter-spacing: -0.5px;
         }
-        .ssn-hero-title .accent { color: #b52f2f; font-style: italic; }
+        .ssn-hero-title .accent { color: #b78b3f; font-style: italic; }
         .ssn-hero-desc {
           font-size: 16px;
           line-height: 1.75;
@@ -200,7 +198,7 @@ const Promos = () => {
           cursor: pointer;
         }
         .ssn-flash-card:hover {
-          box-shadow: 0 12px 48px rgba(181,47,47,0.12);
+          box-shadow: 0 12px 48px rgba(183, 139, 63,0.12);
           transform: translateY(-4px);
         }
         .ssn-flash-card-img {
@@ -219,7 +217,7 @@ const Promos = () => {
         .ssn-flash-discount {
           position: absolute;
           top: 12px; left: 12px;
-          background: #b52f2f;
+          background: #b78b3f;
           color: #fff;
           font-size: 12px;
           font-weight: 800;
@@ -232,7 +230,7 @@ const Promos = () => {
           position: absolute;
           top: 12px; right: 12px;
           background: #fff3f3;
-          color: #b52f2f;
+          color: #b78b3f;
           font-size: 11px;
           font-weight: 700;
           padding: 4px 10px;
@@ -275,7 +273,7 @@ const Promos = () => {
         .ssn-new-price {
           font-size: 22px;
           font-weight: 800;
-          color: #b52f2f;
+          color: #b78b3f;
           letter-spacing: -0.5px;
           white-space: nowrap;
         }
@@ -381,7 +379,7 @@ const Promos = () => {
         .ssn-pack-discount-pill {
           display: inline-block;
           background: #fff3f3;
-          color: #b52f2f;
+          color: #b78b3f;
           font-size: 12px;
           font-weight: 800;
           padding: 4px 10px;
@@ -399,7 +397,7 @@ const Promos = () => {
         .ssn-pack-new { 
           font-size: 24px; 
           font-weight: 800; 
-          color: #b52f2f; 
+          color: #b78b3f; 
           letter-spacing: -0.5px;
           white-space: nowrap;
         }
@@ -418,7 +416,6 @@ const Promos = () => {
       `}</style>
 
       <div className="ssn-page">
-        <NavBar />
 
         {/* ── HERO ── */}
         <div className="ssn-promo-hero ssn-fade">
@@ -516,10 +513,10 @@ const Promos = () => {
           </div>
         </section>
 
-        <Footer />
       </div>
     </>
   );
 };
 
 export default Promos;
+

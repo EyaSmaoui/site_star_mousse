@@ -1,13 +1,19 @@
 import React, { useState, useCallback } from 'react';
 import SearchBar from './SearchBar';
 
-const AdvancedFilters = ({
+const FilterIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+  </svg>
+);
+
+export default function AdvancedFilters({
   onFilterChange,
   searchPlaceholder = "Rechercher...",
   filters = [],
   onSort,
   sortOptions = []
-}) => {
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState({});
@@ -53,31 +59,6 @@ const AdvancedFilters = ({
   const hasActiveFilters = searchTerm || activeFilterCount > 0 || sortBy;
 
   // Icônes SVG
-  const SearchIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.35-4.35" />
-    </svg>
-  );
-
-  const FilterIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-    </svg>
-  );
-
-  const SortIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M3 6h18M3 12h18M3 18h18" />
-    </svg>
-  );
-
-  const ClearIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
 
   const getFilterIcon = (filterType) => {
     switch(filterType) {
@@ -398,5 +379,3 @@ const styles = {
     color: '#4b5563',
   },
 };
-
-export default AdvancedFilters;

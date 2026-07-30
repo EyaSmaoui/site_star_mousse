@@ -6,6 +6,7 @@ const { requireAuthUser, optionalAuthUser, requireAdmin, requireEmployeeOrAdmin 
 router.get('/getAllOrders', requireAuthUser, requireEmployeeOrAdmin, orderController.getAllOrders);
 router.get('/ping', requireAuthUser, requireEmployeeOrAdmin, orderController.getOrdersPing);
 router.get('/my-orders', requireAuthUser, orderController.getUserOrders);
+router.get('/:id', optionalAuthUser, orderController.getOrderById);
 // Allow optional auth here: guests can order, or users can provide credentials (email+password) to link to existing account
 router.post('/addOrder', optionalAuthUser, orderController.addOrder);
 router.put('/updateOrder/:id', requireAuthUser, requireEmployeeOrAdmin, orderController.updateOrder);

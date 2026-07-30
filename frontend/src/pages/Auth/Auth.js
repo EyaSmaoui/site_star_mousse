@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
 import { login, register, managerLogin } from "../../services/apiAuth";
 import { submitPendingOrder } from "../../services/orderService";
 import { ToastContainer, toast } from "react-toastify";
@@ -54,11 +52,11 @@ const ParticleCanvas = () => {
           }
         })
       );
-      raf = requestAnimationFrame(draw);
+      raf = window.requestAnimationFrame(draw);
     };
     draw();
     return () => {
-      cancelAnimationFrame(raf);
+      window.cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
   }, []);
@@ -74,8 +72,6 @@ const TABS = ["Connexion"];
 
 const strengthColors = ["#e0e0f0", "#ef4444", "#f59e0b", "#3b82f6", "#10b981"];
 const strengthLabels = ["", "Faible", "Moyen", "Fort", "Excellent"];
-
-const STAFF_ROLES = ['manager', 'employee', 'employeur'];
 
 const Auth = ({ role: requiredRole } = {}) => {
   const [tab, setTab] = useState(0);
@@ -374,8 +370,6 @@ const Auth = ({ role: requiredRole } = {}) => {
 
       <ToastContainer position="top-right" theme="light" />
 
-      <NavBar />
-
       <div className="sm-auth">
 
         {/* ══════════ LEFT ══════════ */}
@@ -599,8 +593,6 @@ const Auth = ({ role: requiredRole } = {}) => {
           </div>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 };

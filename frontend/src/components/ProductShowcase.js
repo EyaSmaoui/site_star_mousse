@@ -17,14 +17,13 @@ const getSizePrice = (slug) => {
 
 export default function ProductShowcase() {
   const navigate = useNavigate();
-  const whatsappLink = 'https://wa.me/21622900207?text=Bonjour%20Star%20Mousse%2C%20Je%20suis%20intéressé%20par%20vos%20matelas.%20Pouvez-vous%20m%27envoyer%20plus%20d%27informations%20?';
 
   const featuredProducts = [
     {
       id: 1,
       name: 'Matelas Relax Plus',
       description: 'Ergonomique et soutien optimal',
-      image: '/relax_eluproduit.jpg',
+      image: '/relax_eluproduit-card.jpg',
       altText: 'Matelas Relax Plus - Matelas ergonomique mousse HR 18cm avec soutien optimal pour le confort quotidien',
       ...getSizePrice('relax-plus'),
       specs: ['28 cm', 'Ressorts ensachés', 'Réversible été/hiver'],
@@ -65,64 +64,68 @@ export default function ProductShowcase() {
 
   const styles = `
     .ssn-showcase-section {
-      padding: 60px 20px;
-      background: #f7f7f7;
+      padding: 64px 20px;
+      background: #fffdf8;
       text-align: center;
     }
 
     .ssn-showcase-header {
-      margin-bottom: 50px;
+      margin-bottom: 48px;
     }
 
     .ssn-showcase-header h2 {
-      font-size: 2.2em;
+      font-size: 2.4em;
       font-weight: 700;
-      color: #151522;
-      margin-bottom: 12px;
+      color: #12231f;
+      margin-bottom: 14px;
     }
 
     .ssn-showcase-header p {
-      font-size: 1.1em;
-      color: #666;
+      font-size: 1.05em;
+      color: #64706c;
+      max-width: 680px;
+      margin: 0 auto;
     }
 
     .ssn-showcase-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px;
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
       margin-bottom: 40px;
     }
 
     .ssn-product-card {
-      background: white;
+      background: #ffffff;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
+      border: 1px solid #e4ddd0;
+      box-shadow: 0 18px 40px rgba(18, 35, 31, 0.08);
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
       display: flex;
       flex-direction: column;
-      height: 100%;
+      min-height: 100%;
       position: relative;
     }
 
     .ssn-product-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 32px rgba(181, 47, 47, 0.15);
+      transform: translateY(-6px);
+      box-shadow: 0 22px 54px rgba(18, 35, 31, 0.12);
     }
 
     .ssn-product-badge {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #b52f2f;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.8em;
-      font-weight: 700;
+      top: 16px;
+      right: 16px;
+      background: #e86f45;
+      color: #ffffff;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.78em;
+      font-weight: 800;
       z-index: 2;
+      letter-spacing: 0.02em;
     }
 
     .ssn-product-image {
@@ -142,33 +145,35 @@ export default function ProductShowcase() {
     .ssn-product-title {
       font-size: 1.2em;
       font-weight: 600;
-      color: #151522;
+      color: #12231f;
       margin-bottom: 8px;
       text-align: left;
     }
 
     .ssn-product-desc {
-      font-size: 0.9em;
-      color: #666;
-      margin-bottom: 12px;
+      font-size: 0.95em;
+      color: #64706c;
+      margin-bottom: 16px;
       text-align: left;
       flex: 1;
+      line-height: 1.7;
     }
 
     .ssn-product-specs {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 18px;
       justify-content: flex-start;
     }
 
     .ssn-product-spec {
-      background: #f0f0f0;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.75em;
-      color: #666;
+      background: #e9f4ee;
+      color: #0f4f43;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.78em;
+      font-weight: 700;
     }
 
     .ssn-product-price {
@@ -180,7 +185,7 @@ export default function ProductShowcase() {
     .ssn-product-price-label {
       display: block;
       margin-bottom: 3px;
-      color: #777;
+      color: #64706c;
       font-size: 0.78em;
       font-weight: 700;
       text-transform: uppercase;
@@ -190,14 +195,14 @@ export default function ProductShowcase() {
     .ssn-product-price-row {
       display: flex;
       align-items: baseline;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
     }
 
     .ssn-product-price-new {
-      font-size: 1.5em;
-      font-weight: 800;
-      color: #b52f2f;
+      font-size: 1.55em;
+      font-weight: 900;
+      color: #0f4f43;
       white-space: nowrap;
     }
 
@@ -216,39 +221,40 @@ export default function ProductShowcase() {
     }
 
     .ssn-product-btn {
-      padding: 12px 16px;
+      min-height: 48px;
+      padding: 14px 18px;
       border: none;
       border-radius: 8px;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.95em;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       text-decoration: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .ssn-product-btn-primary {
-      background: #b52f2f;
+      background: #0f4f43;
       color: white;
     }
 
     .ssn-product-btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(181, 47, 47, 0.28);
+      box-shadow: 0 10px 26px rgba(15, 79, 67, 0.2);
     }
 
     .ssn-product-btn-secondary {
-      background: white;
-      color: #6f6f6f;
-      border: 2px solid #b52f2f;
+      background: #ffffff;
+      color: #12231f;
+      border: 2px solid #e4ddd0;
     }
 
     .ssn-product-btn-secondary:hover {
-      background: #b52f2f;
-      color: white;
+      background: #f4efe6;
+      color: #0f4f43;
     }
 
     .ssn-showcase-cta {
@@ -257,8 +263,9 @@ export default function ProductShowcase() {
 
     .ssn-showcase-cta-btn {
       display: inline-block;
+      min-height: 48px;
       padding: 16px 40px;
-      background: #7f7f7f;
+      background: #e86f45;
       color: white;
       border: none;
       border-radius: 8px;
@@ -270,7 +277,7 @@ export default function ProductShowcase() {
 
     .ssn-showcase-cta-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(119, 119, 119, 0.25);
+      box-shadow: 0 8px 20px rgba(232, 111, 69, 0.24);
     }
 
     @media (max-width: 768px) {
@@ -347,7 +354,10 @@ export default function ProductShowcase() {
                 src={product.image} 
                 alt={product.altText} 
                 className="ssn-product-image"
+                width="320"
+                height="220"
                 loading="lazy"
+                decoding="async"
               />
               <div className="ssn-product-content">
                 <h3 className="ssn-product-title">{product.name}</h3>

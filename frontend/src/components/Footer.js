@@ -1,4 +1,5 @@
 import React from "react";
+import { FaFacebookF, FaInstagram, FaPhoneAlt, FaWhatsapp, FaYoutube } from "react-icons/fa";
 
 function Footer() {
   const whatsappUrl =
@@ -7,11 +8,9 @@ function Footer() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
-
         .ssn-footer {
-          font-family: 'DM Sans', sans-serif;
-          background: #151522;
+          font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          background: #0a352f;
           border-top: 1px solid rgba(255,255,255,0.08);
           color: #ffffff;
         }
@@ -24,7 +23,7 @@ function Footer() {
           gap: 48px;
         }
         .ssn-footer-logo img {
-          height: 42px;
+          height: 44px;
           object-fit: contain;
           display: block;
           margin-bottom: 16px;
@@ -32,7 +31,7 @@ function Footer() {
         .ssn-footer-desc {
           font-size: 13.5px;
           line-height: 1.75;
-          color: #d9d7d2;
+          color: #e9f4ee;
           max-width: 320px;
           margin-bottom: 24px;
         }
@@ -42,8 +41,8 @@ function Footer() {
           flex-wrap: wrap;
         }
         .ssn-social a {
-          min-width: 40px;
-          height: 40px;
+          min-width: 44px;
+          min-height: 44px;
           padding: 0 12px;
           border-radius: 8px;
           border: 1px solid rgba(255,255,255,0.12);
@@ -62,10 +61,14 @@ function Footer() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          width: 20px;
-          height: 20px;
-          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          font-size: 16px;
           line-height: 1;
+        }
+        .ssn-social a.icon-only {
+          width: 44px;
+          padding: 0;
         }
         .ssn-social a:hover {
           transform: translateY(-3px);
@@ -73,14 +76,14 @@ function Footer() {
           border-color: transparent;
         }
         .ssn-social a.wa:hover { background: #25D366; }
-        .ssn-social a.call:hover { background: #b52f2f; }
+        .ssn-social a.call:hover { background: #ffd36a; color: #12231f; }
         .ssn-social a.fb:hover { background: #1877F2; }
         .ssn-social a.ig:hover { background: #E1306C; }
         .ssn-social a.yt:hover { background: #FF0000; }
         .ssn-footer-col h4 {
           font-size: 12px;
           font-weight: 700;
-          color: #f4c84f;
+          color: #ffd36a;
           text-transform: uppercase;
           letter-spacing: 1.2px;
           margin-bottom: 20px;
@@ -96,7 +99,7 @@ function Footer() {
         .ssn-footer-col ul a {
           text-decoration: none;
           font-size: 14px;
-          color: #d9d7d2;
+          color: #e9f4ee;
           display: inline-flex;
           align-items: center;
           transition: color 0.18s;
@@ -105,18 +108,18 @@ function Footer() {
           content: '';
           width: 0;
           height: 1.5px;
-          background: #f4c84f;
+          background: #ffd36a;
           transition: width 0.2s, margin-right 0.2s;
           display: inline-block;
         }
-        .ssn-footer-col ul a:hover { color: #f4c84f; }
+        .ssn-footer-col ul a:hover { color: #ffd36a; }
         .ssn-footer-col ul a:hover::before {
           width: 10px;
           margin-right: 7px;
         }
         .ssn-footer-bottom-wrap {
           border-top: 1px solid rgba(255,255,255,0.08);
-          background: rgba(0,0,0,0.18);
+          background: rgba(0,0,0,0.16);
         }
         .ssn-footer-bottom {
           max-width: 1280px;
@@ -130,10 +133,10 @@ function Footer() {
         }
         .ssn-footer-bottom p {
           font-size: 13px;
-          color: #b8b6c0;
+          color: #d9eee5;
           margin: 0;
         }
-        .ssn-footer-bottom p span { color: #f4c84f; font-weight: 700; }
+        .ssn-footer-bottom p span { color: #ffd36a; font-weight: 700; }
         .ssn-legal {
           display: flex;
           align-items: center;
@@ -172,7 +175,7 @@ function Footer() {
         <div className="ssn-footer-main">
           <div className="ssn-footer-col">
             <div className="ssn-footer-logo">
-              <img src="/logo-star-mousse.png" alt="Star Mousse" />
+              <img src="/logo-star-mousse.png" alt="Star Mousse" width="153" height="42" loading="lazy" decoding="async" />
             </div>
             <p className="ssn-footer-desc">
               Expert tunisien du sommeil. Matelas orthopediques, oreillers et literie premium
@@ -180,21 +183,21 @@ function Footer() {
             </p>
             <div className="ssn-social">
               <a href={whatsappUrl} className="wa" aria-label="Contacter Star Mousse sur WhatsApp">
-                <span className="ssn-social-icon ti ti-brand-whatsapp" aria-hidden="true"></span>
+                <span className="ssn-social-icon" aria-hidden="true"><FaWhatsapp /></span>
                 WhatsApp
               </a>
               <a href="tel:+21622900131" className="call" aria-label="Appeler Star Mousse">
-                <span className="ssn-social-icon ti ti-phone" aria-hidden="true"></span>
+                <span className="ssn-social-icon" aria-hidden="true"><FaPhoneAlt /></span>
                 Appeler
               </a>
-              <a href="https://www.facebook.com/SuperSiestaBorjChakir/" className="fb" target="_blank" rel="noreferrer" aria-label="Facebook Super Siesta Borj Chakir" title="Facebook">
-                <span className="ssn-social-icon ti ti-brand-facebook" aria-hidden="true"></span>
+              <a href="https://www.facebook.com/SuperSiestaBorjChakir/" className="fb icon-only" target="_blank" rel="noreferrer" aria-label="Facebook Super Siesta Borj Chakir" title="Facebook">
+                <span className="ssn-social-icon" aria-hidden="true"><FaFacebookF /></span>
               </a>
-              <a href="https://www.instagram.com/super_siesta_tunis/" className="ig" target="_blank" rel="noreferrer" aria-label="Instagram Super Siesta Tunis" title="Instagram">
-                <span className="ssn-social-icon ti ti-brand-instagram" aria-hidden="true"></span>
+              <a href="https://www.instagram.com/super_siesta_tunis/" className="ig icon-only" target="_blank" rel="noreferrer" aria-label="Instagram Super Siesta Tunis" title="Instagram">
+                <span className="ssn-social-icon" aria-hidden="true"><FaInstagram /></span>
               </a>
-              <a href="https://www.youtube.com/@StarMousseTunisie" className="yt" target="_blank" rel="noreferrer" aria-label="YouTube Star Mousse" title="YouTube">
-                <span className="ssn-social-icon ti ti-brand-youtube" aria-hidden="true"></span>
+              <a href="https://www.youtube.com/@StarMousseTunisie" className="yt icon-only" target="_blank" rel="noreferrer" aria-label="YouTube Star Mousse" title="YouTube">
+                <span className="ssn-social-icon" aria-hidden="true"><FaYoutube /></span>
               </a>
             </div>
           </div>
@@ -205,6 +208,8 @@ function Footer() {
               <li><a href="/products">Nos produits</a></li>
               <li><a href="/nos-matelas">Nos matelas</a></li>
               <li><a href="/promos">Promotions</a></li>
+              <li><a href="/b2b-export">Pro & export</a></li>
+              <li><a href="/roadmap-international">Roadmap 2026</a></li>
               <li><a href="/about">Notre histoire</a></li>
             </ul>
           </div>
@@ -215,6 +220,7 @@ function Footer() {
               <li><a href="/help">Livraison & retours</a></li>
               <li><a href="/help">Garantie</a></li>
               <li><a href="/nos-matelas">Guide des tailles</a></li>
+              <li><a href="/b2b-export#devis-pro">Devis professionnel</a></li>
               <li><a href={whatsappUrl}>Contactez-nous</a></li>
             </ul>
           </div>
@@ -225,7 +231,7 @@ function Footer() {
               <li><a href="tel:+21622900131">+216 22 900 131</a></li>
               <li><a href={whatsappUrl}>WhatsApp +216 22 900 207</a></li>
               <li><a href="/contact">Formulaire de contact</a></li>
-              <li><a href="https://www.google.com/maps/search/?api=1&query=Borj%20Chakir%20Tunisie">Borj Chakir, Tunisie</a></li>
+              <li><a href="https://www.google.com/maps/search/?api=1&query=Borj%20Chakir%20Tunis%20Tunisie">Showroom Star Mousse, Borj Chakir, Tunis, Tunisie</a></li>
               <li><a href="/help">Lun-Sam : 8h-18h</a></li>
             </ul>
           </div>

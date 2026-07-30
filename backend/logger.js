@@ -2,12 +2,31 @@ const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 
 const logLevel = process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug');
+const isProduction = process.env.NODE_ENV === 'production';
+
+const redactMeta = (meta = {}) => {
+  const sensitiveKeys = new Set(['password', 'token', 'authorization', 'cookie', 'session', 'secret']);
+  const clone = { ...meta };
+
+  Object.keys(clone).forEach((key) => {
+    const normalizedKey = key.toLowerCase();
+    if (sensitiveKeys.has(normalizedKey) || normalizedKey.includes('token') || normalizedKey.includes('secret')) {
+      clone[key] = '[REDACTED]';
+    }
+  });
+
+  return clone;
+};
 
 const transportConsole = new winston.transports.Console({
   format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.simple()
-  )
+    isProduction
+      ? winston.format.uncolorize()
+      : winston.format.colorize(),
+    isProduction
+      ? winston.format.printf((info) => JSON.stringify(redactMeta(info)))
+      : winston.format.simple()
+  ),
 });
 
 const transportRotate = new DailyRotateFile({
@@ -15,26 +34,23 @@ const transportRotate = new DailyRotateFile({
   datePattern: 'YYYY-MM-DD',
   maxFiles: '14d',
   zippedArchive: true,
-  level: logLevel
+  level: logLevel,
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf((info) => JSON.stringify(redactMeta(info)))
+  ),
 });
 
 const logger = winston.createLogger({
   level: logLevel,
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message, ...meta }) => {
-      const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : '';
-      return `${timestamp} ${level}: ${message} ${metaStr}`;
-    })
-  ),
-  transports: [transportConsole, transportRotate]
+  defaultMeta: { service: 'star-mousse-api' },
+  transports: [transportConsole, transportRotate],
 });
 
-// morgan stream
 logger.stream = {
   write: (message) => {
-    logger.info(message.trim());
-  }
+    logger.info({ http: message.trim() });
+  },
 };
 
 module.exports = logger;

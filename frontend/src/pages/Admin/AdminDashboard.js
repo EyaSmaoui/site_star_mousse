@@ -238,7 +238,6 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Aperçu");
   const [time, setTime] = useState(new Date());
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth <= 900 : false);
   const [statsSummary, setStatsSummary] = useState({
     totalRevenue: 0,
     totalOrders: 0,
@@ -362,7 +361,7 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    const handleResize = () => window.innerWidth <= 900;
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);

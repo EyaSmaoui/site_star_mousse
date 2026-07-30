@@ -34,7 +34,7 @@ export default function ReviewHost() {
         }
 
         window.dispatchEvent(new CustomEvent('star-mousse:order-saved', { detail }));
-      } catch (e) {
+      } catch {
         // ignore
       }
     };
