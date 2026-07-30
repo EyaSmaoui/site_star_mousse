@@ -272,7 +272,7 @@ export default function ProductShowcase() {
       font-size: 1.1em;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.2s, opacity 0.2s;
     }
 
     .ssn-showcase-cta-btn:hover {
@@ -408,3 +408,4 @@ export default function ProductShowcase() {
     </>
   );
 }
+

@@ -200,7 +200,7 @@ export default function Cart() {
             <div className="sm-cart-list">
               {items.map((item) => (
                 <article className="sm-cart-item" key={item.key}>
-                  <img className="sm-cart-img" src={item.image || "/logo-star-mousse.png"} alt={item.name} />
+                  <img loading="lazy" decoding="async" className="sm-cart-img" src={item.image || "/logo-star-mousse.png"} alt={item.name} />
                   <div>
                     <h2 className="sm-cart-name">{item.name}</h2>
                     <div className="sm-cart-meta">{item.size || "Dimension standard"}</div>
@@ -250,3 +250,4 @@ export default function Cart() {
     </div>
   );
 }
+

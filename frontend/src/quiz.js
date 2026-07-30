@@ -361,7 +361,7 @@ const Quiz = () => {
           font-weight: 500;
           font-family: 'DM Sans', sans-serif;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: transform 0.2s, opacity 0.2s;
         }
         .qz-btn-back:hover {
           border-color: #4a4ade;
@@ -550,7 +550,7 @@ const Quiz = () => {
           font-weight: 500;
           font-family: 'DM Sans', sans-serif;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: transform 0.2s, opacity 0.2s;
         }
         .qz-btn-ghost:hover {
           border-color: #4a4ade;
@@ -717,7 +717,7 @@ const Quiz = () => {
             {/* Result card */}
             <div className="qz-result-card">
               <div className="qz-result-img-wrap">
-                <img src={result.img} alt={result.name} />
+                <img loading="lazy" decoding="async" src={result.img} alt={result.name} />
                 <span className="qz-result-discount">{result.discount}</span>
               </div>
               <div className="qz-result-info">
@@ -747,3 +747,5 @@ const Quiz = () => {
 };
 
 export default Quiz;
+
+

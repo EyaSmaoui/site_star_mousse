@@ -165,7 +165,7 @@
   font-size: 0.95em;
   color: #111827;
   background: var(--color-surface);
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .filter-input:focus,
@@ -411,7 +411,7 @@ select:focus {
   cursor: pointer;
   font-size: 1em;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-save:hover {
@@ -481,7 +481,7 @@ select:focus {
   border-radius: 8px;
   padding: 25px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   text-align: center;
 }
 
@@ -511,7 +511,7 @@ select:focus {
   cursor: pointer;
   font-size: 1em;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   width: 100%;
 }
 
@@ -529,7 +529,7 @@ select:focus {
   cursor: pointer;
   font-size: 1em;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   width: 100%;
 }
 
@@ -553,7 +553,7 @@ select:focus {
   cursor: pointer;
   font-size: 1em;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .btn-logout:hover {
@@ -591,3 +591,4 @@ select:focus {
     grid-template-columns: 1fr;
   }
 }
+

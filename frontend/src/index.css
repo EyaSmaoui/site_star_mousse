@@ -150,7 +150,7 @@
     font-weight: 500;
     border-radius: 2px;
     border: 1px solid #0a0a0a;
-    transition: all 0.2s;
+    transition: transform 0.2s, opacity 0.2s;
     cursor: pointer;
   }
 
@@ -171,7 +171,7 @@
     background-color: #ffffff;
     border: 1px solid #e2e2de;
     box-shadow: 0 2px 8px rgba(10, 10, 10, 0.08);
-    transition: all 0.2s;
+    transition: transform 0.2s, opacity 0.2s;
   }
 
   .card-minimal:hover {
@@ -188,7 +188,7 @@
     background-color: #ffffff;
     color: #0a0a0a;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    transition: all 0.2s;
+    transition: transform 0.2s, opacity 0.2s;
   }
 
   .input-minimal:focus {
@@ -210,3 +210,4 @@
     animation: slideIn 0.3s ease-out;
   }
 }
+

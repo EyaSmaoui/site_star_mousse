@@ -124,8 +124,7 @@ export default function AISearchPage() {
                           {/* Image */}
                           <div className="w-full h-40 bg-gray-200 overflow-hidden">
                             {product.image ? (
-                              <img
-                                src={product.image}
+                              <img loading="lazy" decoding="async" src={product.image}
                                 alt={product.name}
                                 className="w-full h-full object-cover hover:scale-105 transition"
                               />
@@ -232,3 +231,4 @@ export default function AISearchPage() {
     </div>
   );
 }
+

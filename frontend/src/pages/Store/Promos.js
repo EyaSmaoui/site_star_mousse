@@ -442,7 +442,7 @@ const Promos = () => {
                   <div className="ssn-flash-card-img">
                     <span className="ssn-flash-discount">{item.discount}</span>
                     <span className="ssn-flash-time">⏳ {item.timeLeft}</span>
-                    <img src={item.img} alt={item.name} />
+                    <img loading="lazy" decoding="async" src={item.img} alt={item.name} />
                   </div>
                   <div className="ssn-flash-body">
                     <span className="ssn-flash-tag" style={{ backgroundColor: item.tagColor }}>
@@ -477,7 +477,7 @@ const Promos = () => {
                 >
                   <div className="ssn-pack-header">
                     <div className="ssn-pack-img">
-                      <img src={pack.img} alt={pack.title} />
+                      <img loading="lazy" decoding="async" src={pack.img} alt={pack.title} />
                     </div>
                     <div className="ssn-pack-meta">
                       <span className="ssn-pack-badge" style={{ backgroundColor: pack.badgeColor }}>
@@ -519,4 +519,5 @@ const Promos = () => {
 };
 
 export default Promos;
+
 

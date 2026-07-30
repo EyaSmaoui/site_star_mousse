@@ -887,7 +887,7 @@ function NavBar() {
       <header className={`ssn-header ${scrolled ? "scrolled" : ""} ${showHeader ? "" : "hidden"}`}>
         <nav className="ssn-nav" aria-label="Navigation principale">
           <Link to="/" className="ssn-logo" onClick={closeMenu} aria-label="Star Mousse accueil">
-            <img src="/logo-star-mousse.png" alt="Star Mousse" width="160" height="44" decoding="async" />
+            <img loading="lazy" decoding="async" src="/logo-star-mousse.png" alt="Star Mousse" width="160" height="44" decoding="async" />
           </Link>
 
           <ul className="ssn-links">
@@ -982,7 +982,7 @@ function NavBar() {
             </button>
 
             <Link to="/" className="ssn-mobile-logo" onClick={closeMenu} aria-label="Star Mousse accueil">
-              <img src="/logo-star-mousse.png" alt="Star Mousse" width="164" height="45" decoding="async" />
+              <img loading="lazy" decoding="async" src="/logo-star-mousse.png" alt="Star Mousse" width="164" height="45" decoding="async" />
             </Link>
 
             <form className="ssn-mobile-search" onSubmit={submitSearch}>
@@ -1125,4 +1125,5 @@ function NavBar() {
 }
 
 export default NavBar;
+
 

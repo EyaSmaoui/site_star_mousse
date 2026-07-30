@@ -148,7 +148,7 @@ function Matelas() {
           font-size: 14px;
           font-weight: 700;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: transform 0.2s ease, opacity 0.2s ease;
           text-decoration: none;
           white-space: nowrap;
         }
@@ -254,7 +254,7 @@ function Matelas() {
           border-radius: 8px;
           font-weight: 700;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: transform 0.2s ease, opacity 0.2s ease;
           font-size: 14px;
         }
 
@@ -336,7 +336,7 @@ function Matelas() {
         <div className="matelas-container">
           <div className="matelas-grid">
             <div className="matelas-image">
-              <img src="/relax_eluproduit.jpg" alt="Matelas Relax Plus" />
+              <img loading="lazy" decoding="async" src="/relax_eluproduit.jpg" alt="Matelas Relax Plus" />
             </div>
 
             <div className="matelas-info">
@@ -438,4 +438,6 @@ function Matelas() {
 }
 
 export default Matelas;
+
+
 

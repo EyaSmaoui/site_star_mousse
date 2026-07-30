@@ -130,8 +130,7 @@ const ProductDetail = () => {
           <div>
             {/* Main Image */}
             <div className="mb-6 bg-white border border-hairline rounded-none overflow-hidden aspect-square">
-              <img
-                src={images[selectedImage]}
+              <img loading="lazy" decoding="async" src={images[selectedImage]}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
@@ -150,8 +149,7 @@ const ProductDetail = () => {
                         : 'border-hairline hover:border-muted'
                     }`}
                   >
-                    <img
-                      src={image}
+                    <img loading="lazy" decoding="async" src={image}
                       alt={`${product.name} ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -390,3 +388,4 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+

@@ -186,7 +186,7 @@ const About = () => {
           border: 1.5px solid #ddddf0; background: #fff;
           display: flex; align-items: center; justify-content: center;
           cursor: pointer; font-size: 18px; color: #1a1a2e;
-          transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+          transition: transform 0.2s, opacity 0.2s; font-family: 'DM Sans', sans-serif;
         }
         .ssn-gal-btn:hover { border-color: #4a4ade; color: #4a4ade; transform: scale(1.08); }
         .ssn-gal-label { font-size: 14px; font-weight: 600; color: #1a1a2e; text-align: center; min-width: 180px; }
@@ -195,7 +195,7 @@ const About = () => {
         .ssn-dot {
           width: 6px; height: 6px; border-radius: 50%;
           background: #ddddf0; cursor: pointer;
-          transition: all 0.3s ease; display: inline-block; border: none; padding: 0;
+          transition: transform 0.3s ease, opacity 0.3s ease; display: inline-block; border: none; padding: 0;
         }
         .ssn-dot.active { width: 24px; border-radius: 4px; background: #4a4ade; }
         .ssn-progress { width: 120px; height: 2px; background: #ebebf5; border-radius: 2px; margin: 16px auto 0; overflow: hidden; }
@@ -326,7 +326,7 @@ const About = () => {
           <div className="ssn-vision-inner ssn-fade">
 
             <div className="ssn-vision-img">
-              <img src="/relax_eluproduit.jpg" alt="Super Siesta Relax+ Produit de l'Année 2026" />
+              <img loading="lazy" decoding="async" src="/relax_eluproduit.jpg" alt="Super Siesta Relax+ Produit de l'Année 2026" />
             </div>
 
             <div className="ssn-vision-content">
@@ -419,8 +419,7 @@ const About = () => {
                   style={getCardStyle(i)}
                   onClick={() => goTo(i)}
                 >
-                  <img
-                    src={photo.src}
+                  <img loading="lazy" decoding="async" src={photo.src}
                     alt={photo.label}
                     onError={(e) => {
                       e.target.style.display = 'none';
@@ -490,3 +489,4 @@ const About = () => {
 };
 
 export default About;
+

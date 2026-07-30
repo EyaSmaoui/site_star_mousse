@@ -152,8 +152,7 @@ export default function ClientRecommendations() {
           <div className="sm-card-grid" style={S.grid}>
             {recommendations.map((product) => (
               <article key={product._id || product.id || product.name} style={S.card}>
-                <img
-                  src={product.image || "/relax_eluproduit-card.jpg"}
+                <img loading="lazy" decoding="async" src={product.image || "/relax_eluproduit-card.jpg"}
                   alt={product.name}
                   style={S.cardImage}
                 />
@@ -339,3 +338,4 @@ const S = {
     transition: "background .2s",
   },
 };
+

@@ -182,7 +182,7 @@ function ProductTemplate({ product: fallbackProduct }) {
         .ssn-info-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 18px; padding: 18px 20px; color: #475569; }
         .ssn-info-card strong { display: block; font-size: 0.95rem; margin-bottom: 8px; color: #1f2937; }
         .ssn-size-list { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
-        .ssn-size-button { min-width: 98px; padding: 14px 16px; border-radius: 14px; border: 1px solid #d1d5db; background: #fff; color: #334155; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .ssn-size-button { min-width: 98px; padding: 14px 16px; border-radius: 14px; border: 1px solid #d1d5db; background: #fff; color: #334155; font-weight: 600; cursor: pointer; transition: transform 0.2s, opacity 0.2s; }
         .ssn-size-button.active { background: ${accent}; color: #fff; border-color: ${accent}; }
         .ssn-order-panel { background: #fff; border-radius: 28px; box-shadow: 0 26px 65px rgba(21,21,34,0.08); border: 1px solid #f0eded; padding: 28px; }
         .ssn-tab-nav { display: flex; gap: 18px; border-bottom: 1px solid #e2e8f0; margin-top: 42px; }
@@ -325,4 +325,5 @@ function ProductTemplate({ product: fallbackProduct }) {
 }
 
 export default ProductTemplate;
+
 

@@ -86,7 +86,7 @@ export default function Breadcrumbs() {
           color: #b78b3f;
           text-decoration: none;
           font-weight: 500;
-          transition: all 0.2s ease;
+          transition: transform 0.2s ease, opacity 0.2s ease;
           cursor: pointer;
         }
 
@@ -141,4 +141,5 @@ export default function Breadcrumbs() {
     </nav>
   );
 }
+
 

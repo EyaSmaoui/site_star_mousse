@@ -38,7 +38,7 @@ export default function WhatsAppWidget() {
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-      transition: all 0.3s ease;
+      transition: transform 0.3s ease, opacity 0.3s ease;
       text-decoration: none;
     }
 
@@ -127,3 +127,4 @@ export default function WhatsAppWidget() {
     </>
   );
 }
+

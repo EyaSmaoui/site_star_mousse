@@ -94,7 +94,7 @@ export default function GoogleMapsEmbed() {
           font-size: 14px;
           font-weight: 600;
           text-decoration: none;
-          transition: all 0.2s ease;
+          transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
         .maps-button:hover {
@@ -244,4 +244,5 @@ export default function GoogleMapsEmbed() {
     </div>
   );
 }
+
 

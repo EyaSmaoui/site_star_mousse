@@ -216,7 +216,7 @@ const Help = () => {
           background: #fff; color: #2a2a3d; border: 1.5px solid #ddddf0;
           padding: 13px 24px; border-radius: 11px; font-size: 14px;
           font-weight: 500; font-family: 'DM Sans', sans-serif;
-          cursor: pointer; transition: all 0.2s; white-space: nowrap;
+          cursor: pointer; transition: transform 0.2s, opacity 0.2s; white-space: nowrap;
         }
         .ssn-btn-secondary:hover { border-color: #4a4ade; color: #4a4ade; }
 
@@ -322,3 +322,4 @@ const Help = () => {
 };
 
 export default Help;
+

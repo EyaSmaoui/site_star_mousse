@@ -263,7 +263,7 @@ const Auth = ({ role: requiredRole } = {}) => {
         .sm-tab {
           flex: 1; padding: 10px; border: none; border-radius: 9px;
           font-size: 13.5px; font-weight: 500; font-family: 'Sora', sans-serif;
-          cursor: pointer; transition: all 0.25s; color: #9090b0; background: transparent;
+          cursor: pointer; transition: transform 0.25s, opacity 0.25s; color: #9090b0; background: transparent;
         }
         .sm-tab.active { background: #fff; color: #1a1a2e; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
 
@@ -318,7 +318,7 @@ const Auth = ({ role: requiredRole } = {}) => {
         .sm-check {
           width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid #ddddf0;
           background: #fff; display: flex; align-items: center; justify-content: center;
-          transition: all 0.2s; flex-shrink: 0;
+          transition: transform 0.2s, opacity 0.2s; flex-shrink: 0;
         }
         .sm-check.on { background: #4a4ade; border-color: #4a4ade; }
         .sm-check-label { font-size: 13px; color: #60607a; }
@@ -329,7 +329,7 @@ const Auth = ({ role: requiredRole } = {}) => {
           border: none; border-radius: 12px; font-size: 14px; font-weight: 600;
           font-family: 'Sora', sans-serif; cursor: pointer;
           display: flex; align-items: center; justify-content: center; gap: 9px;
-          transition: all 0.25s; margin-bottom: 18px; position: relative; overflow: hidden;
+          transition: transform 0.25s, opacity 0.25s; margin-bottom: 18px; position: relative; overflow: hidden;
         }
         .sm-submit::after {
           content:''; position:absolute; inset:0;
@@ -598,3 +598,4 @@ const Auth = ({ role: requiredRole } = {}) => {
 };
 
 export default Auth;
+

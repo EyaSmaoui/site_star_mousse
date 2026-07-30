@@ -2,6 +2,7 @@ import { defineConfig, transformWithOxc } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 const transformJsxInJs = () => ({
   name: 'transform-jsx-in-js',
@@ -21,7 +22,8 @@ export default defineConfig({
       include: /\.(jsx|js|tsx|ts)$/,
     }),
     tailwindcss(),
-  ],
+    process.env.ANALYZE === 'true' ? visualizer({ filename: 'dist/stats.html', open: false }) : null,
+  ].filter(Boolean),
   optimizeDeps: {
     entries: [path.resolve(__dirname, 'index.html')],
     rolldownOptions: {

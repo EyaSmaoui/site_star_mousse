@@ -106,7 +106,7 @@ export default function Contact() {
           border-radius: 6px;
           font-size: 14px;
           font-family: inherit;
-          transition: all 0.2s ease;
+          transition: transform 0.2s ease, opacity 0.2s ease;
           background: white;
         }
 
@@ -138,7 +138,7 @@ export default function Contact() {
           font-size: 14px;
           font-weight: 700;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
         .btn-submit:hover {
@@ -156,7 +156,7 @@ export default function Contact() {
           font-size: 14px;
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
         .btn-reset:hover {
@@ -395,4 +395,5 @@ export default function Contact() {
     </div>
   );
 }
+
 

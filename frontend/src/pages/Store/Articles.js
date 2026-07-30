@@ -221,7 +221,7 @@ const Products = () => {
           font-weight: 500;
           font-family: 'DM Sans', sans-serif;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: transform 0.2s, opacity 0.2s;
         }
         .ssn-btn-secondary:hover {
           border-color: #4a4ade;
@@ -466,7 +466,7 @@ const Products = () => {
                     {product.discount && (
                       <span className="ssn-discount">{product.discount}</span>
                     )}
-                    <img src={product.img} alt={product.name} />
+                    <img loading="lazy" decoding="async" src={product.img} alt={product.name} />
                   </div>
 <div className="ssn-card-body">
                      <div className="ssn-card-top">
@@ -507,4 +507,6 @@ const Products = () => {
 };
 
 export default Products;
+
+
 
