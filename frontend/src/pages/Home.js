@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FaUniversity } from "react-icons/fa";
 import { FiAward, FiCheck, FiMoon, FiShoppingBag, FiTruck } from "react-icons/fi";
 import { getAll as getAllProducts, getRecommended as getRecommendedProducts } from "../services/productService";
-import formatPrice from '../utils/formatPrice';
 
 const FALLBACK_BEST_SELLERS = [
   {
@@ -558,7 +557,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [bestSellers, setBestSellers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [promoCountdown, setPromoCountdown] = useState(getPromoCountdown);
+  const [_promoCountdown, setPromoCountdown] = useState(getPromoCountdown);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const [genericSlideIndex, setGenericSlideIndex] = useState(0);
 
@@ -3681,7 +3680,7 @@ const Home = () => {
                               </div>
                             ) : (
                               <picture className="picture_ratio picture_ratio_xs_9x16 image-visible generic-card__asset">
-                                <img src={card.src} alt="" loading="lazy" fetchpriority="auto" />
+                                <img src={card.src} alt="" loading="lazy" fetchPriority="auto" />
                               </picture>
                             )}
                           </div>

@@ -139,7 +139,7 @@ const normalizeMessage = (message = "") =>
 
 const extractDimension = (message = "") => {
   const normalized = normalizeMessage(message);
-  const match = normalized.match(/(\d{2,3})\s*[xX*\/\s-]\s*(\d{2,3})/);
+  const match = normalized.match(new RegExp('(\\d{2,3})\\s*[xX*\\/\\s-]\\s*(\\d{2,3})'));
   if (!match) return null;
   const first = Number(match[1]);
   const second = Number(match[2]);
