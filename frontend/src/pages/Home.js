@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FaUniversity } from "react-icons/fa";
 import { FiAward, FiCheck, FiMoon, FiShoppingBag, FiTruck } from "react-icons/fi";
 import { getAll as getAllProducts, getRecommended as getRecommendedProducts } from "../services/apiProduct";
-import formatPrice from '../utils/formatPrice';
 
 const FALLBACK_BEST_SELLERS = [
   {
@@ -71,24 +70,6 @@ const normalizeProductImage = (image, productName) => {
 
 const removeProductDimension = (name = "") =>
   name.replace(/\s+\d{2,3}x\d{2,3}$/i, "").trim();
-
-const PROMO_END_DATE = new Date("2026-07-31T23:59:59+01:00").getTime();
-
-const getPromoCountdown = () => {
-  const remaining = Math.max(PROMO_END_DATE - Date.now(), 0);
-  const days = Math.floor(remaining / 86400000);
-  const hours = Math.floor((remaining % 86400000) / 3600000);
-  const minutes = Math.floor((remaining % 3600000) / 60000);
-  const seconds = Math.floor((remaining % 60000) / 1000);
-  const pad = (value) => String(value).padStart(2, "0");
-
-  return {
-    days: pad(days),
-    hours: pad(hours),
-    minutes: pad(minutes),
-    seconds: pad(seconds),
-  };
-};
 
 const HERO_SLIDES = [
   {
@@ -558,7 +539,6 @@ const Home = () => {
   const navigate = useNavigate();
   const [bestSellers, setBestSellers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [promoCountdown, setPromoCountdown] = useState(getPromoCountdown);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const [genericSlideIndex, setGenericSlideIndex] = useState(0);
 
@@ -583,14 +563,6 @@ const Home = () => {
     const fadeElements = document.querySelectorAll(".ssn-fade");
     fadeElements.forEach((el) => observerRef.current.observe(el));
   }, [loading, bestSellers.length]);
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setPromoCountdown(getPromoCountdown());
-    }, 1000);
-
-    return () => window.clearInterval(intervalId);
-  }, []);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -3681,7 +3653,7 @@ const Home = () => {
                               </div>
                             ) : (
                               <picture className="picture_ratio picture_ratio_xs_9x16 image-visible generic-card__asset">
-                                <img src={card.src} alt="" loading="lazy" fetchpriority="auto" />
+                                <img src={card.src} alt="" loading="lazy" fetchPriority="auto" />
                               </picture>
                             )}
                           </div>

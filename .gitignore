@@ -1,13 +1,48 @@
-node_modules
-.vercel
-.env*
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# Build outputs
 build/
+dist/
 frontend/build/
 frontend/dist/
-*.log
+
+# Logs and runtime files
 logs/
+backend/logs/
+*.log
 *.tmp
 *.bak
-__pycache__/
 
-.vercel
+# Python local artifacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+backend/chatbot/.venv/
+backend/chatbot/**/__pycache__/
+backend/chatbot/pattern_embeddings_*.npy
+
+# IDE and local tooling
+.vercel/
+.vs/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/tasks.json
+.agents/
+.kilo/
+.qodo/
+.sixth/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -18,8 +18,13 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+      - run: npm install
+      - run: npm install --prefix backend
+      - run: npm install --prefix ${{ env.FRONTEND_DIR }} --legacy-peer-deps
       - run: npm run check:json
+      - run: npm run test:unit
       - run: npm run lint --prefix ${{ env.FRONTEND_DIR }}
+      - run: npm run test --prefix ${{ env.FRONTEND_DIR }}
 
   deploy-backend:
     needs: lint-test
@@ -38,8 +43,9 @@ jobs:
           startCommand: npm start
           envVars: |
             NODE_ENV=production
-            PORT=5000
             MONGODB_URI=${{ secrets.MONGODB_URI }}
+            FRONTEND_URL=${{ secrets.VITE_SITE_URL }}
+            CORS_ORIGINS=${{ secrets.VITE_SITE_URL }}
 
   deploy-frontend:
     needs: deploy-backend
@@ -50,7 +56,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-      - run: npm install --prefix ${{ env.FRONTEND_DIR }}
+      - run: npm install --prefix ${{ env.FRONTEND_DIR }} --legacy-peer-deps
       - run: npm run build --prefix ${{ env.FRONTEND_DIR }}
       - uses: amondnet/vercel-action@v25
         with:
@@ -60,6 +66,6 @@ jobs:
           working-directory: ${{ env.FRONTEND_DIR }}
           prod: true
           envs: |
-            VITE_API_URL=${{ secrets.REACT_APP_API_URL }}
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
             VITE_CHATBOT_API_URL=${{ secrets.VITE_CHATBOT_API_URL }}
             VITE_SITE_URL=${{ secrets.VITE_SITE_URL }}

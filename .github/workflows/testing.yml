@@ -28,26 +28,16 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Install backend dependencies
       run: npm install --prefix backend
 
     - name: Run backend tests
-      run: npm run test --prefix backend
+      run: npm run test:unit --prefix backend
       env:
         MONGODB_URI: mongodb://localhost:27017/test_db
         NODE_ENV: test
-
-    - name: Generate coverage report
-      run: npm run test:coverage --prefix backend
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        files: ./backend/coverage/lcov.info
-        flags: backend
-        fail_ci_if_error: false
 
   frontend-tests:
     runs-on: ubuntu-latest
@@ -59,7 +49,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Install frontend dependencies
       run: npm install --prefix frontend --legacy-peer-deps
@@ -93,16 +83,13 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Install all dependencies
       run: npm run install:all
 
     - name: Build frontend
       run: npm run build --prefix frontend
-
-    - name: Build backend
-      run: npm run build --prefix backend || true
 
   security-audit:
     runs-on: ubuntu-latest
@@ -114,7 +101,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Run npm audit (backend)
       run: npm audit --prefix backend --audit-level=moderate || true
