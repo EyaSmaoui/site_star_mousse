@@ -12,10 +12,13 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-y: auto;
 }
 
 body {
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* --- Reset & Base --- */
