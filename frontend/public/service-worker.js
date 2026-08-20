@@ -12,7 +12,9 @@ async function loadBuildVersion() {
     const resp = await fetch('/version.json', { cache: 'no-store' });
     if (!resp.ok) return null;
     const json = await resp.json();
-    return json.version || null;
+    const version = json.version || 'unknown';
+    const buildTime = json.buildTime || '';
+    return `${version}-${buildTime}`.replace(/[^a-z0-9_-]/gi, '-');
   } catch (e) {
     return null;
   }
