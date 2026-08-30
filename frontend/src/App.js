@@ -50,11 +50,11 @@ const Matelas = lazy(() => import("./pages/Store/Matelas"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const LegalTerms = lazy(() => import("./pages/LegalTerms"));
 const ReviewHost = lazy(() => import("./components/ReviewHost"));
-const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
 const OrderTracking = lazy(() => import("./pages/OrderTracking"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function GlobalBrandTheme() {
   return (
@@ -606,11 +606,10 @@ function AppContent() {
         <Route path="/quiz" element={<Quiz />} />
 
         <Route path="/product/:slug" element={<ProductTemplate />} />
-        <Route path="/product-detail/:productId" element={<ProductDetail />} />
         <Route path="/order-tracking" element={<OrderTracking />} />
         <Route path="/admin-panel" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} element={<AdminPanel />} />} />
 
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       {showChatbot && chatbotReady && (

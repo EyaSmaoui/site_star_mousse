@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const User = require('../models/user.model');
 require('dotenv').config();
 
-const MONGO_URI = process.env.url_Mongodb || 'mongodb://127.0.0.1:27017/site_star_mousse';
+const MONGO_URI = process.env.url_Mongodb || process.env.MONGODB_URI;
+
+if (!MONGO_URI) {
+  throw new Error('MongoDB Atlas URI missing. Set url_Mongodb or MONGODB_URI in .env.');
+}
 
 function parseArgs() {
   const args = process.argv.slice(2);

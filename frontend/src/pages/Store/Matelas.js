@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FiCheckCircle, FiPhone, FiMessageCircle } from 'react-icons/fi';
+import { ROUTES } from '../../data/siteLinks';
 
 function Matelas() {
 
@@ -425,9 +427,9 @@ function Matelas() {
               <button className="contact-button contact-btn-phone" onClick={contactPhone}>
                 <FiPhone /> Téléphone
               </button>
-              <a href="/contact" className="contact-button" style={{backgroundColor: '#667eea'}}>
+              <Link to={ROUTES.contact} className="contact-button" style={{backgroundColor: '#667eea'}}>
                 📧 Email
-              </a>
+              </Link>
             </div>
           </div>
         </div>

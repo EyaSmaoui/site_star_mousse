@@ -4,6 +4,7 @@ import { FaFacebookF, FaHeart, FaInstagram, FaRegUser, FaRetweet, FaWhatsapp } f
 import { FiHome, FiMoreHorizontal, FiSearch, FiShoppingBag, FiX } from "react-icons/fi";
 import { CART_UPDATED_EVENT, getCartCount } from "../utils/cartUtils";
 import { PROFILE_CHANGED_EVENT } from "../services/profileSyncService";
+import { SOCIAL, buildWhatsappUrl } from "../data/siteLinks";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -1054,13 +1055,13 @@ function NavBar() {
             </div>
 
             <div className="ssn-mobile-socials" aria-label="Reseaux sociaux">
-              <a href="https://www.facebook.com/superstar.mousse" target="_blank" rel="nofollow noreferrer" title="Facebook" aria-label="Facebook">
+              <a href={SOCIAL.facebook} target="_blank" rel="nofollow noreferrer" title="Facebook" aria-label="Facebook">
                 <FaFacebookF />
               </a>
-              <a href="https://www.instagram.com/superstar.mousse/" target="_blank" rel="nofollow noreferrer" title="Instagram" aria-label="Instagram">
+              <a href={SOCIAL.instagram} target="_blank" rel="nofollow noreferrer" title="Instagram" aria-label="Instagram">
                 <FaInstagram />
               </a>
-              <a href="https://wa.me/21622900131" target="_blank" rel="nofollow noreferrer" title="Whatsapp" aria-label="Whatsapp">
+              <a href={buildWhatsappUrl()} target="_blank" rel="nofollow noreferrer" title="Whatsapp" aria-label="Whatsapp">
                 <FaWhatsapp />
               </a>
             </div>

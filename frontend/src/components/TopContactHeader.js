@@ -1,10 +1,10 @@
 import React from "react";
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { FiClock, FiPhone } from "react-icons/fi";
+import { CONTACT, SOCIAL, buildWhatsappUrl } from "../data/siteLinks";
 
 function TopContactHeader() {
-  const phoneNumber = "+21622900131";
-  const whatsappUrl = "https://wa.me/21622900131";
+  const whatsappUrl = buildWhatsappUrl();
 
   return (
     <div className="ssn-top-header">
@@ -123,15 +123,15 @@ function TopContactHeader() {
         <div className="ssn-top-header-section">
           <a
             className="ssn-contact-link"
-            href={`tel:${phoneNumber}`}
+            href={`tel:${CONTACT.phoneTel}`}
             title="Appeler Star Mousse"
             onClick={() => {
               if (window.trackPhoneCall) {
-                window.trackPhoneCall(phoneNumber);
+                window.trackPhoneCall(CONTACT.phoneTel);
               }
             }}
           >
-            <FiPhone /> <span>(+216) 22900131</span>
+            <FiPhone /> <span>(+216) {CONTACT.phoneShort.replace(/\s/g, "")}</span>
           </a>
           <span className="ssn-top-header-separator" aria-hidden="true"></span>
           <span className="ssn-contact-link" title="Horaire">
@@ -142,7 +142,7 @@ function TopContactHeader() {
         <div className="ssn-top-header-socials" aria-label="Reseaux sociaux">
           <a
             className="ssn-social-link"
-            href="https://www.facebook.com/superstar.mousse"
+            href={SOCIAL.facebook}
             target="_blank"
             rel="nofollow noreferrer"
             title="Facebook"
@@ -152,7 +152,7 @@ function TopContactHeader() {
           </a>
           <a
             className="ssn-social-link"
-            href="https://www.instagram.com/superstar.mousse/"
+            href={SOCIAL.instagram}
             target="_blank"
             rel="nofollow noreferrer"
             title="Instagram"

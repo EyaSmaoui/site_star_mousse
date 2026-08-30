@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import OrderCheckout from "./OrderCheckout";
 import { getProductBySlug } from "../data/products";
+import { addCartItem } from "../utils/cartUtils";
+import { getToken } from "../utils/authUtils";
 
 import formatPrice from '../utils/formatPrice';
 
@@ -137,12 +138,18 @@ function ProductTemplate({ product: fallbackProduct }) {
 
     try {
       const { submitProductOrder } = await import("../services/orderService");
-      await submitProductOrder(orderData);
+      const savedOrder = await submitProductOrder(orderData);
+
+      if (!savedOrder) return;
 
       toast.success("Commande envoyée avec succès !");
       setForm({ name: "", phone: "", address: "", email: "" });
       setQty(1);
-      setTimeout(() => navigate("/client-dashboard"), 1400);
+      const orderId = savedOrder._id || savedOrder.data?._id;
+      const destination = getToken()
+        ? (orderId ? `/order-confirmation/${orderId}` : "/client-orders")
+        : "/products";
+      setTimeout(() => navigate(destination), 1400);
     } catch (error) {
       console.error("Erreur commande :", error);
       const message = error?.response?.data?.error || error?.response?.data?.message || error?.message || "Erreur lors de l'envoi de la commande.";
@@ -152,13 +159,25 @@ function ProductTemplate({ product: fallbackProduct }) {
     }
   };
 
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    addCartItem({
+      name: product.name,
+      size: hasSizes ? selectedSize?.label : "",
+      image: product.images?.[activeImg] || product.images?.[0] || "",
+      price: unitPrice ?? 0,
+      quantity: qty,
+    });
+    toast.success(`${product.name} ajouté au panier`);
+  };
+
   const hasOldPrice = hasSizes ? selectedSize?.oldPrice : product.oldPrice;
   const badgeIsPopular = product.tag?.trim().toUpperCase() === "POPULAIRE";
   const accent = badgeIsPopular ? "#b78b3f" : "#94a3b8";
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} theme="light" />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
         .ssn-page { background: #fbfaf8; color: #242436; font-family: 'DM Sans', sans-serif; }
@@ -185,6 +204,8 @@ function ProductTemplate({ product: fallbackProduct }) {
         .ssn-size-button { min-width: 98px; padding: 14px 16px; border-radius: 14px; border: 1px solid #d1d5db; background: #fff; color: #334155; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .ssn-size-button.active { background: ${accent}; color: #fff; border-color: ${accent}; }
         .ssn-order-panel { background: #fff; border-radius: 28px; box-shadow: 0 26px 65px rgba(21,21,34,0.08); border: 1px solid #f0eded; padding: 28px; }
+        .ssn-cart-button { width: 100%; margin-bottom: 14px; padding: 14px 18px; border-radius: 14px; border: 1px solid #d1d5db; background: #fff; color: #1f2937; font-weight: 700; cursor: pointer; }
+        .ssn-cart-button:hover { border-color: #0a0a0a; }
         .ssn-tab-nav { display: flex; gap: 18px; border-bottom: 1px solid #e2e8f0; margin-top: 42px; }
         .ssn-tab-button { padding: 14px 0; cursor: pointer; font-weight: 700; color: #64748b; border: none; background: none; position: relative; }
         .ssn-tab-button.active { color: #1f2937; }
@@ -276,6 +297,9 @@ function ProductTemplate({ product: fallbackProduct }) {
               )}
 
               <div className="ssn-order-panel">
+                <button type="button" className="ssn-cart-button" onClick={handleAddToCart}>
+                  Ajouter au panier
+                </button>
                 <OrderCheckout
                   form={form}
                   setForm={setForm}

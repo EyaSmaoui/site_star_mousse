@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaPhoneAlt, FaWhatsapp, FaYoutube } from "react-icons/fa";
+import { CONTACT, MAPS, ROUTES, SOCIAL, WHATSAPP_DEFAULT } from "../data/siteLinks";
 
 function Footer() {
-  const whatsappUrl =
-    "https://wa.me/21622900207?text=Bonjour%20Star%20Mousse%2C%20je%20voudrais%20des%20informations%20sur%20vos%20matelas.";
+  const whatsappUrl = WHATSAPP_DEFAULT;
 
   return (
     <>
@@ -186,17 +187,17 @@ function Footer() {
                 <span className="ssn-social-icon" aria-hidden="true"><FaWhatsapp /></span>
                 WhatsApp
               </a>
-              <a href="tel:+21622900131" className="call" aria-label="Appeler Star Mousse">
+              <a href={`tel:${CONTACT.phoneTel}`} className="call" aria-label="Appeler Star Mousse">
                 <span className="ssn-social-icon" aria-hidden="true"><FaPhoneAlt /></span>
                 Appeler
               </a>
-              <a href="https://www.facebook.com/SuperSiestaBorjChakir/" className="fb icon-only" target="_blank" rel="noreferrer" aria-label="Facebook Super Siesta Borj Chakir" title="Facebook">
+              <a href={SOCIAL.facebook} className="fb icon-only" target="_blank" rel="noreferrer" aria-label="Facebook Star Mousse" title="Facebook">
                 <span className="ssn-social-icon" aria-hidden="true"><FaFacebookF /></span>
               </a>
-              <a href="https://www.instagram.com/super_siesta_tunis/" className="ig icon-only" target="_blank" rel="noreferrer" aria-label="Instagram Super Siesta Tunis" title="Instagram">
+              <a href={SOCIAL.instagram} className="ig icon-only" target="_blank" rel="noreferrer" aria-label="Instagram Star Mousse" title="Instagram">
                 <span className="ssn-social-icon" aria-hidden="true"><FaInstagram /></span>
               </a>
-              <a href="https://www.youtube.com/@StarMousseTunisie" className="yt icon-only" target="_blank" rel="noreferrer" aria-label="YouTube Star Mousse" title="YouTube">
+              <a href={SOCIAL.youtube} className="yt icon-only" target="_blank" rel="noreferrer" aria-label="YouTube Star Mousse" title="YouTube">
                 <span className="ssn-social-icon" aria-hidden="true"><FaYoutube /></span>
               </a>
             </div>
@@ -205,22 +206,22 @@ function Footer() {
           <div className="ssn-footer-col">
             <h4>Navigation</h4>
             <ul>
-              <li><a href="/products">Nos produits</a></li>
-              <li><a href="/nos-matelas">Nos matelas</a></li>
-              <li><a href="/promos">Promotions</a></li>
-              <li><a href="/b2b-export">Pro & export</a></li>
-              <li><a href="/roadmap-international">Roadmap 2026</a></li>
-              <li><a href="/about">Notre histoire</a></li>
+              <li><Link to={ROUTES.products}>Nos produits</Link></li>
+              <li><Link to={ROUTES.matelas}>Nos matelas</Link></li>
+              <li><Link to={ROUTES.promos}>Promotions</Link></li>
+              <li><Link to={ROUTES.b2b}>Pro & export</Link></li>
+              <li><Link to="/roadmap-international">Roadmap 2026</Link></li>
+              <li><Link to={ROUTES.about}>Notre histoire</Link></li>
             </ul>
           </div>
 
           <div className="ssn-footer-col">
             <h4>Support</h4>
             <ul>
-              <li><a href="/help">Livraison & retours</a></li>
-              <li><a href="/help">Garantie</a></li>
-              <li><a href="/nos-matelas">Guide des tailles</a></li>
-              <li><a href="/b2b-export#devis-pro">Devis professionnel</a></li>
+              <li><Link to={ROUTES.help}>Livraison & retours</Link></li>
+              <li><Link to={ROUTES.help}>Garantie</Link></li>
+              <li><Link to={ROUTES.matelas}>Guide des tailles</Link></li>
+              <li><Link to={ROUTES.b2bQuote}>Devis professionnel</Link></li>
               <li><a href={whatsappUrl}>Contactez-nous</a></li>
             </ul>
           </div>
@@ -228,11 +229,12 @@ function Footer() {
           <div className="ssn-footer-col">
             <h4>Contact</h4>
             <ul>
-              <li><a href="tel:+21622900131">+216 22 900 131</a></li>
-              <li><a href={whatsappUrl}>WhatsApp +216 22 900 207</a></li>
-              <li><a href="/contact">Formulaire de contact</a></li>
-              <li><a href="https://www.google.com/maps/search/?api=1&query=Borj%20Chakir%20Tunis%20Tunisie">Showroom Star Mousse, Borj Chakir, Tunis, Tunisie</a></li>
-              <li><a href="/help">Lun-Sam : 8h-18h</a></li>
+              <li><a href={`tel:${CONTACT.phoneTel}`}>{CONTACT.phoneDisplay}</a></li>
+              <li><a href={whatsappUrl}>WhatsApp {CONTACT.whatsappDisplay}</a></li>
+              <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+              <li><Link to={ROUTES.contact}>Formulaire de contact</Link></li>
+              <li><a href={MAPS.showroomSearch}>Showroom Star Mousse, Borj Chakir, Tunis, Tunisie</a></li>
+              <li><Link to={ROUTES.help}>Lun-Sam : 8h-18h</Link></li>
             </ul>
           </div>
         </div>
@@ -241,11 +243,11 @@ function Footer() {
           <div className="ssn-footer-bottom">
             <p>© 2026 <span>Star Mousse</span> - Fabrique avec passion en Tunisie.</p>
             <div className="ssn-legal">
-              <a href="/legal-terms">Mentions légales</a>
+              <Link to={ROUTES.legal}>Mentions légales</Link>
               <div className="ssn-legal-dot"></div>
-              <a href="/privacy-policy">Confidentialité</a>
+              <Link to={ROUTES.privacy}>Confidentialité</Link>
               <div className="ssn-legal-dot"></div>
-              <a href="/legal-terms">CGV</a>
+              <Link to={ROUTES.legal}>CGV</Link>
             </div>
           </div>
         </div>

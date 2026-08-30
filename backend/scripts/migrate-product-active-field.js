@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const logger = require('../logger');
 
-const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/site_star_mousse';
+const MONGODB_URI = process.env.url_Mongodb || process.env.MONGODB_URI || process.env.MONGO_URI;
+
+if (!MONGODB_URI) {
+  throw new Error('MongoDB Atlas URI missing. Set url_Mongodb, MONGODB_URI or MONGO_URI in .env.');
+}
 
 async function main() {
   await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 });

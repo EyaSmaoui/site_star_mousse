@@ -216,7 +216,7 @@ const GENERIC_CAROUSEL_CARDS = [
   {
     id: "2d7f74e5-34ac-46ef-823c-b2d5ea972a76",
     
-    route: "/magasins/",
+    route: "/contact",
     mediaType: "image",
     src: "/caroussel4.jpg",
     alt: "Boutique Star Mousse",
@@ -224,7 +224,7 @@ const GENERIC_CAROUSEL_CARDS = [
   {
     id: "c14aecff-4809-4653-95a6-7e0f6137f4eb",
    
-    route: "/matelas-reconditionnes/",
+    route: "/promos",
     mediaType: "image",
     src: "/caroussel0.png",
     alt: "Produits reconditionnés Star Mousse",
@@ -349,7 +349,7 @@ const STAR_MOUSSE_PRODUCTS = [
     image: "/oreillers.jpg",
     alt: "Oreillers en Fibre",
     price: "25 DT",
-    route: "/product/oreillers-en-fibre",
+    route: "/product/oreiller-fibre",
     badge: "PROMO",
   },
   {

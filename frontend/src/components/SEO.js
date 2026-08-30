@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { getProductBySlug } from "../data/products";
 import { SITE_URL } from "../utils/env";
+import { CONTACT, SOCIAL, buildWhatsappUrl } from "../data/siteLinks";
 
 const DEFAULT_IMAGE = `${SITE_URL}/relax_eluproduit-card.jpg`;
 
@@ -62,7 +63,44 @@ const ROUTE_META = {
     title: "Quiz sommeil - Trouver votre matelas Star Mousse",
     description: "Repondez au quiz Star Mousse pour trouver le matelas adapte a votre position de sommeil, votre morphologie et votre budget.",
   },
+  "/cart": {
+    title: "Panier - Star Mousse Tunisie",
+    description: "Consultez votre panier Star Mousse et finalisez votre commande de matelas ou oreillers en Tunisie.",
+  },
 };
+
+const PRIVATE_ROUTE_PREFIXES = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password/",
+  "/admin-dashboard",
+  "/admin/",
+  "/client-",
+  "/employee-dashboard",
+  "/employer/",
+  "/profile",
+  "/manage-",
+  "/add-employer",
+  "/checkout",
+  "/cart",
+  "/order-confirmation/",
+  "/order-tracking",
+  "/admin-panel",
+];
+
+function isKnownRoute(pathname) {
+  if (ROUTE_META[pathname]) return true;
+
+  if (pathname.startsWith("/product/")) {
+    const slug = decodeURIComponent(pathname.split("/")[2] || "");
+    return Boolean(getProductBySlug(slug));
+  }
+
+  return PRIVATE_ROUTE_PREFIXES.some(
+    (prefix) => pathname === prefix.replace(/\/$/, "") || pathname.startsWith(prefix)
+  );
+}
 
 function upsertMeta(selector, attributes) {
   let element = document.head.querySelector(selector);
@@ -105,7 +143,7 @@ function buildLocalBusinessSchema() {
     url: `${SITE_URL}/`,
     logo: `${SITE_URL}/logo-star-mousse.png`,
     image: DEFAULT_IMAGE,
-    telephone: "+216 22 900 131",
+    telephone: CONTACT.phoneTel,
     priceRange: "TND",
     address: {
       "@type": "PostalAddress",
@@ -124,10 +162,10 @@ function buildLocalBusinessSchema() {
       },
     ],
     sameAs: [
-      "https://www.facebook.com/SuperSiestaBorjChakir/",
-      "https://www.instagram.com/super_siesta_tunis/",
-      "https://www.youtube.com/@StarMousseTunisie",
-      "https://wa.me/21622900207",
+      SOCIAL.facebook,
+      SOCIAL.instagram,
+      SOCIAL.youtube,
+      buildWhatsappUrl(),
     ],
   };
 }
@@ -194,14 +232,29 @@ export default function SEO() {
        title: `${product.name} - Prix et commande | Star Mousse Tunisie`,
        description: product.description,
        image: product.images?.[0] ? `${SITE_URL}${product.images[0]}` : DEFAULT_IMAGE,
+       robots: "index, follow",
      };
    }
 
    if (location.pathname.startsWith('/order-confirmation')) {
-     return ROUTE_META['/order-confirmation'];
+     return { ...ROUTE_META['/order-confirmation'], robots: "noindex, nofollow" };
    }
 
-   return ROUTE_META[location.pathname] || ROUTE_META['/'];
+   if (ROUTE_META[location.pathname]) {
+     const privatePaths = ["/cart", "/checkout"];
+     const robots = privatePaths.includes(location.pathname) ? "noindex, nofollow" : "index, follow";
+     return { ...ROUTE_META[location.pathname], robots };
+   }
+
+   if (!isKnownRoute(location.pathname)) {
+     return {
+       title: "Page introuvable - Star Mousse",
+       description: "La page demandee est introuvable sur le site Star Mousse.",
+       robots: "noindex, nofollow",
+     };
+   }
+
+   return { ...ROUTE_META['/'], robots: "noindex, nofollow" };
  }, [location.pathname, product]);
 
   useEffect(() => {
@@ -211,7 +264,7 @@ export default function SEO() {
 
     document.title = meta.title;
     upsertMeta('meta[name="description"]', { name: "description", content: meta.description });
-    upsertMeta('meta[name="robots"]', { name: "robots", content: "index, follow" });
+    upsertMeta('meta[name="robots"]', { name: "robots", content: meta.robots || "index, follow" });
     upsertMeta('meta[property="og:type"]', { property: "og:type", content: product ? 'product' : 'website' });
     upsertMeta('meta[property="og:title"]', { property: "og:title", content: meta.title });
     upsertMeta('meta[property="og:description"]', { property: "og:description", content: meta.description });

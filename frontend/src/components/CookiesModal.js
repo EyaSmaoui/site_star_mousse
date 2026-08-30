@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../data/siteLinks';
 
 const CookiesModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,9 +43,9 @@ const CookiesModal = () => {
           </p>
 
           <div style={styles.links}>
-            <a href="#" style={styles.link}>Politique de confidentialité et de cookie</a>
+            <Link to={ROUTES.privacy} style={styles.link}>Politique de confidentialité et de cookie</Link>
             <span style={styles.separator}>•</span>
-            <a href="#" style={styles.link}>Empreinte</a>
+            <Link to={ROUTES.contact} style={styles.link}>Contact</Link>
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FiPackage, FiTruck, FiCheckCircle, FiClock, FiArrowLeft, FiDownload } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
@@ -148,10 +149,10 @@ const OrderTracking = () => {
       {/* Header */}
       <div className="border-b border-hairline bg-paper sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <a href="/" className="flex items-center gap-2 text-ink hover:text-muted transition-colors mb-4">
+          <Link to="/" className="flex items-center gap-2 text-ink hover:text-muted transition-colors mb-4">
             <FiArrowLeft className="w-5 h-5" />
             <span>Retour</span>
-          </a>
+          </Link>
           <h1 className="font-serif text-4xl text-ink">Suivi de Commande</h1>
           <p className="text-muted mt-2">Suivez l'état de vos commandes en temps réel</p>
         </div>
@@ -343,12 +344,12 @@ const OrderTracking = () => {
                 ? 'Vous n\'avez pas encore passé de commande.'
                 : `Aucune commande avec le statut "${getStatusLabel(filter)}".`}
             </p>
-            <a
-              href="/store"
+            <Link
+              to="/products"
               className="btn-minimal inline-block"
             >
               Découvrir nos produits
-            </a>
+            </Link>
           </div>
         )}
       </main>

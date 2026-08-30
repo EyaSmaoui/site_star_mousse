@@ -1,6 +1,0 @@
-export { GlassButton } from './GlassButton'
-export { GlassCard } from './GlassCard'
-export { GlassInput } from './GlassInput'
-export { GlassModal } from './GlassModal'
-export { GlassBadge } from './GlassBadge'
-export { GlassTabs } from './GlassTabs'

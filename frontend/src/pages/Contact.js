@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import GoogleMapsEmbed from '../components/GoogleMapsEmbed';
+import { CONTACT, buildWhatsappUrl } from '../data/siteLinks';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -352,7 +353,7 @@ export default function Contact() {
               <div className="contact-info-icon">📞</div>
               <div className="contact-info-title">Téléphone</div>
               <div className="contact-info-value">
-                <a href="tel:+21622900131">22 900 131</a>
+                <a href={`tel:${CONTACT.phoneTel}`}>{CONTACT.phoneShort}</a>
               </div>
             </div>
 
@@ -360,7 +361,7 @@ export default function Contact() {
               <div className="contact-info-icon">💬</div>
               <div className="contact-info-title">WhatsApp</div>
               <div className="contact-info-value">
-                <a href="https://wa.me/21622900207">22 900 207</a>
+                <a href={buildWhatsappUrl()}>{CONTACT.whatsappDisplay}</a>
               </div>
             </div>
 
@@ -368,7 +369,7 @@ export default function Contact() {
               <div className="contact-info-icon">📧</div>
               <div className="contact-info-title">Email</div>
               <div className="contact-info-value">
-                <a href="/contact">Formulaire de contact</a>
+                <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
               </div>
             </div>
 

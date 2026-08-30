@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { ROUTES } from '../data/siteLinks';
 
 const PrivacyPolicy = () => {
 
@@ -200,8 +202,8 @@ const PrivacyPolicy = () => {
         <div style={styles.footer}>
           <p>
             © 2026 Star Mousse. Tous droits réservés. | 
-            <a href="/legal-terms" style={styles.link}>Mentions Légales</a> | 
-            <a href="/privacy-policy" style={styles.link}>Politique de Confidentialité</a>
+            <Link to={ROUTES.legal} style={styles.link}>Mentions Légales</Link> | 
+            <Link to={ROUTES.privacy} style={styles.link}>Politique de Confidentialité</Link>
           </p>
         </div>
       </div>

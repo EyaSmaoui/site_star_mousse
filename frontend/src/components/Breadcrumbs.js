@@ -1,5 +1,6 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { getProductBySlug } from '../data/products';
 
 export default function Breadcrumbs() {
   const location = useLocation();
@@ -30,13 +31,15 @@ export default function Breadcrumbs() {
 
       // Get product name from path (for /product/relax-plus)
       if (path === 'product' && paths[index + 1]) {
-        const productName = paths[index + 1]
-          .split('-')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
+        const slug = decodeURIComponent(paths[index + 1]);
+        const product = getProductBySlug(slug);
         breadcrumbs.push({ label: 'Nos Matelas', href: '/nos-matelas' });
-        breadcrumbs.push({ label: productName, href: currentPath + '/' + paths[index + 1], isActive: true });
-        return; // Skip next iteration
+        breadcrumbs.push({
+          label: product?.name || slug.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+          href: `/product/${slug}`,
+          isActive: true,
+        });
+        return;
       } else if (labels[path]) {
         breadcrumbs.push({
           label: labels[path],
@@ -124,9 +127,9 @@ export default function Breadcrumbs() {
               <span className="breadcrumb-current">{breadcrumb.label}</span>
             ) : (
               <>
-                <a href={breadcrumb.href} className="breadcrumb-link">
+                <Link to={breadcrumb.href} className="breadcrumb-link">
                   {breadcrumb.label}
-                </a>
+                </Link>
                 {index < breadcrumbs.length - 1 && (
                   <span className="breadcrumb-separator">/</span>
                 )}

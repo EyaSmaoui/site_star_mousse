@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { resetPassword } from "../../services/apiAuth";
-import Footer from "../../components/Footer";
 import "../../App.css";
 
 export default function ResetPassword() {
@@ -86,7 +85,6 @@ export default function ResetPassword() {
           </p>
         </div>
       </section>
-      <Footer />
     </>
   );
 }

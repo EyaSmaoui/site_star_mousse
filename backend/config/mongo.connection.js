@@ -3,14 +3,9 @@ const mongoose = require('mongoose');
 mongoose.set('bufferCommands', false);
 mongoose.set('sanitizeFilter', true);
 
-const getMongoUri = () =>
-  process.env.url_Mongodb ||
-  process.env.MONGODB_URI ||
-  'mongodb://127.0.0.1:27017/site_star_mousse';
+const hasConfiguredMongoUri = () => Boolean(process.env.url_Mongodb || process.env.MONGODB_URI);
 
-const getFallbackUri = () =>
-  process.env.MONGODB_FALLBACK_URI ||
-  (process.env.NODE_ENV !== 'production' ? 'mongodb://127.0.0.1:27017/site_star_mousse' : null);
+const getMongoUri = () => process.env.url_Mongodb || process.env.MONGODB_URI;
 
 const connectWithHardTimeout = async (uri, timeoutMS = 7000) => {
   let timeout;
@@ -48,41 +43,33 @@ const disconnectWithHardTimeout = async (timeoutMS = 1000) => {
 };
 
 module.exports.connectToMongoDB = async () => {
-  const primaryUri = getMongoUri().trim();
-  const uris = [primaryUri];
-  const fallback = getFallbackUri();
-  if (fallback && fallback !== primaryUri) {
-    uris.push(fallback.trim());
+  const uri = getMongoUri();
+
+  if (!uri) {
+    console.error('\nConfiguration MongoDB manquante.');
+    console.error('- Définissez url_Mongodb ou MONGODB_URI dans .env pour utiliser MongoDB Atlas en ligne');
+    throw new Error('MongoDB URI missing. Set url_Mongodb or MONGODB_URI.');
   }
 
-  let lastError;
-  for (const uri of uris) {
-    try {
-      await connectWithHardTimeout(uri);
-      console.log(`connected to MongoDB (${uri.includes('127.0.0.1') || uri.includes('localhost') ? 'local' : 'remote'})`);
-      return;
-    } catch (err) {
-      lastError = err;
-      if (mongoose.connection.readyState !== 0) {
-        await disconnectWithHardTimeout();
-      }
-      console.error(`MongoDB connection failed (${uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')}):`, err.message);
-      if (mongoose.connection.readyState !== 0) {
-        console.error('MongoDB cleanup still pending; skipping remaining URIs for this attempt.');
-        break;
-      }
-    }
-  }
-
-  console.error('\nImpossible de se connecter à MongoDB.');
-  console.error('- Vérifiez url_Mongodb dans .env (Atlas : IP autorisée, identifiants)');
-  console.error('- Ou installez MongoDB local et utilisez : mongodb://127.0.0.1:27017/site_star_mousse');
-  console.error('- Option : MONGODB_FALLBACK_URI=mongodb://127.0.0.1:27017/site_star_mousse\n');
-  // If developer explicitly allows running without DB, start in degraded mode
-  if (process.env.ALLOW_NO_DB === 'true') {
-    console.warn('⚠️ ALLOW_NO_DB=true — démarrage en mode dégradé sans MongoDB. Certaines routes dépendantes de la base peuvent échouer.');
+  try {
+    await connectWithHardTimeout(uri.trim());
+    console.log('connected to MongoDB (online)');
     return;
-  }
+  } catch (err) {
+    if (mongoose.connection.readyState !== 0) {
+      await disconnectWithHardTimeout();
+    }
 
-  throw lastError;
+    console.error(`MongoDB connection failed (${uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')}):`, err.message);
+    console.error('\nImpossible de se connecter à MongoDB Atlas.');
+    console.error('- Vérifiez url_Mongodb dans .env (Atlas : IP autorisée, identifiants)');
+    console.error('- Vérifiez aussi le réseau / pare-feu / VPN / IP publique autorisée dans Atlas\n');
+
+    if (process.env.ALLOW_NO_DB === 'true') {
+      console.warn('⚠️ ALLOW_NO_DB=true — démarrage en mode dégradé sans MongoDB. Certaines routes dépendantes de la base peuvent échouer.');
+      return;
+    }
+
+    throw err;
+  }
 };

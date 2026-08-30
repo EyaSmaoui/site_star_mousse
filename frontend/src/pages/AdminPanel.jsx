@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   FiEdit2, FiTrash2, FiPlus, FiArrowLeft, FiSearch,
   FiPackage, FiShoppingCart, FiDollarSign, FiUsers,
@@ -159,10 +160,10 @@ const AdminPanel = () => {
       <div className="border-b border-hairline bg-paper sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-4">
-            <a href="/" className="flex items-center gap-2 text-ink hover:text-muted transition-colors">
+            <Link to="/" className="flex items-center gap-2 text-ink hover:text-muted transition-colors">
               <FiArrowLeft className="w-5 h-5" />
               <span>Retour</span>
-            </a>
+            </Link>
             <button
               onClick={fetchData}
               className="px-4 py-2 border border-hairline text-ink rounded-none hover:bg-paper transition-colors"

@@ -4,7 +4,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register } from "../../services/apiAuth";
 import { submitPendingOrder } from "../../services/orderService";
-import Footer from "../../components/Footer";
 import "../../App.css";
 
 const Register = () => {
@@ -154,8 +153,6 @@ const Register = () => {
           </p>
         </div>
       </section>
-
-      <Footer />
     </>
   );
 };

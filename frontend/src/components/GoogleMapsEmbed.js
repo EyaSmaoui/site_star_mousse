@@ -1,9 +1,9 @@
 import React from 'react';
+import { CONTACT, MAPS, buildShowroomWhatsappUrl } from '../data/siteLinks';
 
 export default function GoogleMapsEmbed() {
-  const showroomAddress = "Borj Chakir, Tunis, Tunisie";
-  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(showroomAddress)}`;
-  const mapsEmbedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3191.123456789!2d10.123456!3d36.789456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fd35bd04c39e35%3A0x123456789abc!2sBorj%20Chakir%2C%20Tunis";
+  const mapsUrl = MAPS.showroomSearch;
+  const mapsEmbedUrl = MAPS.showroomEmbed;
 
   return (
     <div className="google-maps-container">
@@ -204,10 +204,10 @@ export default function GoogleMapsEmbed() {
         <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="maps-button">
           🗺️ Ouvrir dans Google Maps
         </a>
-        <a href="tel:+21622900131" className="maps-button">
+        <a href={`tel:${CONTACT.phoneTel}`} className="maps-button">
           📞 Appeler maintenant
         </a>
-        <a href="https://wa.me/21622900207?text=Bonjour%20Star%20Mousse%2C%20je%20voudrais%20visiter%20votre%20showroom." target="_blank" rel="noopener noreferrer" className="maps-button">
+        <a href={buildShowroomWhatsappUrl()} target="_blank" rel="noopener noreferrer" className="maps-button">
           💬 WhatsApp
         </a>
       </div>
@@ -221,19 +221,19 @@ export default function GoogleMapsEmbed() {
         <div className="maps-info-item">
           <span className="maps-info-label">📞 Téléphone:</span>
           <span className="maps-info-value">
-            <a href="tel:+21622900131">22 900 131</a>
+            <a href={`tel:${CONTACT.phoneTel}`}>{CONTACT.phoneShort}</a>
           </span>
         </div>
         <div className="maps-info-item">
           <span className="maps-info-label">💬 WhatsApp:</span>
           <span className="maps-info-value">
-            <a href="https://wa.me/21622900207">22 900 207</a>
+            <a href={buildShowroomWhatsappUrl()}>{CONTACT.whatsappDisplay}</a>
           </span>
         </div>
         <div className="maps-info-item">
           <span className="maps-info-label">📧 Email:</span>
           <span className="maps-info-value">
-            <a href="/contact">Formulaire de contact</a>
+            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           </span>
         </div>
         <div className="maps-info-item">
