@@ -4,6 +4,10 @@ const { getProductRecommendations } = require('../services/productRecommendation
 
 const EXCLUDED_BRANDS = ['Star mousse', 'Emma'];
 const competitorBrandRegex = new RegExp(`\\b(?:${EXCLUDED_BRANDS.join('|')})\\b`, 'i');
+const competitorNameFilter = {
+  $regex: competitorBrandRegex.source,
+  $options: competitorBrandRegex.flags.replace('g', ''),
+};
 const buildStarMousseFilter = (filter = {}) => ({
   $and: [
     filter,
@@ -13,9 +17,9 @@ const buildStarMousseFilter = (filter = {}) => ({
         {
           brand: { $exists: false },
           $nor: [
-            { name: competitorBrandRegex },
-            { description: competitorBrandRegex },
-            { category: competitorBrandRegex },
+            { name: competitorNameFilter },
+            { description: competitorNameFilter },
+            { category: competitorNameFilter },
           ],
         },
       ],
