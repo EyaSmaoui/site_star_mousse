@@ -2,16 +2,20 @@ import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import axios from 'axios';
+import httpClient from '../../services/httpClient';
 
-vi.mock('axios');
+vi.mock('../../services/httpClient', () => ({
+  default: {
+    get: vi.fn(),
+  },
+}));
 
 const OrderConfirmation = (await vi.importActual('../OrderConfirmation.jsx')).default;
 
 describe('OrderConfirmation', () => {
   beforeEach(() => {
     localStorage.clear();
-    axios.get.mockReset();
+    httpClient.get.mockReset();
   });
 
   it('loads and displays order details from the API', async () => {
@@ -27,7 +31,7 @@ describe('OrderConfirmation', () => {
       items: [{ name: 'Matelas Relax Plus', quantity: 1, price: 1299.99 }],
     };
 
-    axios.get.mockResolvedValueOnce({ data: mockOrder });
+    httpClient.get.mockResolvedValueOnce({ data: mockOrder });
 
     render(
       <MemoryRouter initialEntries={['/order-confirmation/order-123?email=jean@example.com']}>
