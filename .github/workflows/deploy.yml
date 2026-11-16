@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 20
+  NODE_VERSION: 24
   FRONTEND_DIR: frontend
 
 jobs:
@@ -39,12 +39,14 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "${RENDER_API_KEY:-}" ]]; then
-            echo "::error title=Render deployment::GitHub secret RENDER_API_KEY is missing."
-            exit 1
+            echo "::warning title=Render deployment::GitHub secret RENDER_API_KEY is missing; backend deployment skipped."
+            echo "Configure Render Git auto-deploy or add RENDER_API_KEY and RENDER_BACKEND_SERVICE_ID to enable API-triggered deploys."
+            exit 0
           fi
           if [[ -z "${RENDER_SERVICE_ID:-}" ]]; then
-            echo "::error title=Render deployment::GitHub secret RENDER_BACKEND_SERVICE_ID is missing."
-            exit 1
+            echo "::warning title=Render deployment::GitHub secret RENDER_BACKEND_SERVICE_ID is missing; backend deployment skipped."
+            echo "Configure Render Git auto-deploy or add RENDER_API_KEY and RENDER_BACKEND_SERVICE_ID to enable API-triggered deploys."
+            exit 0
           fi
 
           response_file=$(mktemp)
@@ -86,7 +88,7 @@ jobs:
           exit 1
 
   deploy-frontend:
-    needs: deploy-backend
+    needs: [lint-test, deploy-backend]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
