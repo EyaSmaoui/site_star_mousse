@@ -11,7 +11,7 @@ function Footer() {
       <style>{`
         .ssn-footer {
           font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-          background: #0a352f;
+          background: #153c37;
           border-top: 1px solid rgba(255,255,255,0.08);
           color: #ffffff;
         }
@@ -32,7 +32,7 @@ function Footer() {
         .ssn-footer-desc {
           font-size: 13.5px;
           line-height: 1.75;
-          color: #e9f4ee;
+          color: #f3e9dc;
           max-width: 320px;
           margin-bottom: 24px;
         }
@@ -77,14 +77,14 @@ function Footer() {
           border-color: transparent;
         }
         .ssn-social a.wa:hover { background: #25D366; }
-        .ssn-social a.call:hover { background: #ffd36a; color: #12231f; }
+        .ssn-social a.call:hover { background: #c89b5b; color: #1f2d35; }
         .ssn-social a.fb:hover { background: #1877F2; }
         .ssn-social a.ig:hover { background: #E1306C; }
         .ssn-social a.yt:hover { background: #FF0000; }
-        .ssn-footer-col h4 {
+        .ssn-footer-col h3 {
           font-size: 12px;
           font-weight: 700;
-          color: #ffd36a;
+          color: #e4bf82;
           text-transform: uppercase;
           letter-spacing: 1.2px;
           margin-bottom: 20px;
@@ -100,7 +100,7 @@ function Footer() {
         .ssn-footer-col ul a {
           text-decoration: none;
           font-size: 14px;
-          color: #e9f4ee;
+          color: #f3e9dc;
           display: inline-flex;
           align-items: center;
           transition: color 0.18s;
@@ -109,11 +109,11 @@ function Footer() {
           content: '';
           width: 0;
           height: 1.5px;
-          background: #ffd36a;
+          background: #e7c58f;
           transition: width 0.2s, margin-right 0.2s;
           display: inline-block;
         }
-        .ssn-footer-col ul a:hover { color: #ffd36a; }
+        .ssn-footer-col ul a:hover { color: #e7c58f; }
         .ssn-footer-col ul a:hover::before {
           width: 10px;
           margin-right: 7px;
@@ -137,7 +137,7 @@ function Footer() {
           color: #d9eee5;
           margin: 0;
         }
-        .ssn-footer-bottom p span { color: #ffd36a; font-weight: 700; }
+        .ssn-footer-bottom p span { color: #e7c58f; font-weight: 700; }
         .ssn-legal {
           display: flex;
           align-items: center;
@@ -173,7 +173,7 @@ function Footer() {
       `}</style>
 
       <footer className="ssn-footer">
-        <div className="ssn-footer-main">
+        <div className="ssn-footer-main container">
           <div className="ssn-footer-col">
             <div className="ssn-footer-logo">
               <img src="/logo-star-mousse.png" alt="Star Mousse" width="153" height="42" loading="lazy" decoding="async" />
@@ -191,12 +191,12 @@ function Footer() {
                 <span className="ssn-social-icon" aria-hidden="true"><FaPhoneAlt /></span>
                 Appeler
               </a>
-              <a href={SOCIAL.facebook} className="fb icon-only" target="_blank" rel="noreferrer" aria-label="Facebook Star Mousse" title="Facebook">
+              {SOCIAL.facebook && <a href={SOCIAL.facebook} className="fb icon-only" target="_blank" rel="noreferrer" aria-label="Facebook Star Mousse" title="Facebook">
                 <span className="ssn-social-icon" aria-hidden="true"><FaFacebookF /></span>
-              </a>
-              <a href={SOCIAL.instagram} className="ig icon-only" target="_blank" rel="noreferrer" aria-label="Instagram Star Mousse" title="Instagram">
+              </a>}
+              {SOCIAL.instagram && <a href={SOCIAL.instagram} className="ig icon-only" target="_blank" rel="noreferrer" aria-label="Instagram Star Mousse" title="Instagram">
                 <span className="ssn-social-icon" aria-hidden="true"><FaInstagram /></span>
-              </a>
+              </a>}
               <a href={SOCIAL.youtube} className="yt icon-only" target="_blank" rel="noreferrer" aria-label="YouTube Star Mousse" title="YouTube">
                 <span className="ssn-social-icon" aria-hidden="true"><FaYoutube /></span>
               </a>
@@ -204,37 +204,34 @@ function Footer() {
           </div>
 
           <div className="ssn-footer-col">
-            <h4>Navigation</h4>
+            <h3>Navigation</h3>
             <ul>
               <li><Link to={ROUTES.products}>Nos produits</Link></li>
               <li><Link to={ROUTES.matelas}>Nos matelas</Link></li>
               <li><Link to={ROUTES.promos}>Promotions</Link></li>
-              <li><Link to={ROUTES.b2b}>Pro & export</Link></li>
-              <li><Link to="/roadmap-international">Roadmap 2026</Link></li>
               <li><Link to={ROUTES.about}>Notre histoire</Link></li>
             </ul>
           </div>
 
           <div className="ssn-footer-col">
-            <h4>Support</h4>
+            <h3>Support</h3>
             <ul>
               <li><Link to={ROUTES.help}>Livraison & retours</Link></li>
               <li><Link to={ROUTES.help}>Garantie</Link></li>
-              <li><Link to={ROUTES.matelas}>Guide des tailles</Link></li>
-              <li><Link to={ROUTES.b2bQuote}>Devis professionnel</Link></li>
               <li><a href={whatsappUrl}>Contactez-nous</a></li>
             </ul>
           </div>
 
           <div className="ssn-footer-col">
-            <h4>Contact</h4>
+            <h3>Contact</h3>
             <ul>
               <li><a href={`tel:${CONTACT.phoneTel}`}>{CONTACT.phoneDisplay}</a></li>
               <li><a href={whatsappUrl}>WhatsApp {CONTACT.whatsappDisplay}</a></li>
               <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
               <li><Link to={ROUTES.contact}>Formulaire de contact</Link></li>
               <li><a href={MAPS.showroomSearch}>Showroom Star Mousse, Borj Chakir, Tunis, Tunisie</a></li>
-              <li><Link to={ROUTES.help}>Lun-Sam : 8h-18h</Link></li>
+              <li><Link to={ROUTES.help}>Lun-Sam : 8h00-19h00</Link></li>
+              <li><Link to={ROUTES.help}>Dimanche : 8h00-14h00</Link></li>
             </ul>
           </div>
         </div>

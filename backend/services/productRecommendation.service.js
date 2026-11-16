@@ -15,10 +15,10 @@ const buildStarMousseFilter = (filter = {}) => ({
         { brand: { $exists: true, $nin: EXCLUDED_BRANDS } },
         {
           brand: { $exists: false },
-          $or: [
-            { name: { $not: competitorBrandRegex } },
-            { description: { $not: competitorBrandRegex } },
-            { category: { $not: competitorBrandRegex } },
+          $nor: [
+            { name: competitorBrandRegex },
+            { description: competitorBrandRegex },
+            { category: competitorBrandRegex },
           ],
         },
       ],

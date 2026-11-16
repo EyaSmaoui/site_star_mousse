@@ -19,10 +19,14 @@
     "check:json": "node -e \"JSON.parse(require('fs').readFileSync('package.json','utf8')); console.log('frontend JSON ok')\""
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@tanstack/react-query": "^5.90.21",
     "axios": "^1.18.0",
+    "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
     "framer-motion": "^12.40.0",
+    "lottie-react": "^3.1.2",
+    "lucide-react": "^1.65.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18.3.1",
@@ -47,7 +51,7 @@
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "vite": "^8.0.16",
-    "vitest": "4.1.10"
+    "vitest": "^4.1.12"
   },
   "browserslist": {
     "production": [

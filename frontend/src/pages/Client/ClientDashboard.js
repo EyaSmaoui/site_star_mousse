@@ -7,6 +7,7 @@ import { hasAccess, ROLES } from '../../utils/authUtils';
 import AdvancedFilters from '../../components/AdvancedFilters';
 import ClientSidebar from './ClientSidebar';
 import { notifyProfileChanged } from '../../services/profileSyncService';
+import { getDiceBearAvatar } from '../../utils/dicebear';
 
 const KPI_CONFIG = [
   {
@@ -347,7 +348,11 @@ const ClientDashboard = () => {
             </div>
             <div style={S.headerRight}>
               <div style={S.timeBox}>{timeStr}</div>
-              <div style={S.avatar}>{profile.username ? profile.username.charAt(0).toUpperCase() : 'C'}</div>
+              <img
+                style={S.avatar}
+                src={getDiceBearAvatar(profile.username || 'client', 'personas')}
+                alt={`Avatar de ${profile.username || 'client'}`}
+              />
               <div style={S.date}>{dateStr}</div>
             </div>
           </div>
@@ -847,4 +852,3 @@ const S = {
 };
 
 export default ClientDashboard;
-

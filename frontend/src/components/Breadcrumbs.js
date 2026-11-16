@@ -126,14 +126,9 @@ export default function Breadcrumbs() {
             {breadcrumb.isActive ? (
               <span className="breadcrumb-current">{breadcrumb.label}</span>
             ) : (
-              <>
-                <Link to={breadcrumb.href} className="breadcrumb-link">
-                  {breadcrumb.label}
-                </Link>
-                {index < breadcrumbs.length - 1 && (
-                  <span className="breadcrumb-separator">/</span>
-                )}
-              </>
+              <Link to={breadcrumb.href} className="breadcrumb-link">
+                {breadcrumb.label}
+              </Link>
             )}
             {index < breadcrumbs.length - 1 && !breadcrumb.isActive && (
               <span className="breadcrumb-separator">/</span>
@@ -144,4 +139,3 @@ export default function Breadcrumbs() {
     </nav>
   );
 }
-

@@ -27,6 +27,13 @@ Variables courantes cote backend:
 - `PORT`
 - `MONGO_URI`
 - `SESSION_SECRET`
+- `REDIS_URL` (required in production for persistent Express sessions)
+- `JWT_SECRET`
+
+Health checks:
+
+- `GET /api/health/live` checks that the process is running.
+- `GET /api/health/ready` returns HTTP 503 until MongoDB and the required Redis session store are ready.
 - `JWT_SECRET`
 - `CORS_ORIGINS`
 - `FRONTEND_URL`

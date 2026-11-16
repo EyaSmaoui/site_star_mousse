@@ -6,8 +6,8 @@ const positiveInt = (value, fallback) => {
 };
 
 const keyFromEmailOrIp = (req) => {
-  const email = req.body?.email;
-  return email ? String(email).trim().toLowerCase() : ipKeyGenerator(req.ip);
+  const email = String(req.body?.email || '').trim().toLowerCase();
+  return `${ipKeyGenerator(req.ip)}:${email || 'anonymous'}`;
 };
 
 const jsonRateLimitHandler = (message) => (req, res) => {
@@ -50,6 +50,13 @@ const passwordResetLimiter = rateLimit({
 
 const forgotPasswordLimiter = (req, res, next) => next();
 
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  keyGenerator: (req) => req.user?.id || ipKeyGenerator(req.ip),
+  handler: jsonRateLimitHandler('Trop de requetes IA, veuillez reessayer plus tard'),
+});
+
 const createUpdateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -69,6 +76,7 @@ module.exports = {
   authLimiter,
   passwordResetLimiter,
   forgotPasswordLimiter,
+  aiLimiter,
   createUpdateLimiter,
   deleteLimiter,
   positiveInt,

@@ -40,12 +40,13 @@ npm run install:all
 Configurer les variables d'environnement:
 
 ```text
-.env
 backend/.env
 frontend/.env.local
 ```
 
-Utiliser les fichiers `.env.example` comme base et ne jamais commiter de vraies cles secretes.
+Copier [backend/.env.example](backend/.env.example) vers `backend/.env` et
+[frontend/.env.example](frontend/.env.example) vers `frontend/.env.local`.
+Ne jamais commiter de vraies cles secretes.
 
 ## Commandes
 
@@ -55,6 +56,7 @@ npm run dev            # backend uniquement
 npm run dev:frontend   # frontend uniquement
 npm run build          # build frontend avec installation des dependances
 npm run test:unit      # tests unitaires backend
+npm run lint           # lint frontend
 npm run check:json     # validation des package.json
 ```
 
@@ -71,6 +73,7 @@ Avant une livraison:
 ```bash
 npm run check:json
 npm run test:unit
+npm run lint
 npm run build
 ```
 
@@ -79,4 +82,6 @@ Le depot ignore les dependances, environnements locaux, logs, caches Python, bui
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
+- [Organisation du projet](docs/PROJECT-STRUCTURE.md)
 - [Developpement](docs/DEVELOPMENT.md)
+- [Vue IA](docs/AI-OVERVIEW.md)

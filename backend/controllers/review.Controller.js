@@ -67,10 +67,21 @@ const triggerBackgroundJobs = (reviewId, productId) => {
 // Récupère la totalité des avis non supprimés (Espace Administration)
 module.exports.getAllReviews = async (req, res) => {
     try {
-        const reviews = await Review.find({ isDeleted: { $ne: true } })
-            .populate('user', 'username email')
-            .populate('product', 'name price')
-            .sort({ reviewDate: -1 });
+        const isStaff = req.user && ['admin', 'manager', 'employee', 'employeur'].includes(req.user.role);
+        const visibilityFilter = isStaff ? {} : {
+            $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
+            comment: { $exists: true, $ne: '' },
+        };
+        const reviews = await Review.find({
+            isDeleted: { $ne: true },
+            ...visibilityFilter,
+        })
+            .select('rating comment productName reviewDate verifiedPurchase user product')
+            .populate('user', 'username')
+            .populate('product', 'name')
+            .sort({ reviewDate: -1 })
+            .limit(isStaff ? 200 : 50)
+            .lean();
         res.status(200).json(reviews);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -97,7 +108,12 @@ module.exports.getReviewsByProduct = async (req, res) => {
         const product = await Product.findById(productId);
         if (!product) return res.status(404).json({ message: 'Produit non trouvé.' });
 
-        const reviews = await Review.find({ product: productId, isDeleted: { $ne: true } })
+        const reviews = await Review.find({
+            product: productId,
+            isDeleted: { $ne: true },
+            $or: [{ isPublic: true }, { isPublic: { $exists: false } }],
+        })
+            .select('rating comment productName reviewDate verifiedPurchase user')
             .populate('user', 'username')
             .sort({ reviewDate: -1 });
 
@@ -161,7 +177,8 @@ module.exports.addReview = async (req, res) => {
             productName: req.body.productName || resolvedProduct?.name || orderProduct?.name || 'Produit Star Mousse',
             order: order._id,
             user: req.user._id,
-            sentimentStatus: 'pending'
+            sentimentStatus: 'pending',
+            verifiedPurchase: true,
         });
 
         await newReview.save();

@@ -19,6 +19,7 @@ export default [
         localStorage: 'readonly',
         sessionStorage: 'readonly',
         navigator: 'readonly',
+        caches: 'readonly',
         window: 'readonly',
         fetch: 'readonly',
         URL: 'readonly',

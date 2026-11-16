@@ -5,6 +5,7 @@ import { FiHome, FiMoreHorizontal, FiSearch, FiShoppingBag, FiX } from "react-ic
 import { CART_UPDATED_EVENT, getCartCount } from "../utils/cartUtils";
 import { PROFILE_CHANGED_EVENT } from "../services/profileSyncService";
 import { SOCIAL, buildWhatsappUrl } from "../data/siteLinks";
+import UserAvatar from "./UserAvatar";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,6 +16,7 @@ function NavBar() {
   const lastScrollYRef = useRef(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [cartCount, setCartCount] = useState(0);
   const [search, setSearch] = useState("");
   const location = useLocation();
@@ -27,38 +29,35 @@ function NavBar() {
         to: "/nos-matelas",
         label: "Matelas",
         children: [
-          { to: "/product/medico-plus", label: "Matelas a ressorts biconiques" },
-          { to: "/product/relax-plus", label: "Matelas a ressorts ensaches" },
-          { to: "/product/confort-plus", label: "Matelas sans ressorts" },
+          { to: "/products?search=orthopedique", label: "Matelas orthopédique" },
+          { to: "/products?search=orthomedical", label: "Matelas orthomédical" },
+          { to: "/products?search=ergonomique", label: "Matelas ergonomique" },
         ],
       },
-      { to: "/product/oreillers", label: "Oreillers" },
       {
         to: "/products?search=accessoires",
         label: "Accessoires",
         children: [
           { to: "/products?search=protege-matelas", label: "Protege matelas" },
-          { to: "/products?search=surmatelas", label: "Surmatelas" },
-          { to: "/products?search=parure-de-lit", label: "Parure de lit" },
-          { to: "/products?search=housse-de-couette", label: "Housse de couette" },
-          { to: "/products?search=drap-housse", label: "Drap housse" },
           { to: "/products?search=protege-oreillers", label: "Protege oreillers" },
+          { to: "/products?search=couettes", label: "Couettes" },
         ],
       },
-      { to: "/products?search=couettes", label: "Couettes" },
       {
-        to: "/products?search=lits",
-        label: "Lits",
+        to: "/product/oreillers",
+        label: "Oreillers",
         children: [
-          { to: "/products?search=lit-avec-tete-de-lit", label: "Lit avec tete de lit" },
-          { to: "/products?search=lit-coffre", label: "Lit coffre" },
-          { to: "/products?search=sommier", label: "Sommier" },
+          { to: "/products?search=oreiller-70x50", label: "Oreillers 70 × 50" },
+          { to: "/products?search=oreiller-60x40", label: "Oreillers 60 × 40" },
+          { to: "/products?search=oreiller-50x40", label: "Oreillers 50 × 40" },
+          { to: "/products?search=oreiller-40x40", label: "Oreillers 40 × 40" },
         ],
       },
       {
         to: "/products?search=meubles",
         label: "Meubles",
         children: [
+          { to: "/products?search=lits", label: "Lits" },
           { to: "/products?search=commodes", label: "Commodes" },
           { to: "/products?search=tables-de-nuit", label: "Tables de nuit" },
         ],
@@ -70,40 +69,40 @@ function NavBar() {
   const categoryLinks = useMemo(
     () => [
       {
-        to: "/products?search=meubles",
-        label: "Meubles",
+        to: "/nos-matelas",
+        label: "Matelas",
         children: [
-          { to: "/products?search=commodes", label: "Commodes" },
-          { to: "/products?search=tables-de-nuit", label: "Tables de nuit" },
+          { to: "/products?search=orthopedique", label: "Matelas orthopédique" },
+          { to: "/products?search=orthomedical", label: "Matelas orthomédical" },
+          { to: "/products?search=ergonomique", label: "Matelas ergonomique" },
+        ],
+      },
+      {
+        to: "/product/oreillers",
+        label: "Oreillers",
+        children: [
+          { to: "/products?search=oreiller-70x50", label: "Oreillers 70 × 50" },
+          { to: "/products?search=oreiller-60x40", label: "Oreillers 60 × 40" },
+          { to: "/products?search=oreiller-50x40", label: "Oreillers 50 × 40" },
+          { to: "/products?search=oreiller-40x40", label: "Oreillers 40 × 40" },
         ],
       },
       {
         to: "/products?search=accessoires",
         label: "Accessoires",
         children: [
-          { to: "/products?search=parfum-dambiance", label: "Parfum d'ambiance" },
           { to: "/products?search=protege-matelas", label: "Protege matelas" },
           { to: "/products?search=protege-oreillers", label: "Protege oreillers" },
-          { to: "/products?search=surmatelas", label: "Surmatelas" },
-          { to: "/products?search=drap-housse", label: "Drap housse" },
-          { to: "/products?search=housse-de-couette", label: "Housse de couette" },
-          { to: "/products?search=parure-de-lit", label: "Parure de lit" },
+          { to: "/products?search=couettes", label: "Couettes" },
         ],
       },
-      { to: "/products?search=couettes", label: "Couettes" },
-      { to: "/product/oreillers", label: "Oreillers" },
       {
-        to: "/nos-matelas",
-        label: "Matelas",
+        to: "/products?search=meubles",
+        label: "Meubles",
         children: [
-          { to: "/product/confort-plus", label: "Matelas sans ressorts" },
-          { to: "/product/medico-plus", label: "Matelas a ressorts biconiques" },
-          { to: "/product/relax-plus", label: "Matelas a ressorts ensaches" },
-          { to: "/products?search=box-mistral", label: "Box Mistral" },
-          { to: "/products?search=gamme-evolution", label: "Gamme Evolution" },
-          { to: "/products?search=gamme-gold", label: "Gamme Gold" },
-          { to: "/products?search=bebe", label: "Bebe" },
-          { to: "/products?search=gamme-revendeur", label: "Gamme Revendeur" },
+          { to: "/products?search=lits", label: "Lits" },
+          { to: "/products?search=tables-de-nuit", label: "Tables de nuit" },
+          { to: "/products?search=commodes", label: "Commodes" },
         ],
       },
     ],
@@ -136,13 +135,17 @@ function NavBar() {
 
       if (!userData) {
         setUserRole(null);
+        setProfile(null);
         return;
       }
 
       try {
-        setUserRole(JSON.parse(userData).role);
+        const nextProfile = JSON.parse(userData);
+        setUserRole(nextProfile.role);
+        setProfile(nextProfile);
       } catch {
         setUserRole(null);
+        setProfile(null);
       }
     };
 
@@ -197,6 +200,18 @@ function NavBar() {
     closeMenu();
   };
 
+  const searchSuggestions = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return [];
+    return navLinks
+      .flatMap((item) => [item, ...(item.children || [])])
+      .filter((item, index, items) =>
+        items.findIndex((candidate) => candidate.to === item.to) === index &&
+        item.label.toLowerCase().includes(query)
+      )
+      .slice(0, 5);
+  }, [navLinks, search]);
+
   return (
     <>
       <style>{`
@@ -207,9 +222,9 @@ function NavBar() {
           top: 0;
           z-index: 5000;
           font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-          background: #ffffff;
-          border-bottom: 1px solid rgba(18,35,31,0.08);
-          backdrop-filter: none;
+          background: linear-gradient(180deg, #1f3741 0%, #2d494e 100%);
+          border-bottom: 1px solid rgba(255,255,255,0.14);
+          backdrop-filter: blur(14px);
           transition: transform 0.28s ease, background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
           transform: translateY(0);
           will-change: transform, background;
@@ -218,9 +233,9 @@ function NavBar() {
           transform: translateY(-110%);
         }
         .ssn-header.scrolled {
-          background: #ffffff;
-          border-color: rgba(18,35,31,0.14);
-          box-shadow: 0 18px 44px rgba(18,35,31,0.12);
+          background: linear-gradient(180deg, #1f3741 0%, #2d494e 100%);
+          border-color: rgba(255,255,255,0.15);
+          box-shadow: 0 18px 44px rgba(7,26,65,0.28);
         }
 
         .ssn-nav {
@@ -228,7 +243,7 @@ function NavBar() {
           max-width: 1440px;
           min-height: 78px;
           margin: 0 auto;
-          padding: 14px 40px;
+          padding: 12px 28px 10px;
           display: grid;
           grid-template-columns: auto minmax(0, 1fr) auto;
           align-items: center;
@@ -251,7 +266,7 @@ function NavBar() {
           width: auto;
           object-fit: contain;
           display: block;
-          filter: drop-shadow(0 10px 18px rgba(18,35,31,0.08));
+          filter: drop-shadow(0 12px 22px rgba(7,26,65,0.25));
           transition: transform 0.22s ease, height 0.22s ease;
         }
         .ssn-header.scrolled .ssn-logo img { height: 42px; }
@@ -261,7 +276,7 @@ function NavBar() {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
-          gap: 22px;
+          gap: 18px;
           margin: 0;
           padding: 0;
           list-style: none;
@@ -273,26 +288,28 @@ function NavBar() {
           display: inline-flex;
           align-items: center;
           gap: 7px;
-          padding: 8px 0;
+          padding: 8px 10px;
           border: 1px solid transparent;
-          border-radius: 0;
-          color: #12231f;
+          border-radius: 10px;
+          color: #edf5ff;
           background: transparent;
           text-decoration: none;
           font-family: inherit;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 700;
+          letter-spacing: 0.01em;
+          text-transform: none;
           white-space: nowrap;
           cursor: pointer;
-          transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+          transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
         }
         .ssn-link:hover,
         .ssn-dropdown-trigger:hover,
         .ssn-link.active,
         .ssn-dropdown-trigger.active {
-          background: transparent;
-          color: #0f4f43;
-          border-color: transparent;
+          background: rgba(255,255,255,0.08);
+          color: #ffffff;
+          border-color: rgba(255,255,255,0.12);
           transform: none;
           box-shadow: none;
         }
@@ -300,11 +317,11 @@ function NavBar() {
         .ssn-dropdown-trigger::after {
           content: "";
           position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 2px;
+          left: 10px;
+          right: 10px;
+          bottom: 4px;
           height: 2px;
-          background: #0f4f43;
+          background: #c89b5b;
           transform: scaleX(0);
           transform-origin: left;
           transition: transform 0.18s ease;
@@ -324,7 +341,7 @@ function NavBar() {
           border-bottom: 2px solid currentColor;
           transform: rotate(45deg) translateY(-2px);
           transition: transform 0.2s ease;
-          opacity: 0.72;
+          opacity: 0.82;
         }
         .ssn-chevron.open { transform: rotate(225deg) translateY(-1px); }
 
@@ -337,11 +354,11 @@ function NavBar() {
           margin: 0;
           padding: 10px;
           list-style: none;
-          background: rgba(255,255,255,0.96);
-          border: 1px solid rgba(26,26,46,0.08);
-          border-radius: 0;
-          box-shadow: 0 18px 46px rgba(18,35,31,0.12);
-          backdrop-filter: none;
+          background: #fffdf8;
+          border: 1px solid rgba(31,45,53,0.12);
+          border-radius: 14px;
+          box-shadow: 0 18px 46px rgba(31,45,53,0.16);
+          backdrop-filter: blur(18px);
           animation: ssn-menu-in 0.2s ease both;
         }
         @keyframes ssn-menu-in {
@@ -365,12 +382,12 @@ function NavBar() {
           align-items: center;
           padding: 11px;
           border-radius: 0;
-          color: #12231f;
+          color: #26343d;
           text-decoration: none;
           transition: background 0.16s ease, transform 0.16s ease;
         }
         .ssn-dropdown-menu a:hover {
-          background: #f4efe6;
+          background: #f3e9dc;
           transform: none;
         }
         .ssn-menu-icon {
@@ -380,14 +397,14 @@ function NavBar() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          color: #0f4f43;
-          background: rgba(15,79,67,0.08);
+          color: #b85c38;
+          background: rgba(184,92,56,0.10);
           font-size: 15px;
           font-weight: 900;
         }
         .ssn-menu-title {
           display: block;
-          color: #12231f;
+          color: #26343d;
           font-size: 13.8px;
           font-weight: 900;
         }
@@ -406,7 +423,29 @@ function NavBar() {
           gap: 10px;
           min-width: 0;
         }
+        .ssn-cta-pill {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 42px;
+          padding: 0 18px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, #b85c38 0%, #8f4028 100%);
+          color: #ffffff;
+          text-decoration: none;
+          font-size: 11.5px;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          box-shadow: 0 14px 28px rgba(184, 92, 56, 0.26);
+          transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .ssn-cta-pill:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 18px 32px rgba(184, 92, 56, 0.32);
+        }
         .ssn-search {
+          position: relative;
           width: min(240px, 22vw);
           min-height: 44px;
           display: flex;
@@ -417,13 +456,19 @@ function NavBar() {
           background: rgba(255,255,255,0.9);
           border: 1px solid rgba(18,35,31,0.12);
           box-shadow: 0 10px 24px rgba(18,35,31,0.06);
-          transition: width 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+          animation: ssn-search-enter 0.65s cubic-bezier(.2,.8,.2,1) both;
+          transition: width 0.32s cubic-bezier(.2,.8,.2,1), border-color 0.2s ease, box-shadow 0.25s ease, transform 0.25s ease;
         }
         .ssn-search:focus-within {
           width: 270px;
           background: #ffffff;
           border-color: rgba(15,79,67,0.26);
           box-shadow: 0 0 0 4px rgba(15,79,67,0.08), 0 16px 34px rgba(18,35,31,0.08);
+          transform: translateY(-1px);
+        }
+        @keyframes ssn-search-enter {
+          from { opacity: 0; transform: translateY(7px) scale(.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .ssn-search-icon {
           width: 18px;
@@ -432,7 +477,9 @@ function NavBar() {
           border-radius: 50%;
           position: relative;
           flex-shrink: 0;
+          transition: transform 0.3s cubic-bezier(.2,.8,.2,1), border-color 0.2s ease;
         }
+        .ssn-search:focus-within .ssn-search-icon { transform: scale(1.12) rotate(-12deg); border-color: #0f4f43; }
         .ssn-search-icon::after {
           content: "";
           position: absolute;
@@ -455,7 +502,33 @@ function NavBar() {
           font-size: 13.5px;
           font-weight: 700;
         }
-        .ssn-search input::placeholder { color: #9b9cab; }
+        .ssn-search input::placeholder { color: transparent; }
+        .ssn-search-suggestions {
+          position: absolute;
+          z-index: 20;
+          top: calc(100% + 10px);
+          left: 0;
+          right: 0;
+          padding: 8px;
+          background: #fffdf9;
+          border: 1px solid rgba(31,45,53,0.12);
+          border-radius: 14px;
+          box-shadow: 0 18px 35px rgba(31,45,53,0.18);
+        }
+        .ssn-search-suggestions a {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 10px 11px;
+          color: #26343d;
+          border-radius: 9px;
+          text-decoration: none;
+          font-size: 12px;
+          font-weight: 800;
+        }
+        .ssn-search-suggestions a:hover { background: #f3e9dc; }
+        .ssn-search-suggestions small { color: #a14d30; font-size: 10px; text-transform: uppercase; }
 
         .ssn-login,
         .ssn-account,
@@ -481,8 +554,8 @@ function NavBar() {
         .ssn-account {
           padding: 0 17px;
           color: #ffffff;
-          background: #0f4f43;
-          border: 1px solid #0f4f43;
+          background: #0d3d87;
+          border: 1px solid #0d3d87;
         }
         .ssn-login:hover,
         .ssn-account:hover,
@@ -490,12 +563,12 @@ function NavBar() {
           transform: translateY(-1px);
           box-shadow: 0 14px 30px rgba(18,35,31,0.14);
         }
-        .ssn-account:hover { background: #0a352f; border-color: #0a352f; }
+        .ssn-account:hover { background: #0a2d6b; border-color: #0a2d6b; }
         .ssn-cart {
           position: relative;
           width: 44px;
           color: #ffffff;
-          background: #e86f45;
+          background: #1d5dd8;
           border: 1px solid rgba(18,35,31,0.08);
         }
         .ssn-cart-icon {
@@ -677,8 +750,10 @@ function NavBar() {
           font: inherit;
           font-size: 13px;
           font-weight: 700;
+          transition: transform 0.2s ease;
         }
-        .ssn-mobile-search input::placeholder { color: #747587; }
+        .ssn-mobile-search:focus-within input { transform: translateX(2px); }
+        .ssn-mobile-search input::placeholder { color: transparent; }
         .ssn-mobile-search button {
           border: 0;
           border-left: 1px solid rgba(18,35,31,0.12);
@@ -725,7 +800,7 @@ function NavBar() {
            font-size: 14px;
            font-weight: 800;
          }
-         .ssn-mobile-link:hover { background: transparent; color: #0f4f43; }
+         .ssn-mobile-link:hover { background: transparent; color: #b85c38; }
          .ssn-mobile-link.sub {
            min-height: 38px;
            margin-left: 14px;
@@ -829,7 +904,7 @@ function NavBar() {
         }
         .ssn-mobile-panel-item.active,
         .ssn-mobile-panel-item:hover {
-          color: #0f4f43;
+          color: #b85c38;
         }
         .ssn-mobile-panel-icon {
           position: relative;
@@ -883,10 +958,104 @@ function NavBar() {
           }
           .ssn-mobile-panel-item { font-size: 10px; }
         }
+
+        /* Star Mousse premium navigation: light storefront header, dark announcement bar. */
+        .ssn-header {
+          background: rgba(255,253,249,0.98);
+          border-bottom: 1px solid rgba(21,60,55,0.12);
+          box-shadow: 0 8px 26px rgba(21,60,55,0.06);
+        }
+        .ssn-header.scrolled {
+          background: rgba(255,253,249,0.99);
+          border-color: rgba(21,60,55,0.16);
+          box-shadow: 0 12px 30px rgba(21,60,55,0.12);
+        }
+        .ssn-nav {
+          min-height: 82px;
+          padding: 14px 28px 12px;
+          max-width: 1280px;
+        }
+        .ssn-logo img {
+          height: 54px;
+          filter: none;
+        }
+        .ssn-header.scrolled .ssn-logo img { height: 48px; }
+        .ssn-links { gap: 9px; }
+        .ssn-link,
+        .ssn-dropdown-trigger {
+          min-height: 38px;
+          padding: 8px 9px;
+          color: #465b57;
+          font-size: 12px;
+          font-weight: 700;
+        }
+        .ssn-link:hover,
+        .ssn-dropdown-trigger:hover,
+        .ssn-link.active,
+        .ssn-dropdown-trigger.active {
+          color: #c85c35;
+          background: #fff7f2;
+          border-color: rgba(200,92,53,0.12);
+        }
+        .ssn-link::after,
+        .ssn-dropdown-trigger::after {
+          background: #c85c35;
+          bottom: 2px;
+        }
+        .ssn-actions { gap: 8px; }
+        .ssn-search {
+          width: 180px;
+          min-height: 40px;
+          border-radius: 999px;
+          background: #f1efe9;
+          box-shadow: none;
+        }
+        .ssn-search:focus-within {
+          width: 215px;
+          border-color: #cda66a;
+          box-shadow: 0 0 0 3px rgba(205,166,106,0.14);
+        }
+        .ssn-cta-pill {
+          min-height: 40px;
+          padding: 0 15px;
+          background: #c85c35;
+          box-shadow: 0 8px 18px rgba(200,92,53,0.2);
+          font-size: 10px;
+        }
+        .ssn-cta-pill:hover { background: #a94427; }
+        .ssn-account,
+        .ssn-login {
+          color: #153c37;
+          font-size: 11px;
+          font-weight: 800;
+          text-decoration: none;
+          white-space: nowrap;
+        }
+        .ssn-account:hover,
+        .ssn-login:hover { color: #c85c35; }
+        .ssn-account { display: inline-flex; align-items: center; gap: 9px; }
+        .ssn-account-label { display: grid; line-height: 1.15; }
+        .ssn-account-label small { margin-top: 3px; color: #73817c; font-size: 9px; font-weight: 600; }
+        .ssn-account .sm-user-avatar { --avatar-size: 36px; }
+        .ssn-account:focus-visible,
+        .ssn-mobile-header-icon:focus-visible,
+        .ssn-cart:focus-visible { outline: 3px solid #c89b5b; outline-offset: 3px; }
+        .ssn-cart {
+          color: #153c37;
+          background: transparent;
+          border-color: rgba(21,60,55,0.16);
+        }
+        .ssn-cart:hover { color: #c85c35; background: #fff7f2; }
+        .ssn-mobile-header-icon { color: #153c37; }
+        .ssn-mobile-header-icon:hover { color: #c85c35; }
+        @media (max-width: 960px) {
+          .ssn-nav { min-height: 74px; padding: 10px 16px !important; }
+          .ssn-logo img { height: 52px; }
+        }
       `}</style>
 
       <header className={`ssn-header ${scrolled ? "scrolled" : ""} ${showHeader ? "" : "hidden"}`}>
-        <nav className="ssn-nav" aria-label="Navigation principale">
+        <nav className="ssn-nav container-fluid" aria-label="Navigation principale">
           <Link to="/" className="ssn-logo" onClick={closeMenu} aria-label="Star Mousse accueil">
             <img src="/logo-star-mousse.png" alt="Star Mousse" width="160" height="44" decoding="async" />
           </Link>
@@ -928,14 +1097,34 @@ function NavBar() {
               <span className="ssn-search-icon" aria-hidden="true"></span>
               <input
                 type="search"
-                placeholder="Rechercher..."
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
+                aria-label="Rechercher un produit ou une catégorie"
               />
+              {searchSuggestions.length > 0 && (
+                <div className="ssn-search-suggestions" role="listbox">
+                  {searchSuggestions.map((suggestion) => (
+                    <Link
+                      key={suggestion.to}
+                      to={suggestion.to}
+                      role="option"
+                      onClick={closeMenu}
+                    >
+                      <span>{suggestion.label}</span>
+                      <small>Voir</small>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </form>
 
+            <Link to="/products" className="ssn-cta-pill" onClick={closeMenu}>Nos matelas</Link>
+
             {isLoggedIn ? (
-              <Link to={accountPath} className="ssn-account" onClick={closeMenu}>Mon compte</Link>
+              <Link to={accountPath} className="ssn-account" onClick={closeMenu} aria-label={`Ouvrir le compte de ${profile?.name || profile?.username || "l’utilisateur"}`}>
+                <UserAvatar name={profile?.name || profile?.username || profile?.email} src={profile?.avatar || profile?.avatarUrl || profile?.photo} size={36} />
+                <span className="ssn-account-label"><span>{profile?.name || profile?.username || "Mon compte"}</span><small>Espace personnel</small></span>
+              </Link>
             ) : (
               <Link to="/login" className="ssn-login" onClick={closeMenu}>Se connecter</Link>
             )}
@@ -948,7 +1137,7 @@ function NavBar() {
 
           <div className="ssn-mobile-header-actions">
             <Link to={isLoggedIn ? accountPath : "/login"} className="ssn-mobile-header-icon" onClick={closeMenu} aria-label="Mon compte">
-              <FaRegUser />
+              {isLoggedIn ? <UserAvatar name={profile?.name || profile?.username || profile?.email} src={profile?.avatar || profile?.avatarUrl || profile?.photo} size={28} decorative /> : <FaRegUser />}
             </Link>
             <Link to="/client-dashboard" className="ssn-mobile-header-icon" onClick={closeMenu} aria-label="Liste de souhait">
               <FaHeart />
@@ -989,7 +1178,6 @@ function NavBar() {
             <form className="ssn-mobile-search" onSubmit={submitSearch}>
               <input
                 type="search"
-                placeholder="Commencez a ecrire..."
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 aria-label="Saisie de recherche"
@@ -1055,12 +1243,12 @@ function NavBar() {
             </div>
 
             <div className="ssn-mobile-socials" aria-label="Reseaux sociaux">
-              <a href={SOCIAL.facebook} target="_blank" rel="nofollow noreferrer" title="Facebook" aria-label="Facebook">
+              {SOCIAL.facebook && <a href={SOCIAL.facebook} target="_blank" rel="nofollow noreferrer" title="Facebook" aria-label="Facebook">
                 <FaFacebookF />
-              </a>
-              <a href={SOCIAL.instagram} target="_blank" rel="nofollow noreferrer" title="Instagram" aria-label="Instagram">
+              </a>}
+              {SOCIAL.instagram && <a href={SOCIAL.instagram} target="_blank" rel="nofollow noreferrer" title="Instagram" aria-label="Instagram">
                 <FaInstagram />
-              </a>
+              </a>}
               <a href={buildWhatsappUrl()} target="_blank" rel="nofollow noreferrer" title="Whatsapp" aria-label="Whatsapp">
                 <FaWhatsapp />
               </a>
@@ -1077,7 +1265,7 @@ function NavBar() {
             onClick={closeMenu}
           >
             <FiHome />
-            <span>La maison</span>
+            <span>Accueil</span>
           </Link>
           <Link
             to="/products"
@@ -1085,10 +1273,10 @@ function NavBar() {
             onClick={closeMenu}
           >
             <FiShoppingBag />
-            <span>Boutique</span>
+            <span>Produits</span>
           </Link>
           <Link
-            to="/client-dashboard"
+            to="/contact"
             className="ssn-mobile-panel-item"
             onClick={closeMenu}
           >
@@ -1096,18 +1284,17 @@ function NavBar() {
               <FaHeart />
               <span className="ssn-mobile-panel-count">0</span>
             </span>
-            <span>Wishlist</span>
+            <span>Nos showroom</span>
           </Link>
           <Link
-            to="/cart"
-            className={`ssn-mobile-panel-item ${location.pathname.startsWith("/cart") ? "active" : ""}`}
+            to={isLoggedIn ? accountPath : "/login"}
+            className={`ssn-mobile-panel-item ${location.pathname.includes("dashboard") || location.pathname === "/login" ? "active" : ""}`}
             onClick={closeMenu}
           >
             <span className="ssn-mobile-panel-icon">
               <FiShoppingBag />
-              {cartCount > 0 && <span className="ssn-mobile-panel-count">{cartCount}</span>}
             </span>
-            <span>Panier</span>
+            <span>Compte</span>
           </Link>
           <button
             type="button"
@@ -1126,4 +1313,3 @@ function NavBar() {
 }
 
 export default NavBar;
-

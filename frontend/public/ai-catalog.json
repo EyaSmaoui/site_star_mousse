@@ -1,0 +1,23 @@
+{
+  "name": "Star Mousse",
+  "description": "Catalogue officiel Star Mousse : matelas, oreillers, literie et meubles en Tunisie.",
+  "url": "https://site-star-mousse.vercel.app/",
+  "language": "fr-TN",
+  "resources": [
+    {
+      "name": "Catalogue produits",
+      "url": "https://site-star-mousse.vercel.app/products",
+      "type": "collection"
+    },
+    {
+      "name": "Quiz confort",
+      "url": "https://site-star-mousse.vercel.app/quiz",
+      "type": "tool"
+    },
+    {
+      "name": "Contact Star Mousse",
+      "url": "https://site-star-mousse.vercel.app/contact",
+      "type": "contact"
+    }
+  ]
+}

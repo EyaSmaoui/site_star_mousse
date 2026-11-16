@@ -118,7 +118,7 @@ export default function ProductShowcase() {
       position: absolute;
       top: 16px;
       right: 16px;
-      background: #e86f45;
+      background: #1f5fe3;
       color: #ffffff;
       padding: 7px 14px;
       border-radius: 8px;
@@ -168,8 +168,8 @@ export default function ProductShowcase() {
     }
 
     .ssn-product-spec {
-      background: #e9f4ee;
-      color: #0f4f43;
+      background: #edf5ff;
+      color: #1146c2;
       padding: 6px 10px;
       border-radius: 8px;
       font-size: 0.78em;
@@ -202,7 +202,7 @@ export default function ProductShowcase() {
     .ssn-product-price-new {
       font-size: 1.55em;
       font-weight: 900;
-      color: #0f4f43;
+      color: #1146c2;
       white-space: nowrap;
     }
 
@@ -237,13 +237,13 @@ export default function ProductShowcase() {
     }
 
     .ssn-product-btn-primary {
-      background: #0f4f43;
+      background: linear-gradient(135deg, #1f5fe3 0%, #1146c2 100%);
       color: white;
     }
 
     .ssn-product-btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 26px rgba(15, 79, 67, 0.2);
+      box-shadow: 0 10px 26px rgba(31, 95, 227, 0.2);
     }
 
     .ssn-product-btn-secondary {
@@ -253,8 +253,8 @@ export default function ProductShowcase() {
     }
 
     .ssn-product-btn-secondary:hover {
-      background: #f4efe6;
-      color: #0f4f43;
+      background: #edf5ff;
+      color: #1146c2;
     }
 
     .ssn-showcase-cta {
@@ -265,7 +265,7 @@ export default function ProductShowcase() {
       display: inline-block;
       min-height: 48px;
       padding: 16px 40px;
-      background: #e86f45;
+      background: linear-gradient(135deg, #1f5fe3 0%, #1146c2 100%);
       color: white;
       border: none;
       border-radius: 8px;
@@ -277,7 +277,7 @@ export default function ProductShowcase() {
 
     .ssn-showcase-cta-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(232, 111, 69, 0.24);
+      box-shadow: 0 8px 20px rgba(31, 95, 227, 0.24);
     }
 
     @media (max-width: 768px) {

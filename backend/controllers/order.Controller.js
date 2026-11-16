@@ -1,6 +1,14 @@
 ﻿const Order = require('../models/order.model');
 const User = require('../models/user.model');
 const Client = require('../models/client.model');
+const { sendOrderConfirmationEmail } = require('../services/orderNotifications.service');
+const {
+  getDeliveryCost,
+  isSupportedDeliveryRegion,
+  resolveOrderProducts,
+  reserveOrderStock,
+  releaseOrderStock,
+} = require('../services/orderPricing.service');
 
 // Utilitaire de formatage monétaire pour l'affichage des montants aux normes tunisiennes
 const formatTotal = (value) => `${Number(value || 0).toLocaleString('fr-TN')} DT`;
@@ -39,30 +47,18 @@ const syncClientRecord = async ({ email, name, phone }) => {
 // Contrôleur gérant la soumission du formulaire de livraison. Il valide l'intégrité des données (téléphone, adresse), 
 // calcule de sécurité du montant total global côté serveur, et prend en charge l'authentification transparente à la volée de l'utilisateur si nécessaire.
 exports.addOrder = async (req, res) => {
+  let reservedProducts = [];
+  let savedOrder = null;
   try {
     // Sanatization et re-calcul des prix des produits soumis pour parer aux fraudes d'injection Front-end
-    const products = Array.isArray(req.body.products)
-      ? req.body.products
-          .filter((product) => product && product.name)
-          .map((product) => ({
-            name: String(product.name || "Produit Star Mousse"),
-            quantity: Math.max(1, Number(product.quantity || 1)),
-            dimension: String(product.dimension || ""),
-            price: Number(product.price || 0),
-          }))
-      : [];
-    const computedTotal = products.reduce(
-      (sum, product) => sum + Number(product.price || 0) * Number(product.quantity || 1),
-      0
-    );
-    const shippingCost = Number.isFinite(Number(req.body.shippingCost)) ? Number(req.body.shippingCost) : 0;
-    const total = Number.isFinite(Number(req.body.total)) ? Number(req.body.total) : computedTotal + shippingCost;
+    const { products, subtotal } = await resolveOrderProducts(req.body.products);
     const phone = String(req.body.phone || "").trim();
     const address = String(req.body.address || "").trim();
     const region = String(req.body.region || "").trim();
     const paymentMethod = String(req.body.paymentMethod || "cash_on_delivery").trim();
-
-    if (!phone || !address || !products.length || !Number.isFinite(total)) {
+    const shippingCost = getDeliveryCost(region);
+    const total = Number((subtotal + shippingCost).toFixed(2));
+    if (!phone || !address || !products.length) {
       return res.status(400).json({
         message: "Informations de commande incompletes",
         error: "Telephone, adresse, produits et total sont obligatoires.",
@@ -82,6 +78,19 @@ exports.addOrder = async (req, res) => {
       (authenticatedCustomer ? req.user?.email : "") ||
       ""
     ).trim().toLowerCase();
+    if (!customerEmail) {
+      return res.status(400).json({ message: 'Une adresse email est requise pour la commande.' });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      return res.status(400).json({ message: 'Adresse email invalide.' });
+    }
+    if (paymentMethod !== 'cash_on_delivery') {
+      return res.status(400).json({ message: 'Mode de paiement invalide.' });
+    }
+    if (!isSupportedDeliveryRegion(region)) {
+      return res.status(400).json({ message: 'Sélectionnez une zone de livraison disponible.' });
+    }
 
     let effectiveUserId = authenticatedCustomer ? req.user._id : null;
     
@@ -111,6 +120,8 @@ exports.addOrder = async (req, res) => {
       }
     }
 
+    reservedProducts = await reserveOrderStock(products);
+
     const newOrder = new Order({
       userId: effectiveUserId,
       customerName,
@@ -123,31 +134,44 @@ exports.addOrder = async (req, res) => {
       products,
       items: products,
       total,
-      status: req.body.status || (paymentMethod === 'cash_on_delivery' ? 'en attente' : 'en attente'),
+      status: 'en attente',
+      stockReservedAt: new Date(),
     });
 
-    const savedOrder = await newOrder.save();
+    savedOrder = await newOrder.save();
 
     if (effectiveUserId) {
-      await User.findByIdAndUpdate(effectiveUserId, {
-        $set: { phone, address },
+      await User.findByIdAndUpdate(effectiveUserId, { $set: { phone, address } }).catch((profileError) => {
+        console.error('Mise à jour du profil différée après création de commande:', profileError.message);
       });
     }
 
     // Synchronisation automatique des métriques CRM après validation de commande
-    await syncClientRecord({ email: customerEmail, name: customerName, phone });
+    try {
+      await syncClientRecord({ email: customerEmail, name: customerName, phone });
+    } catch (crmError) {
+      console.error('Synchronisation CRM différée après création de commande:', crmError.message);
+    }
+    await sendOrderConfirmationEmail({ order: savedOrder })
+      .catch((mailError) => console.error('E-mail de confirmation non envoyé:', mailError.message));
     console.log("✅ Commande enregistrée ! ID:", savedOrder._id);
     res.status(201).json(savedOrder);
   } catch (error) {
+    if (!savedOrder && reservedProducts.length) await releaseOrderStock(reservedProducts).catch((releaseError) => {
+      console.error('❌ Impossible de restaurer le stock après échec commande:', releaseError.message);
+    });
     console.error("❌ Erreur lors de l'enregistrement :", error.message);
-    const status = error?.name === "ValidationError" || error?.name === "CastError" ? 400 : 500;
-    res.status(status).json({ message: "Echec enregistrement commande", error: error.message });
+    const status = error?.statusCode || (error?.name === "ValidationError" || error?.name === "CastError" ? 400 : 500);
+    res.status(status).json({ message: status >= 500 ? "Echec enregistrement commande" : error.message });
   }
 };
 
 exports.getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!/^[a-f\d]{24}$/i.test(id)) {
+      return res.status(404).json({ message: 'Commande introuvable.' });
+    }
     const order = await Order.findById(id).lean();
     if (!order) {
       return res.status(404).json({ message: 'Commande introuvable.' });
@@ -275,7 +299,7 @@ exports.updateOrder = async (req, res) => {
     const order = await Order.findById(id);
     if (!order) return res.status(404).json({ message: "Commande non trouvée" });
 
-    const allowedFields = ["customerName", "customerEmail", "phone", "address", "region", "shippingCost", "paymentMethod", "products", "total", "status"];
+    const allowedFields = ["customerName", "customerEmail", "phone", "address", "region", "status"];
     const orderUpdate = {};
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) orderUpdate[field] = req.body[field];
@@ -285,6 +309,10 @@ exports.updateOrder = async (req, res) => {
     const originalUserId = order.userId ? String(order.userId) : null;
 
     Object.assign(order, orderUpdate);
+    if (orderUpdate.status === 'annulé' && order.stockReservedAt && !order.stockRestoredAt) {
+      await releaseOrderStock(order.products || []);
+      order.stockRestoredAt = new Date();
+    }
     const updatedOrder = await order.save();
     const updatedEmail = normalizeEmail(updatedOrder.customerEmail);
 
@@ -347,6 +375,9 @@ exports.deleteOrder = async (req, res) => {
     const { id } = req.params;
     const deletedOrder = await Order.findByIdAndDelete(id);
     if (!deletedOrder) return res.status(404).json({ message: "Commande non trouvée" });
+    if (deletedOrder.stockReservedAt && deletedOrder.status !== 'livré' && !deletedOrder.stockRestoredAt) {
+      await releaseOrderStock(deletedOrder.products || []);
+    }
     console.log("✅ Commande supprimée ! ID:", id);
     res.status(200).json({ message: "Commande supprimée avec succès" });
   } catch (error) {

@@ -5,6 +5,7 @@ export const trackEvent = (eventName, payload = {}) => {
   };
 
   if (typeof window === "undefined") return;
+  if (window.STAR_MOUSSE_ANALYTICS_CONSENT !== true) return;
 
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: eventName, ...eventPayload });

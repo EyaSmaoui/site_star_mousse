@@ -8,8 +8,8 @@ export const CONTACT = {
 };
 
 export const SOCIAL = {
-  facebook: "https://www.facebook.com/SuperSiestaBorjChakir/",
-  instagram: "https://www.instagram.com/super_siesta_tunis/",
+  facebook: "https://www.facebook.com/SuperSiestaBorjChakir",
+  instagram: "",
   youtube: "https://www.youtube.com/@StarMousseTunisie",
 };
 

@@ -6,6 +6,7 @@ import {
   FiX, FiCheck
 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import httpClient from '../services/httpClient';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -27,23 +28,27 @@ const AdminPanel = () => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const [productsRes, ordersRes, statsRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/orders'),
-        fetch('/api/admin/stats')
+      const [productsRes, ordersRes] = await Promise.all([
+        httpClient.get('/api/products'),
+        httpClient.get('/api/orders/getAllOrders'),
       ]);
-
-      if (productsRes.ok) setProducts(await productsRes.json());
-      if (ordersRes.ok) setOrders(await ordersRes.json());
-      if (statsRes.ok) setStats(await statsRes.json());
+      const loadedProducts = Array.isArray(productsRes.data) ? productsRes.data : [];
+      const loadedOrders = Array.isArray(ordersRes.data) ? ordersRes.data : [];
+      setProducts(loadedProducts.map((product) => ({ ...product, id: String(product._id), inStock: Number(product.stock || 0) > 0 })));
+      setOrders(loadedOrders.map((order) => ({ ...order, id: String(order._id), items: order.items || order.products || [] })));
+      setStats({
+        totalProducts: loadedProducts.length,
+        totalOrders: loadedOrders.length,
+        totalRevenue: loadedOrders.filter((order) => order.status !== 'annulé').reduce((sum, order) => sum + Number(order.total || 0), 0),
+        totalCustomers: new Set(loadedOrders.map((order) => order.customerEmail).filter(Boolean)).size,
+      });
     } catch (err) {
-      console.error('Error fetching data:', err);
-      toast.error('Erreur lors du chargement des données du tableau de bord');
+      console.error('Admin dashboard loading error:', err);
+      toast.error('Impossible de charger les donnees du tableau de bord.');
     } finally {
       setLoading(false);
     }
   }, []);
-
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -51,77 +56,60 @@ const AdminPanel = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      await httpClient.post('/api/products/add', {
+        ...formData,
+        price: Number(formData.price),
+        basePrice: Number(formData.price),
+        stock: formData.inStock ? 1 : 0,
       });
-
-      if (response.ok) {
-        await fetchData();
-        setShowProductForm(false);
-        setFormData({ name: '', price: '', description: '', category: 'Matelas', inStock: true });
-        toast.success('Produit ajouté avec succès');
-      }
+      await fetchData();
+      setShowProductForm(false);
+      setFormData({ name: '', price: '', description: '', category: 'Matelas', inStock: true });
+      toast.success('Produit ajoute avec succes');
     } catch (err) {
       console.error('Error adding product:', err);
-      toast.error('Erreur lors de l\'ajout du produit');
+      toast.error(err.message || 'Erreur lors de l’ajout du produit');
     }
   };
-
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/api/products/${editingProduct.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      await httpClient.put(`/api/products/update/${editingProduct.id}`, {
+        ...formData,
+        price: Number(formData.price),
+        basePrice: Number(formData.price),
+        stock: formData.inStock ? Math.max(Number(editingProduct.stock || 0), 1) : 0,
       });
-
-      if (response.ok) {
-        await fetchData();
-        setEditingProduct(null);
-        setShowProductForm(false);
-        setFormData({ name: '', price: '', description: '', category: 'Matelas', inStock: true });
-        toast.success('Produit mis à jour');
-      }
+      await fetchData();
+      setEditingProduct(null);
+      setShowProductForm(false);
+      setFormData({ name: '', price: '', description: '', category: 'Matelas', inStock: true });
+      toast.success('Produit mis a jour');
     } catch (err) {
       console.error('Error updating product:', err);
-      toast.error('Erreur lors de la mise à jour du produit');
+      toast.error(err.message || 'Erreur lors de la mise a jour du produit');
     }
   };
-
   const handleDeleteProduct = async (id) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce produit?')) return;
-
+    if (!window.confirm('Voulez-vous supprimer ce produit ?')) return;
     try {
-      const response = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-      if (response.ok) {
-        await fetchData();
-        toast.success('Produit supprimé');
-      }
+      await httpClient.delete(`/api/products/delete/${id}`);
+      await fetchData();
+      toast.success('Produit supprime');
     } catch (err) {
       console.error('Error deleting product:', err);
-      toast.error('Erreur lors de la suppression du produit');
+      toast.error(err.message || 'Erreur lors de la suppression du produit');
     }
   };
-
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`/api/orders/${orderId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      if (response.ok) {
-        await fetchData();
-      }
+      await httpClient.put(`/api/orders/updateOrder/${orderId}`, { status: newStatus });
+      await fetchData();
     } catch (err) {
       console.error('Error updating order:', err);
+      toast.error(err.message || 'Erreur lors de la mise a jour de la commande');
     }
   };
-
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -138,7 +126,7 @@ const AdminPanel = () => {
       price: product.price,
       description: product.description,
       category: product.category,
-      inStock: product.inStock
+      inStock: Number(product.stock || 0) > 0
     });
     setShowProductForm(true);
   };
@@ -253,9 +241,9 @@ const AdminPanel = () => {
                         <td className="py-3 px-4 text-ink font-sans font-600">{order.total.toLocaleString('fr-TN')} TND</td>
                         <td className="py-3 px-4">
                           <span className={`px-2 py-1 text-xs font-sans font-600 rounded-none ${
-                            order.status === 'delivered' ? 'bg-green-100 text-green-700' :
-                            order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
-                            order.status === 'processing' ? 'bg-yellow-100 text-yellow-700' :
+                            order.status === 'livré' ? 'bg-green-100 text-green-700' :
+                            order.status === 'expédié' ? 'bg-blue-100 text-blue-700' :
+                            order.status === 'en cours' ? 'bg-yellow-100 text-yellow-700' :
                             'bg-gray-100 text-gray-700'
                           }`}>
                             {order.status}
@@ -514,11 +502,11 @@ const AdminPanel = () => {
                             'bg-gray-100 text-gray-700'
                           }`}
                         >
-                          <option>pending</option>
-                          <option>processing</option>
-                          <option>shipped</option>
-                          <option>delivered</option>
-                          <option>cancelled</option>
+                          <option value="en attente">En attente</option>
+                          <option value="en cours">En préparation</option>
+                          <option value="expédié">Expédiée</option>
+                          <option value="livré">Livrée</option>
+                          <option value="annulé">Annulée</option>
                         </select>
                       </td>
                       <td className="py-4 px-6 text-muted text-sm">

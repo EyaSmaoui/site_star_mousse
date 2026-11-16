@@ -9,6 +9,7 @@ const productCacheKey = (suffix) => (req) => `products:${suffix}:${req.originalU
 const invalidateProducts = ['products:*'];
 
 router.get('/', cacheMiddleware(300, productCacheKey('all')), productController.getAllProducts);
+router.get('/slug/:slug', cacheMiddleware(600, productCacheKey('slug')), productController.getProductBySlug);
 router.get('/recommended', cacheMiddleware(300, productCacheKey('recommended')), productController.getRecommendedProducts);
 router.get('/filter', cacheMiddleware(300, productCacheKey('filter')), productController.filterProducts);
 router.get('/search', cacheMiddleware(300, productCacheKey('search')), productController.searchProductByName);

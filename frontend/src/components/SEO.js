@@ -163,7 +163,6 @@ function buildLocalBusinessSchema() {
     ],
     sameAs: [
       SOCIAL.facebook,
-      SOCIAL.instagram,
       SOCIAL.youtube,
       buildWhatsappUrl(),
     ],
@@ -211,7 +210,9 @@ function buildProductSchema(product, canonicalUrl) {
       url: canonicalUrl,
       priceCurrency: "TND",
       price,
-      availability: "https://schema.org/InStock",
+    ...(typeof product.stock === "number" ? {
+      availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    } : {}),
       seller: {
         "@type": "Organization",
         name: "Star Mousse",
@@ -241,7 +242,7 @@ export default function SEO() {
    }
 
    if (ROUTE_META[location.pathname]) {
-     const privatePaths = ["/cart", "/checkout"];
+     const privatePaths = ["/cart", "/checkout", "/roadmap-international"];
      const robots = privatePaths.includes(location.pathname) ? "noindex, nofollow" : "index, follow";
      return { ...ROUTE_META[location.pathname], robots };
    }

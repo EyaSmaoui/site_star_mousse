@@ -8,6 +8,7 @@ const normalizeItem = (item) => {
 
   return {
     key,
+    productId: item.productId || item._id || '',
     name: item.name || 'Produit Star Mousse',
     size: item.size || '',
     image: item.image || '',
@@ -25,7 +26,7 @@ const notify = () => {
 
 export const getCartItems = () => {
   try {
-    const parsed = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+    const parsed = JSON.parse(localStorage.getItem(CART_KEY) || localStorage.getItem('cart') || '[]');
     return Array.isArray(parsed) ? parsed.map(normalizeItem) : [];
   } catch {
     return [];
@@ -33,7 +34,9 @@ export const getCartItems = () => {
 };
 
 export const saveCartItems = (items) => {
-  localStorage.setItem(CART_KEY, JSON.stringify(items.map(normalizeItem)));
+  const serialized = JSON.stringify(items.map(normalizeItem));
+  localStorage.setItem(CART_KEY, serialized);
+  localStorage.setItem('cart', serialized);
   notify();
 };
 

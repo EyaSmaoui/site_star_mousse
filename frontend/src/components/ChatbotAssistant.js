@@ -1,40 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { sendChatMessage, getRecommendations } from "../services/apiChatbot";
-import "../styles/chatbot.css";
 import formatPrice from '../utils/formatPrice';
+import { getCatalogProducts } from "../services/productCatalog";
+import { Send } from "lucide-react";
+import { getDiceBearAvatar } from "../utils/dicebear";
+import AccessibleLottie from "./AccessibleLottie";
+import techSupportAnimation from "../assets/lottie/tech-support.json";
 
 const QUICK_PROMPTS = [
   "Je cherche un matelas pour le dos",
   "Budget 300 DT pour un matelas",
   "Un oreiller cervical",
   "Quels sont vos best-sellers ?",
-];
-
-const FALLBACK_RECOMMENDATIONS = [
-  {
-    id: "medico-plus",
-    name: "Medico Plus",
-    price: 520,
-    path: "/product/medico-plus",
-    image: "/medico.jpg",
-    description: "Soutien ferme pour le dos.",
-  },
-  {
-    id: "confort-plus",
-    name: "Confort Plus",
-    price: 219,
-    path: "/product/confort-plus",
-    image: "/confort.png",
-    description: "Bon choix budget.",
-  },
-  {
-    id: "tendresse",
-    name: "Tendresse",
-    price: 730,
-    path: "/product/tendresse",
-    image: "/tendresse.jpg",
-    description: "Confort premium.",
-  },
 ];
 
 function canRecommend(intent) {
@@ -64,11 +41,6 @@ export default function ChatbotAssistant() {
 
   const inputRef = useRef(null);
   const endRef = useRef(null);
-
-  const hasRecommendations = useMemo(
-    () => messages.some((message) => message.recommendations?.length),
-    [messages]
-  );
 
   const scrollToBottom = useCallback(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -131,8 +103,16 @@ export default function ChatbotAssistant() {
           },
         ]);
       } catch {
+        const catalog = await getCatalogProducts();
         setMessages((current) => {
-          const recommendations = FALLBACK_RECOMMENDATIONS;
+          const recommendations = catalog.slice(0, 3).map((product) => ({
+            id: product.slug,
+            name: product.name,
+            price: product.price,
+            path: `/product/${product.slug}`,
+            image: product.image,
+            description: product.description || "Produit Star Mousse",
+          }));
 
           return [
             ...current,
@@ -173,9 +153,7 @@ export default function ChatbotAssistant() {
               </button>
               <div>
                 <div className="sm-chatbot-avatars" aria-hidden="true">
-                  <span className="avatar">SM</span>
-                  <span className="avatar">AS</span>
-                  <span className="avatar">A</span>
+                  <AccessibleLottie className="sm-chatbot-assistant-avatar" animationData={techSupportAnimation} label="Avatar animé du conseiller Star Mousse" />
                 </div>
                 <h2 id="sm-chatbot-title">Bonjour</h2>
                 <p className="sm-chatbot-status"><span className="status-dot" />Nous repondons generalement sous 5 minutes</p>
@@ -191,7 +169,9 @@ export default function ChatbotAssistant() {
               <div key={`${message.from}-${index}`} className={`sm-chatbot-message ${message.from}`}>
                 <div className={`sm-chatbot-message-row ${message.from}`}>
                   <div className="sm-chatbot-message-avatar" aria-hidden="true">
-                    {message.from === "bot" ? "SM" : "Me"}
+                    {message.from === "bot" ? (
+                      <img className="sm-chatbot-dice-avatar" src={getDiceBearAvatar("star-mousse-assistant", "bottts")} alt="" />
+                    ) : "Me"}
                   </div>
                   <div className="sm-chatbot-message-bubble">
                     <p>{message.text}</p>
@@ -260,22 +240,7 @@ export default function ChatbotAssistant() {
               disabled={loading}
             />
             <button type="submit" disabled={loading || !input.trim()} aria-label="Envoyer le message">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
+              <Send size={18} aria-hidden="true" />
             </button>
           </form>
         </section>
@@ -288,8 +253,7 @@ export default function ChatbotAssistant() {
         aria-label={open ? "Fermer le chatbot" : "Ouvrir le chatbot"}
         aria-expanded={open}
       >
-        <span className="sm-chatbot-toggle-icon">{hasRecommendations ? "SM" : "?"}</span>
-        <span>Conseil</span>
+        <AccessibleLottie className="sm-chatbot-toggle-avatar" animationData={techSupportAnimation} label="Avatar animé du support Star Mousse" />
       </button>
     </div>
   );

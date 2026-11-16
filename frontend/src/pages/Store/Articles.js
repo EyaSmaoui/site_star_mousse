@@ -133,9 +133,9 @@ const Products = () => {
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         .ssn-page {
-          background: #ffffff;
+          background: #f7f3ec;
           font-family: 'DM Sans', sans-serif;
-          color: #2a2a3d;
+          color: #153c37;
         }
 
         /* ── FADE ── */
@@ -148,18 +148,23 @@ const Products = () => {
 
         /* ── HERO ── */
         .ssn-products-hero {
-          padding: 100px 40px 50px;
+          position: relative;
+          isolation: isolate;
+          padding: 86px 40px 58px;
           text-align: center;
           max-width: 1280px;
           margin: 0 auto;
+          overflow: hidden;
+          background: radial-gradient(circle at 12% 18%, rgba(200,155,91,.18), transparent 30%), radial-gradient(circle at 88% 0%, rgba(21,60,55,.12), transparent 34%);
+          border-radius: 0 0 36px 36px;
         }
         .ssn-badge {
           display: inline-flex;
           align-items: center;
           gap: 7px;
-          background: #f3f3fb;
-          color: #4a4ade;
-          border: 1px solid #ddddf0;
+          background: rgba(255,253,249,.88);
+          color: #a94427;
+          border: 1px solid rgba(169,68,39,.2);
           font-size: 13px;
           font-weight: 500;
           padding: 7px 15px;
@@ -170,16 +175,16 @@ const Products = () => {
           font-family: 'Playfair Display', serif;
           font-size: clamp(2rem, 4vw, 3rem);
           font-weight: 700;
-          color: #1a1a2e;
+          color: #153c37;
           line-height: 1.18;
           margin-bottom: 14px;
           letter-spacing: -0.5px;
         }
-        .ssn-hero-title .accent { color: #4a4ade; font-style: italic; }
+        .ssn-hero-title .accent { color: #a94427; font-style: normal; }
         .ssn-hero-desc {
           font-size: 16px;
           line-height: 1.75;
-          color: #60607a;
+          color: #52635f;
           max-width: 520px;
           margin: 0 auto;
         }
@@ -195,11 +200,11 @@ const Products = () => {
           margin: 0 auto;
         }
         .ssn-btn-primary {
-          background: #1a1a2e;
+          background: #153c37;
           color: #fff;
           border: none;
           padding: 12px 22px;
-          border-radius: 11px;
+          border-radius: 999px;
           font-size: 13.5px;
           font-weight: 600;
           font-family: 'DM Sans', sans-serif;
@@ -207,16 +212,16 @@ const Products = () => {
           transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
         }
         .ssn-btn-primary:hover {
-          background: #4a4ade;
+          background: #a94427;
           transform: translateY(-1px);
           box-shadow: 0 6px 24px rgba(74,74,222,0.25);
         }
         .ssn-btn-secondary {
-          background: #fff;
-          color: #2a2a3d;
-          border: 1.5px solid #ddddf0;
+          background: rgba(255,253,249,.8);
+          color: #153c37;
+          border: 1.5px solid #d8d1c5;
           padding: 12px 22px;
-          border-radius: 11px;
+          border-radius: 999px;
           font-size: 13.5px;
           font-weight: 500;
           font-family: 'DM Sans', sans-serif;
@@ -224,9 +229,15 @@ const Products = () => {
           transition: all 0.2s;
         }
         .ssn-btn-secondary:hover {
-          border-color: #4a4ade;
-          color: #4a4ade;
-          box-shadow: 0 0 0 3px rgba(74,74,222,0.09);
+          border-color: #a94427;
+          color: #a94427;
+          box-shadow: 0 0 0 3px rgba(169,68,39,.09);
+        }
+        .ssn-btn-primary:focus-visible,
+        .ssn-btn-secondary:focus-visible,
+        .ssn-btn-card:focus-visible {
+          outline: 3px solid rgba(200,155,91,.65);
+          outline-offset: 3px;
         }
 
         .ssn-modern-strip {
@@ -238,8 +249,8 @@ const Products = () => {
           gap: 16px;
         }
         .ssn-modern-card {
-          background: #ffffff;
-          border: 1px solid #ebebf5;
+          background: #fffdf9;
+          border: 1px solid #e4ddd0;
           border-radius: 8px;
           padding: 22px;
           box-shadow: 0 18px 44px rgba(26,26,46,0.07);
@@ -279,11 +290,43 @@ const Products = () => {
 
         /* ── GRILLE ── */
         .ssn-section-products {
-          background: #f8f8fd;
+          background: #f7f3ec;
           padding: 60px 40px 80px;
-          border-top: 1px solid #ebebf5;
+          border-top: 1px solid #e4ddd0;
         }
         .ssn-container { max-width: 1280px; margin: 0 auto; }
+        .ssn-results-heading {
+          display: flex;
+          align-items: end;
+          justify-content: space-between;
+          gap: 20px;
+          margin-bottom: 24px;
+        }
+        .ssn-results-kicker {
+          display: block;
+          margin-bottom: 6px;
+          color: #a94427;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: .14em;
+          text-transform: uppercase;
+        }
+        .ssn-results-heading h2 {
+          color: #153c37;
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(1.6rem, 3vw, 2.2rem);
+          line-height: 1.1;
+        }
+        .ssn-results-count {
+          padding: 8px 13px;
+          color: #52635f;
+          background: #fffdf9;
+          border: 1px solid #e4ddd0;
+          border-radius: 999px;
+          font-size: 13px;
+          font-weight: 700;
+          white-space: nowrap;
+        }
         .ssn-product-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -292,8 +335,8 @@ const Products = () => {
 
         /* ── CARD ── */
         .ssn-card {
-          background: #ffffff;
-          border: 1px solid #ebebf5;
+          background: #fffdf9;
+          border: 1px solid #e4ddd0;
           border-radius: 18px;
           overflow: hidden;
           transition: box-shadow 0.25s, transform 0.25s;
@@ -301,14 +344,14 @@ const Products = () => {
           position: relative;
         }
         .ssn-card:hover {
-          box-shadow: 0 12px 48px rgba(26,26,46,0.1);
+          box-shadow: 0 18px 48px rgba(21,60,55,.13);
           transform: translateY(-4px);
         }
         .ssn-card-img {
           width: 100%;
-          height: 220px;
+          height: 240px;
           overflow: hidden;
-          background: #f3f3fb;
+          background: #f1e9df;
           position: relative;
         }
         .ssn-card-img img {
@@ -352,7 +395,7 @@ const Products = () => {
         .ssn-card-body h3 {
           font-size: 15.5px;
           font-weight: 600;
-          color: #1a1a2e;
+          color: #153c37;
           margin-bottom: 16px;
           letter-spacing: -0.1px;
           line-height: 1.35;
@@ -365,14 +408,14 @@ const Products = () => {
         .ssn-price {
           font-size: 16px;
           font-weight: 700;
-          color: #b78b3f;
+          color: #a94427;
           letter-spacing: -0.2px;
           line-height: 1.3;
           white-space: nowrap;
         }
         .ssn-btn-card {
-          background: #f3f3fb;
-          color: #4a4ade;
+          background: #f3e9dc;
+          color: #a94427;
           border: none;
           padding: 9px 15px;
           border-radius: 9px;
@@ -383,7 +426,7 @@ const Products = () => {
           transition: background 0.18s, color 0.18s;
           white-space: nowrap;
         }
-        .ssn-btn-card:hover { background: #4a4ade; color: #fff; }
+        .ssn-btn-card:hover { background: #a94427; color: #fff; }
         .ssn-card-meta-row { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: #64748b; font-size: 13px; flex-wrap: wrap; }
 
         /* ── RESPONSIVE ── */
@@ -408,6 +451,7 @@ const Products = () => {
           .ssn-card-body h3 { font-size: 15px; margin-bottom: 10px; }
           .ssn-btn-card { width: 100%; justify-content: center; display: inline-flex; }
           .ssn-card-meta-row { flex-direction: column; gap: 2px; align-items: flex-start; }
+          .ssn-results-heading { align-items: flex-start; flex-direction: column; margin-bottom: 18px; }
         }
         @media (max-width: 480px) {
           .ssn-hero-title { font-size: 26px; }
@@ -418,11 +462,11 @@ const Products = () => {
         }
       `}</style>
 
-      <div className="ssn-page">
+      <div className="ssn-page bs-ecommerce-page">
 
         {/* ── HERO ── */}
         <div className="ssn-products-hero ssn-fade">
-          <div className="ssn-badge">🛏️ Collection complète Super Siesta</div>
+          <div className="ssn-badge">🛏️ Collection complète Star Mousse</div>
           <h1 className="ssn-hero-title">
             Explorez notre <span className="accent">Showroom</span>
           </h1>
@@ -458,6 +502,13 @@ const Products = () => {
         {/* ── GRILLE ── */}
         <section className="ssn-section-products">
           <div className="ssn-container">
+            <div className="ssn-results-heading">
+              <div>
+                <span className="ssn-results-kicker">Sélection Star Mousse</span>
+                <h2>Choisissez votre confort</h2>
+              </div>
+              <span className="ssn-results-count">{filteredProducts.length} produits</span>
+            </div>
             <div className="ssn-product-grid">
               {filteredProducts.map((product) => {
                 return (
@@ -507,4 +558,3 @@ const Products = () => {
 };
 
 export default Products;
-

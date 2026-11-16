@@ -71,6 +71,7 @@ export default function Contact() {
           line-height: 1.6;
         }
 
+
         .contact-content {
           max-width: 1000px;
           margin: 0 auto;
@@ -246,6 +247,7 @@ export default function Contact() {
           .contact-info-grid {
             grid-template-columns: 1fr;
           }
+
         }
       `}</style>
 
@@ -377,8 +379,8 @@ export default function Contact() {
               <div className="contact-info-icon">⏰</div>
               <div className="contact-info-title">Horaires</div>
               <div className="contact-info-value">
-                Lun-Sam: 8h-18h<br />
-                Dim: 10h-16h
+                Lun-Sam: 8h00-19h00<br />
+                Dimanche: 8h00-14h00
               </div>
             </div>
 
@@ -396,4 +398,3 @@ export default function Contact() {
     </div>
   );
 }
-

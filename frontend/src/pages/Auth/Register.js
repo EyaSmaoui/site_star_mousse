@@ -4,7 +4,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register } from "../../services/apiAuth";
 import { submitPendingOrder } from "../../services/orderService";
-import "../../App.css";
 
 const Register = () => {
   const location = useLocation();

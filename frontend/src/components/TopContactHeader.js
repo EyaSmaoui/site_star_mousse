@@ -10,20 +10,22 @@ function TopContactHeader() {
     <div className="ssn-top-header">
       <style>{`
         .ssn-top-header {
-          background: #0a0a0a;
-          color: #ffffff;
-          border-bottom: 1px solid rgba(255,255,255,0.12);
-          font-size: 13px;
-          font-weight: 700;
           position: relative;
           z-index: 5001;
+          background: linear-gradient(180deg, #1f3741 0%, #2d494e 100%);
+          color: #ffffff;
+          border-bottom: 1px solid rgba(255,255,255,0.14);
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.04em;
+          text-transform: none;
         }
         .ssn-top-header-inner {
           width: 100%;
           max-width: 1440px;
-          min-height: 38px;
+          min-height: 36px;
           margin: 0 auto;
-          padding: 7px 40px;
+          padding: 7px 28px 8px;
           display: grid;
           grid-template-columns: minmax(0, 1fr) auto;
           align-items: center;
@@ -32,59 +34,56 @@ function TopContactHeader() {
         .ssn-top-header-section {
           display: flex;
           align-items: center;
-          gap: 14px;
+          gap: 12px;
           flex-wrap: wrap;
         }
         .ssn-contact-link {
           display: inline-flex;
           align-items: center;
           gap: 7px;
-          color: #ffffff;
-          opacity: 0.94;
-          font-size: 12px;
-          font-weight: 800;
+          color: rgba(255,255,255,0.92);
           text-decoration: none;
           white-space: nowrap;
           transition: color 0.18s ease, opacity 0.18s ease;
         }
         .ssn-contact-link:hover {
-          color: #f5d78e;
-          opacity: 1;
+          color: #f4c77d;
         }
         .ssn-contact-link svg,
         .ssn-social-link svg {
-          width: 14px;
-          height: 14px;
+          width: 13px;
+          height: 13px;
           flex-shrink: 0;
         }
         .ssn-top-header-separator {
           width: 1px;
           height: 16px;
-          background: rgba(255,255,255,0.28);
+          background: rgba(255,255,255,0.22);
           flex: 0 0 auto;
         }
         .ssn-top-header-socials {
           display: inline-flex;
           align-items: center;
           justify-content: flex-end;
-          gap: 12px;
+          gap: 10px;
         }
         .ssn-social-link {
-          width: 28px;
-          height: 28px;
+          width: 26px;
+          height: 26px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           border-radius: 999px;
-          color: #ffffff;
-          background: rgba(255,255,255,0.1);
+          color: #fff;
+          background: rgba(255,255,255,0.08);
           text-decoration: none;
-          transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+          transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
         }
         .ssn-social-link:hover {
-          background: #ffffff;
-          color: #0a0a0a;
+          background: #f4c77d;
+          color: #0c1117;
           transform: translateY(-1px);
+          box-shadow: 0 10px 18px rgba(244,199,125,0.2);
         }
 
         @media (max-width: 768px) {
@@ -99,7 +98,7 @@ function TopContactHeader() {
             gap: 8px;
           }
           .ssn-contact-link {
-            font-size: 11px;
+            font-size: 10px;
           }
         }
 
@@ -111,7 +110,7 @@ function TopContactHeader() {
             gap: 7px;
           }
           .ssn-contact-link {
-            font-size: 10.5px;
+            font-size: 9px;
           }
           .ssn-top-header-separator {
             display: none;
@@ -135,12 +134,12 @@ function TopContactHeader() {
           </a>
           <span className="ssn-top-header-separator" aria-hidden="true"></span>
           <span className="ssn-contact-link" title="Horaire">
-            <FiClock /> <span>Lun - Sam 8h00 - 19h00</span>
+            <FiClock /> <span>Lun - Sam 8h00 - 19h00 · Dim 8h00 - 14h00</span>
           </span>
         </div>
 
         <div className="ssn-top-header-socials" aria-label="Reseaux sociaux">
-          <a
+          {SOCIAL.facebook && <a
             className="ssn-social-link"
             href={SOCIAL.facebook}
             target="_blank"
@@ -149,8 +148,8 @@ function TopContactHeader() {
             aria-label="Facebook"
           >
             <FaFacebookF />
-          </a>
-          <a
+          </a>}
+          {SOCIAL.instagram && <a
             className="ssn-social-link"
             href={SOCIAL.instagram}
             target="_blank"
@@ -159,7 +158,7 @@ function TopContactHeader() {
             aria-label="Instagram"
           >
             <FaInstagram />
-          </a>
+          </a>}
           <a
             className="ssn-social-link"
             href={whatsappUrl}

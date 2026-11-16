@@ -305,7 +305,7 @@ const Help = () => {
                 ou faites le quiz pour trouver votre matelas idéal.
               </p>
               <div className="ssn-contact-hours">
-                🕐 Disponible <span>lun – sam</span> · 8h à 18h
+                🕐 Disponible <span>lun – sam</span> · 8h00 à 19h00 · dimanche 8h00 à 14h00
               </div>
             </div>
             <div className="ssn-contact-actions">

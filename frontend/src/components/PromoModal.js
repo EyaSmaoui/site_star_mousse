@@ -4,13 +4,19 @@ const PromoModal = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const promoSeen = localStorage.getItem('promoSeen');
-    const lastPromoTime = localStorage.getItem('lastPromoTime');
-    const now = Date.now();
-
-    if (!promoSeen || (lastPromoTime && now - parseInt(lastPromoTime) > 24 * 60 * 60 * 1000)) {
-      setTimeout(() => setIsOpen(true), 1000);
-    }
+    let timerId;
+    const showPromo = () => {
+      const promoSeen = localStorage.getItem('promoSeen');
+      const lastPromoTime = Number(localStorage.getItem('lastPromoTime') || 0);
+      const canShow = !promoSeen || Date.now() - lastPromoTime > 24 * 60 * 60 * 1000;
+      if (canShow) timerId = window.setTimeout(() => setIsOpen(true), 5000);
+    };
+    if (localStorage.getItem('starMousse-cookie-preferences')) showPromo();
+    window.addEventListener('cookie-preferences-saved', showPromo);
+    return () => {
+      window.removeEventListener('cookie-preferences-saved', showPromo);
+      if (timerId) window.clearTimeout(timerId);
+    };
   }, []);
 
   const handleClose = () => {
@@ -27,9 +33,9 @@ const PromoModal = () => {
   if (!isOpen) return null;
 
   return (
-    <div style={styles.backdrop} onClick={handleClose}>
-      <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button style={styles.closeBtn} onClick={handleClose}>✕</button>
+    <div style={styles.backdrop} role="presentation" onClick={handleClose}>
+      <div style={styles.modal} role="dialog" aria-modal="true" aria-labelledby="promo-title" onClick={(e) => e.stopPropagation()}>
+        <button style={styles.closeBtn} onClick={handleClose} aria-label="Fermer la promotion">✕</button>
 
         <div style={styles.imageContainer}>
           <div style={styles.imagePlaceholder}>
@@ -40,7 +46,7 @@ const PromoModal = () => {
         <div style={styles.content}>
           <div style={styles.logo}>Star Mousse</div>
 
-          <h2 style={styles.promoTitle}>
+          <h2 id="promo-title" style={styles.promoTitle}>
             Jusqu'à -50% + -10% en plus :
           </h2>
           <h3 style={styles.promoSubtitle}>
@@ -128,7 +134,7 @@ const styles = {
   imageContainer: {
     width: '100%',
     height: '240px',
-    background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)',
+    background: 'linear-gradient(135deg, var(--sm-brand, #b85c38) 0%, var(--sm-brand-dark, #8f4028) 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -147,7 +153,7 @@ const styles = {
   logo: {
     fontSize: '32px',
     fontWeight: '700',
-    color: '#f97316',
+    color: 'var(--sm-brand, #b85c38)',
     margin: '0 0 16px 0',
   },
   promoTitle: {
@@ -160,7 +166,7 @@ const styles = {
   promoSubtitle: {
     fontSize: '16px',
     fontWeight: '600',
-    color: '#f97316',
+    color: 'var(--sm-brand, #b85c38)',
     margin: '0 0 16px 0',
   },
   description: {
@@ -176,7 +182,7 @@ const styles = {
   },
   categoryBtn: {
     padding: '16px 20px',
-    background: '#f97316',
+    background: 'var(--sm-brand, #b85c38)',
     color: '#fff',
     border: 'none',
     borderRadius: '12px',

@@ -35,6 +35,7 @@ router.post('/login',
 );
 
 router.post('/forgot-password',
+  forgotPasswordLimiter,
   validators.email(),
   handleValidationErrors,
   userController.forgotPassword

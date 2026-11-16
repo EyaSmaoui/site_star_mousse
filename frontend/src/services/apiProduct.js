@@ -54,8 +54,9 @@ export const getAllProductsFresh = async () => {
 
 export const getRecommended = async (limit = 6) => {
   try {
+    const safeLimit = Math.min(Math.max(Number(limit) || 6, 1), 12);
     const response = await httpClient.get('/api/products/recommended', {
-      params: { limit },
+      params: { limit: safeLimit },
       timeout: 8000,
     });
     return response.data;
@@ -73,6 +74,11 @@ export const getById = async (id) => {
     console.error('Get product by id error:', error.message);
     throw error;
   }
+};
+
+export const getBySlug = async (slug) => {
+  const response = await httpClient.get(`/api/products/slug/${encodeURIComponent(slug)}`, { timeout: 8000 });
+  return response.data;
 };
 
 export const createProduct = async (productData) => {

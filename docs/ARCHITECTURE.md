@@ -41,7 +41,6 @@ frontend/src/
 |-- services/           Clients API et appels HTTP
 |-- hooks/              Hooks React partages
 |-- utils/              Fonctions utilitaires
-|-- styles/             Styles specialises
 |-- data/               Donnees statiques
 ```
 

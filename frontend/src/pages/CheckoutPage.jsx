@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { FaLock, FaCreditCard, FaMoneyBill } from 'react-icons/fa';
+import { Banknote, LockKeyhole } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { trackEvent } from '../utils/analyticsEvents';
+import { getCartItems } from '../utils/cartUtils';
+import httpClient from '../services/httpClient';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -17,8 +18,9 @@ export default function CheckoutPage() {
     paymentMethod: 'cash_on_delivery',
   });
   const [deliveryZones, setDeliveryZones] = useState([]);
+  const [deliveryZonesLoading, setDeliveryZonesLoading] = useState(true);
 
-  const cartItems = useMemo(() => JSON.parse(localStorage.getItem('cart') || '[]'), []);
+  const cartItems = useMemo(() => getCartItems(), []);
 
   useEffect(() => {
     const itemCount = cartItems.length;
@@ -35,7 +37,10 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     let active = true;
-    axios.get('/api/delivery-zones')
+    if (cartItems.length === 0) return () => {
+      active = false;
+    };
+    httpClient.get('/api/delivery-zones')
       .then((response) => {
         if (active && Array.isArray(response.data)) {
           setDeliveryZones(response.data);
@@ -43,11 +48,14 @@ export default function CheckoutPage() {
       })
       .catch((error) => {
         console.warn('Erreur chargement zones de livraison:', error?.message || error);
+      })
+      .finally(() => {
+        if (active) setDeliveryZonesLoading(false);
       });
     return () => {
       active = false;
     };
-  }, []);
+  }, [cartItems.length]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,6 +79,7 @@ export default function CheckoutPage() {
       }
 
       const sanitizedItems = cartItems.map((item) => ({
+        productId: String(item.productId || item._id || ''),
         name: String(item.name || item.title || 'Produit Star Mousse'),
         quantity: Math.max(1, Number(item.quantity || 1)),
         price: Number(item.price || 0),
@@ -98,7 +107,7 @@ export default function CheckoutPage() {
       });
 
       if (formData.paymentMethod === 'stripe') {
-        const response = await axios.post('/api/payments/create-session', orderData);
+        const response = await httpClient.post('/api/payments/create-session', orderData);
         if (response?.data?.url) {
           window.location.assign(response.data.url);
           return;
@@ -106,14 +115,8 @@ export default function CheckoutPage() {
         throw new Error('Impossible de démarrer le paiement Stripe.');
       }
 
-      const orderResponse = await axios.post('/api/orders/addOrder', orderData);
+      const orderResponse = await httpClient.post('/api/orders/addOrder', orderData);
       const orderId = orderResponse.data._id;
-
-      await axios.post('/api/payments/confirm-payment', {
-        orderId,
-        transactionId: `cash_${orderId}`,
-        paymentMethod: 'cash_on_delivery',
-      });
 
       trackEvent('checkout_success', {
         orderId,
@@ -122,6 +125,7 @@ export default function CheckoutPage() {
       });
 
       localStorage.removeItem('cart');
+      localStorage.removeItem('starMousseCart');
       toast.success('Commande créée avec succès !');
       navigate(`/order-confirmation/${orderId}?email=${encodeURIComponent(formData.customerEmail)}`);
     } catch (error) {
@@ -139,10 +143,38 @@ export default function CheckoutPage() {
     'Siliana', 'Bizerte'
   ];
 
+  if (cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 bs-ecommerce-page sm-checkout-page">
+        <div className="max-w-2xl mx-auto px-4">
+          <div className="bg-white rounded-lg shadow p-8 text-center">
+            <div className="text-4xl mb-4" aria-hidden="true">🛒</div>
+            <h1 className="text-3xl font-bold mb-3">Votre panier est vide</h1>
+            <p className="text-gray-600 mb-6">
+              Ajoutez un produit avant de commencer votre commande.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/products')}
+              className="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+            >
+              Découvrir nos produits
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 py-12 bs-ecommerce-page sm-checkout-page">
       <div className="max-w-2xl mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8">💳 Checkout</h1>
+        <h1 className="text-3xl font-bold mb-8">💳 Finaliser ma commande</h1>
+        <div className="sm-checkout-steps" aria-label="Étapes de commande">
+          <span className="is-active">1. Livraison</span>
+          <span>2. Paiement</span>
+          <span>3. Confirmation</span>
+        </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-8 space-y-6">
           {/* Infos personnelles */}
@@ -249,7 +281,7 @@ export default function CheckoutPage() {
                 />
                 <div>
                   <div className="font-semibold flex items-center gap-2">
-                    <FaMoneyBill /> Paiement à la livraison
+                    <Banknote aria-hidden="true" /> Paiement à la livraison
                   </div>
                   <p className="text-sm text-gray-600">Paiement en espèces à la réception</p>
                 </div>
@@ -260,15 +292,16 @@ export default function CheckoutPage() {
                   type="radio"
                   name="paymentMethod"
                   value="stripe"
+                  disabled
                   className="mr-3"
                   checked={formData.paymentMethod === 'stripe'}
                   onChange={handleChange}
                 />
                 <div>
                   <div className="font-semibold flex items-center gap-2">
-                    <FaCreditCard /> Carte bancaire (Stripe)
+                    Paiement par carte prochainement
                   </div>
-                  <p className="text-sm text-gray-600">Paiement sécurisé par carte bancaire</p>
+                  <p className="text-sm text-gray-600">Activation future du règlement en dinars.</p>
                 </div>
               </label>
 
@@ -282,7 +315,7 @@ export default function CheckoutPage() {
                 />
                 <div>
                   <div className="font-semibold flex items-center gap-2">
-                    <FaMoneyBill /> Flouci (Tunisie)
+                    <Banknote aria-hidden="true" /> Flouci (Tunisie)
                   </div>
                   <p className="text-sm text-gray-600">À venir bientôt</p>
                 </div>
@@ -297,11 +330,11 @@ export default function CheckoutPage() {
             </div>
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>Livraison</span>
-              <span>{shippingCost.toFixed(2)} DT</span>
+              <span>{deliveryZonesLoading ? 'Calcul…' : selectedZone ? `${shippingCost.toFixed(2)} DT` : 'Indisponible'}</span>
             </div>
             <div className="flex justify-between text-base font-semibold mt-3 pt-3 border-t border-gray-200">
               <span>Total estimé</span>
-              <span>{total.toFixed(2)} DT</span>
+              <span>{deliveryZonesLoading || !selectedZone ? '—' : `${total.toFixed(2)} DT`}</span>
             </div>
           </div>
 
@@ -321,10 +354,10 @@ export default function CheckoutPage() {
           {/* Bouton */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || deliveryZonesLoading || !selectedZone}
             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold text-lg flex items-center justify-center gap-2 disabled:bg-gray-400"
           >
-            <FaLock /> {loading ? 'Traitement...' : 'Confirmer la commande'}
+            <LockKeyhole aria-hidden="true" /> {loading ? 'Traitement...' : 'Confirmer la commande'}
           </button>
 
           <p className="text-center text-sm text-gray-600">

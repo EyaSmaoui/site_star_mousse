@@ -14,9 +14,11 @@
     "auto-deploy": "npm run dev:all",
     "local-deploy": "npm run install:all && npm run dev:all",
     "deploy": "npm run build",
-    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend --legacy-peer-deps",
-    "build": "npm install --prefix backend && npm install --prefix frontend --legacy-peer-deps && npm run build --prefix frontend",
+    "install:all": "npm ci && npm ci --prefix backend && npm ci --prefix frontend --legacy-peer-deps",
+    "build": "npm ci --prefix backend && npm ci --prefix frontend --legacy-peer-deps && npm run build --prefix frontend",
     "test:unit": "node --test backend/tests/*.test.js",
+    "test:e2e": "playwright test",
+    "lint": "npm run lint --prefix frontend",
     "check:json": "node -e \"JSON.parse(require('fs').readFileSync('package.json','utf8')); JSON.parse(require('fs').readFileSync('backend/package.json','utf8')); JSON.parse(require('fs').readFileSync('frontend/package.json','utf8')); console.log('JSON ok')\"",
     "audit:deps": "npm audit --omit=optional && npm --prefix backend audit --omit=optional && npm --prefix frontend audit --omit=optional"
   },
@@ -24,6 +26,7 @@
     "dotenv": "^17.4.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "concurrently": "^10.0.3",
     "nodemon": "^3.1.14"
   },

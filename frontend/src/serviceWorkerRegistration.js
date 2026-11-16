@@ -1,6 +1,31 @@
 export const registerServiceWorker = async () => {
   if (!('serviceWorker' in navigator)) return null;
 
+  if (import.meta.env.DEV) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(
+          cacheNames
+            .filter((name) => name.startsWith('star-mousse'))
+            .map((name) => caches.delete(name))
+        );
+      }
+
+      if (navigator.serviceWorker.controller && !sessionStorage.getItem('sm-dev-sw-reset')) {
+        sessionStorage.setItem('sm-dev-sw-reset', '1');
+        window.location.reload();
+      }
+    } catch (error) {
+      console.warn('[PWA] Dev cache reset failed:', error);
+    }
+
+    return null;
+  }
+
   try {
     const registration = await navigator.serviceWorker.register('/service-worker.js', {
       scope: '/',
@@ -42,10 +67,6 @@ export const registerServiceWorker = async () => {
       // Ignore update failures; the service worker will refresh on next load.
     });
 
-    if ('SyncManager' in window && registration.sync) {
-      await registration.sync.register('sync-orders');
-    }
-
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       window.location.reload();
     });
@@ -64,10 +85,16 @@ export const requestBackgroundSync = async () => {
   if (!registration) return false;
 
   if ('SyncManager' in window && registration.sync) {
-    await registration.sync.register('sync-orders');
-    return true;
+    try {
+      await registration.sync.register('sync-orders');
+      return true;
+    } catch (error) {
+      console.warn('[PWA] Background sync unavailable:', error);
+    }
   }
 
-  registration.active?.postMessage({ type: 'SYNC_NOW' });
-  return true;
+  if (!registration.active) return false;
+
+  registration.active.postMessage({ type: 'SYNC_NOW' });
+  return false;
 };

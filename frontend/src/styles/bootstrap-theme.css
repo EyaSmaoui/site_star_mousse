@@ -1,0 +1,212 @@
+:root {
+  --bs-primary: #b85c38;
+  --bs-primary-rgb: 184, 92, 56;
+  --bs-secondary: #31515b;
+  --bs-secondary-rgb: 49, 81, 91;
+  --bs-dark: #1f3741;
+  --bs-dark-rgb: 31, 55, 65;
+  --bs-body-bg: #f7f3ec;
+  --bs-body-color: #26343d;
+  --bs-border-color: rgba(31, 45, 53, 0.14);
+  --bs-link-color: #8f4028;
+  --bs-link-hover-color: #71311f;
+  --bs-border-radius: 0.75rem;
+  --bs-border-radius-lg: 1rem;
+  --bs-box-shadow: 0 0.75rem 2rem rgba(31, 45, 53, 0.08);
+  --bs-font-sans-serif: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.bs-ecommerce-shell {
+  min-height: 100vh;
+  background: var(--bs-body-bg);
+}
+
+.bs-ecommerce-shell .container,
+.bs-ecommerce-shell .container-fluid {
+  --bs-gutter-x: 1.5rem;
+}
+
+.bs-ecommerce-shell .btn {
+  min-height: 42px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.bs-ecommerce-shell .btn-primary,
+.bs-ecommerce-shell .btn-brand {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--sm-brand);
+  --bs-btn-border-color: var(--sm-brand);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--sm-brand-dark);
+  --bs-btn-hover-border-color: var(--sm-brand-dark);
+  --bs-btn-active-bg: #71311f;
+  --bs-btn-active-border-color: #71311f;
+}
+
+.bs-ecommerce-shell .btn-outline-primary {
+  --bs-btn-color: var(--sm-brand-dark);
+  --bs-btn-border-color: var(--sm-brand);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--sm-brand);
+  --bs-btn-hover-border-color: var(--sm-brand);
+}
+
+.bs-ecommerce-shell .card {
+  border-color: var(--sm-border);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--bs-box-shadow);
+}
+
+.bs-ecommerce-shell .form-control,
+.bs-ecommerce-shell .form-select {
+  min-height: 44px;
+  border-color: var(--sm-border);
+  color: var(--sm-ink);
+  background-color: #fffdf8;
+}
+
+.bs-ecommerce-shell .form-control:focus,
+.bs-ecommerce-shell .form-select:focus {
+  border-color: var(--sm-brand);
+  box-shadow: 0 0 0 0.25rem rgba(184, 92, 56, 0.15);
+}
+
+.bs-ecommerce-shell .badge {
+  font-weight: 700;
+}
+
+/* Shared visual bridge for legacy commerce pages. The page-specific styles
+   remain responsible for layout while these selectors align their surfaces,
+   controls and typography with the Bootstrap shell. */
+.bs-ecommerce-shell .bs-ecommerce-page {
+  color: var(--sm-ink);
+  background: var(--sm-bg);
+  font-family: var(--bs-font-sans-serif);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page h1,
+.bs-ecommerce-shell .bs-ecommerce-page h2,
+.bs-ecommerce-shell .bs-ecommerce-page h3 {
+  color: var(--sm-ink);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-container,
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-container,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-cart-shell {
+  max-width: 1200px;
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-card,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-flash-card,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-pack-card,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-cart-card,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-cart-summary,
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-guarantee {
+  border-color: var(--sm-border);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--bs-box-shadow);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-btn-primary,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-btn-card,
+.bs-ecommerce-shell .bs-ecommerce-page .btn-primary,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-submit {
+  background: var(--sm-brand);
+  border-color: var(--sm-brand);
+  color: #fff;
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-btn-primary:hover,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-btn-card:hover,
+.bs-ecommerce-shell .bs-ecommerce-page .btn-primary:hover,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-submit:hover:not(:disabled) {
+  background: var(--sm-brand-dark);
+  border-color: var(--sm-brand-dark);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-btn-secondary,
+.bs-ecommerce-shell .bs-ecommerce-page .btn-secondary,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-remove {
+  background: var(--sm-surface);
+  border-color: var(--sm-border);
+  color: var(--sm-brand-dark);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-price,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-new-price,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-pack-new,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-cart-price,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-total-row {
+  color: var(--sm-brand-dark);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-badge,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-discount,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-flash-discount {
+  background: var(--sm-brand);
+  color: #fff;
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-title,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-hero-title,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-section-title,
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-intro h1,
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-info h2,
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-guarantee h3,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-cart-head h1 {
+  color: var(--sm-ink);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-subtitle,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-hero-desc,
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-intro p,
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-info p,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-cart-head p,
+.bs-ecommerce-shell .bs-ecommerce-page .sm-cart-meta {
+  color: var(--sm-muted);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-hero,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-products-hero,
+.bs-ecommerce-shell .bs-ecommerce-page .ssn-promo-hero {
+  background: linear-gradient(135deg, rgba(184, 92, 56, 0.1), rgba(255, 253, 248, 0.92));
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .matelas-contact-card {
+  background: var(--sm-ink);
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .sm-field input:focus,
+.bs-ecommerce-shell .bs-ecommerce-page input:focus,
+.bs-ecommerce-shell .bs-ecommerce-page textarea:focus,
+.bs-ecommerce-shell .bs-ecommerce-page select:focus {
+  border-color: var(--sm-brand);
+  box-shadow: 0 0 0 0.25rem rgba(184, 92, 56, 0.15);
+  outline: 0;
+}
+
+.bs-ecommerce-shell .bs-ecommerce-page .sm-field input,
+.bs-ecommerce-shell .bs-ecommerce-page input,
+.bs-ecommerce-shell .bs-ecommerce-page textarea,
+.bs-ecommerce-shell .bs-ecommerce-page select {
+  background: var(--sm-surface);
+  border-color: var(--sm-border);
+}
+
+@media (max-width: 767.98px) {
+  .bs-ecommerce-shell .bs-ecommerce-page .ssn-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bs-ecommerce-shell .bs-ecommerce-page .ssn-gallery {
+    position: static;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .bs-ecommerce-shell .container,
+  .bs-ecommerce-shell .container-fluid {
+    --bs-gutter-x: 1rem;
+  }
+}

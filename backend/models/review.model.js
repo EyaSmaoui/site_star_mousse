@@ -10,6 +10,8 @@ const reviewSchema = new mongoose.Schema({
   reviewDate: { type: Date, default: Date.now, index: true },
   createdAt: { type: Date, default: Date.now },
   isDeleted: { type: Boolean, default: false, index: true },
+  isPublic: { type: Boolean, default: true, index: true },
+  verifiedPurchase: { type: Boolean, default: false },
   sentiment: {
     rating: { type: Number, min: 1, max: 5 },
     score: Number,

@@ -134,9 +134,9 @@ const Quiz = () => {
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         .qz-page {
-          background: #ffffff;
+          background: #f7f3ec;
           font-family: 'DM Sans', sans-serif;
-          color: #2a2a3d;
+          color: #153c37;
           min-height: 100vh;
           display: flex;
           flex-direction: column;
@@ -144,18 +144,43 @@ const Quiz = () => {
 
         /* ── HERO BANNER ── */
         .qz-hero {
-          background: #f8f8fd;
-          border-bottom: 1px solid #ebebf5;
-          padding: 60px 40px 56px;
+          position: relative;
+          isolation: isolate;
+          background: linear-gradient(135deg, #fffdf8 0%, #f3e9dc 100%);
+          border-bottom: 1px solid #e4ddd0;
+          padding: 72px 40px 64px;
           text-align: center;
+          overflow: hidden;
+        }
+        .qz-hero::before,
+        .qz-hero::after {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          border: 1px solid rgba(21, 60, 55, .12);
+          border-radius: 50%;
+          pointer-events: none;
+        }
+        .qz-hero::before {
+          width: 360px;
+          height: 360px;
+          left: -180px;
+          top: -190px;
+          box-shadow: 0 0 0 28px rgba(21,60,55,.035), 0 0 0 56px rgba(21,60,55,.025);
+        }
+        .qz-hero::after {
+          width: 260px;
+          height: 260px;
+          right: -120px;
+          bottom: -155px;
         }
         .qz-hero-badge {
           display: inline-flex;
           align-items: center;
           gap: 7px;
-          background: #f3f3fb;
-          color: #4a4ade;
-          border: 1px solid #ddddf0;
+          background: rgba(255,253,249,.9);
+          color: #a94427;
+          border: 1px solid rgba(169,68,39,.2);
           font-size: 13px;
           font-weight: 500;
           padding: 7px 15px;
@@ -167,15 +192,15 @@ const Quiz = () => {
           font-family: 'Playfair Display', serif;
           font-size: clamp(2rem, 4vw, 3rem);
           font-weight: 700;
-          color: #1a1a2e;
+          color: #153c37;
           line-height: 1.18;
           margin-bottom: 14px;
           letter-spacing: -0.5px;
         }
-        .qz-hero h1 em { color: #4a4ade; font-style: italic; }
+        .qz-hero h1 em { color: #a94427; font-style: normal; }
         .qz-hero p {
           font-size: 16px;
-          color: #60607a;
+          color: #52635f;
           line-height: 1.7;
           max-width: 500px;
           margin: 0 auto 32px;
@@ -195,15 +220,15 @@ const Quiz = () => {
           align-items: center;
           gap: 8px;
           font-size: 13px;
-          color: #60607a;
+          color: #52635f;
           padding: 0 20px;
-          border-right: 1px solid #ddddf0;
+          border-right: 1px solid #d8d1c5;
         }
         .qz-step-pill:last-child { border-right: none; }
         .qz-step-num {
           width: 24px; height: 24px;
           border-radius: 50%;
-          background: #4a4ade;
+          background: #153c37;
           color: #fff;
           font-size: 11px;
           font-weight: 700;
@@ -214,7 +239,7 @@ const Quiz = () => {
         }
 
         .qz-btn-start {
-          background: #1a1a2e;
+          background: #a94427;
           color: #fff;
           border: none;
           padding: 15px 36px;
@@ -227,9 +252,9 @@ const Quiz = () => {
           letter-spacing: 0.1px;
         }
         .qz-btn-start:hover {
-          background: #4a4ade;
+          background: #8f4028;
           transform: translateY(-1px);
-          box-shadow: 0 6px 24px rgba(74,74,222,0.25);
+          box-shadow: 0 10px 24px rgba(169,68,39,.22);
         }
 
         /* ── QUIZ BODY ── */
@@ -237,7 +262,7 @@ const Quiz = () => {
           flex: 1;
           max-width: 760px;
           margin: 0 auto;
-          padding: 60px 40px 80px;
+          padding: 56px 40px 84px;
           width: 100%;
         }
 
@@ -253,7 +278,7 @@ const Quiz = () => {
         }
         .qz-progress-label {
           font-size: 13px;
-          color: #9090b0;
+          color: #687b76;
           font-weight: 500;
         }
         .qz-progress-count {
@@ -263,13 +288,13 @@ const Quiz = () => {
         .qz-progress-track {
           width: 100%;
           height: 4px;
-          background: #ebebf5;
+          background: #e4ddd0;
           border-radius: 4px;
           overflow: hidden;
         }
         .qz-progress-fill {
           height: 100%;
-          background: #4a4ade;
+          background: #a94427;
           border-radius: 4px;
           transition: width 0.4s ease;
         }
@@ -280,21 +305,21 @@ const Quiz = () => {
           font-weight: 600;
           letter-spacing: 0.8px;
           text-transform: uppercase;
-          color: #4a4ade;
+          color: #a94427;
           margin-bottom: 10px;
         }
         .qz-question-title {
           font-family: 'Playfair Display', serif;
           font-size: clamp(1.6rem, 3vw, 2.2rem);
           font-weight: 700;
-          color: #1a1a2e;
+          color: #153c37;
           margin-bottom: 8px;
           letter-spacing: -0.3px;
           line-height: 1.2;
         }
         .qz-question-sub {
           font-size: 14px;
-          color: #9090b0;
+          color: #687b76;
           margin-bottom: 36px;
           line-height: 1.6;
         }
@@ -308,22 +333,24 @@ const Quiz = () => {
         }
         .qz-option {
           background: #ffffff;
-          border: 1.5px solid #ebebf5;
+          border: 1.5px solid #e4ddd0;
           border-radius: 16px;
           padding: 22px 18px;
           cursor: pointer;
           transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
           text-align: left;
           user-select: none;
+          font-family: inherit;
         }
+        button.qz-option { width: 100%; }
         .qz-option:hover {
-          border-color: #4a4ade;
-          box-shadow: 0 0 0 3px rgba(74,74,222,0.08);
+          border-color: #a94427;
+          box-shadow: 0 0 0 3px rgba(169,68,39,.08);
         }
         .qz-option.active {
-          border-color: #4a4ade;
-          background: #f3f3fb;
-          box-shadow: 0 0 0 3px rgba(74,74,222,0.12);
+          border-color: #a94427;
+          background: #fff4ed;
+          box-shadow: 0 0 0 3px rgba(169,68,39,.12);
           transform: translateY(-2px);
         }
         .qz-option-icon {
@@ -334,15 +361,49 @@ const Quiz = () => {
         .qz-option-label {
           font-size: 15px;
           font-weight: 600;
-          color: #1a1a2e;
+          color: #153c37;
           margin-bottom: 4px;
           display: block;
         }
         .qz-option-sub {
           font-size: 12.5px;
-          color: #9090b0;
+          color: #687b76;
           line-height: 1.4;
           display: block;
+        }
+        .qz-option:focus-visible,
+        .qz-btn-start:focus-visible,
+        .qz-btn-next:focus-visible,
+        .qz-btn-back:focus-visible,
+        .qz-btn-primary:focus-visible,
+        .qz-btn-ghost:focus-visible {
+          outline: 3px solid rgba(200,155,91,.7);
+          outline-offset: 3px;
+        }
+
+        .qz-reassurance {
+          padding: 26px 24px;
+          background: #fffdf9;
+          border-bottom: 1px solid #e4ddd0;
+        }
+        .qz-reassurance-inner {
+          max-width: 760px;
+          display: flex;
+          justify-content: center;
+          gap: 42px;
+          margin: 0 auto;
+          flex-wrap: wrap;
+        }
+        .qz-reassurance-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #52635f;
+          font-size: 14px;
+          font-weight: 600;
+        }
+        .qz-reassurance-item > span {
+          font-size: 18px;
         }
 
         /* Nav buttons */
@@ -353,8 +414,8 @@ const Quiz = () => {
         }
         .qz-btn-back {
           background: transparent;
-          border: 1.5px solid #ddddf0;
-          color: #60607a;
+          border: 1.5px solid #d8d1c5;
+          color: #52635f;
           padding: 12px 22px;
           border-radius: 11px;
           font-size: 14px;
@@ -364,11 +425,11 @@ const Quiz = () => {
           transition: all 0.2s;
         }
         .qz-btn-back:hover {
-          border-color: #4a4ade;
-          color: #4a4ade;
+          border-color: #a94427;
+          color: #a94427;
         }
         .qz-btn-next {
-          background: #1a1a2e;
+          background: #153c37;
           color: #fff;
           border: none;
           padding: 13px 30px;
@@ -386,9 +447,9 @@ const Quiz = () => {
           pointer-events: auto;
         }
         .qz-btn-next.ready:hover {
-          background: #4a4ade;
+          background: #a94427;
           transform: translateY(-1px);
-          box-shadow: 0 6px 24px rgba(74,74,222,0.25);
+          box-shadow: 0 10px 24px rgba(169,68,39,.22);
         }
 
         /* ── RESULT ── */
@@ -412,17 +473,17 @@ const Quiz = () => {
           font-family: 'Playfair Display', serif;
           font-size: clamp(1.8rem, 3vw, 2.6rem);
           font-weight: 700;
-          color: #1a1a2e;
+          color: #153c37;
           margin-bottom: 10px;
           letter-spacing: -0.3px;
         }
         .qz-result-header p {
           font-size: 15px;
-          color: #9090b0;
+          color: #687b76;
         }
         .qz-result-card {
-          background: #f8f8fd;
-          border: 1px solid #ebebf5;
+          background: #fffdf9;
+          border: 1px solid #e4ddd0;
           border-radius: 24px;
           display: flex;
           gap: 48px;
@@ -439,7 +500,7 @@ const Quiz = () => {
           top: -60px; right: -60px;
           width: 260px; height: 260px;
           border-radius: 50%;
-          background: radial-gradient(circle, #eeeeff 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(200,155,91,.18) 0%, transparent 70%);
           pointer-events: none;
         }
         .qz-result-img-wrap {
@@ -477,7 +538,7 @@ const Quiz = () => {
           font-size: 11.5px;
           font-weight: 700;
           letter-spacing: 0.8px;
-          color: #4a4ade;
+          color: #a94427;
           margin-bottom: 10px;
           display: block;
         }
@@ -485,14 +546,14 @@ const Quiz = () => {
           font-family: 'Playfair Display', serif;
           font-size: 1.9rem;
           font-weight: 700;
-          color: #1a1a2e;
+          color: #153c37;
           margin-bottom: 14px;
           letter-spacing: -0.3px;
           line-height: 1.15;
         }
         .qz-result-desc {
           font-size: 14.5px;
-          color: #60607a;
+          color: #52635f;
           line-height: 1.72;
           margin-bottom: 22px;
         }
@@ -504,8 +565,8 @@ const Quiz = () => {
         }
         .qz-feature-tag {
           background: #ffffff;
-          border: 1px solid #ddddf0;
-          color: #4a4ade;
+          border: 1px solid #d8d1c5;
+          color: #a94427;
           font-size: 12px;
           font-weight: 600;
           padding: 5px 12px;
@@ -514,7 +575,7 @@ const Quiz = () => {
         .qz-result-price {
           font-size: 22px;
           font-weight: 700;
-          color: #1a1a2e;
+          color: #153c37;
           letter-spacing: -0.3px;
           margin-bottom: 22px;
         }
@@ -524,7 +585,7 @@ const Quiz = () => {
           flex-wrap: wrap;
         }
         .qz-btn-primary {
-          background: #1a1a2e;
+          background: #153c37;
           color: #fff;
           border: none;
           padding: 13px 26px;
@@ -536,14 +597,14 @@ const Quiz = () => {
           transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
         }
         .qz-btn-primary:hover {
-          background: #4a4ade;
+          background: #a94427;
           transform: translateY(-1px);
-          box-shadow: 0 6px 24px rgba(74,74,222,0.25);
+          box-shadow: 0 10px 24px rgba(169,68,39,.22);
         }
         .qz-btn-ghost {
           background: transparent;
-          color: #60607a;
-          border: 1.5px solid #ddddf0;
+          color: #52635f;
+          border: 1.5px solid #d8d1c5;
           padding: 13px 22px;
           border-radius: 11px;
           font-size: 14px;
@@ -553,8 +614,8 @@ const Quiz = () => {
           transition: all 0.2s;
         }
         .qz-btn-ghost:hover {
-          border-color: #4a4ade;
-          color: #4a4ade;
+          border-color: #a94427;
+          color: #a94427;
         }
 
         /* Summary bar */
@@ -568,12 +629,12 @@ const Quiz = () => {
           display: flex;
           align-items: center;
           gap: 6px;
-          background: #f3f3fb;
-          border: 1px solid #ddddf0;
+          background: #f3e9dc;
+          border: 1px solid #d8d1c5;
           padding: 6px 14px;
           border-radius: 50px;
           font-size: 12.5px;
-          color: #4a4ade;
+          color: #a94427;
           font-weight: 500;
         }
 
@@ -586,6 +647,8 @@ const Quiz = () => {
           .qz-result-img-wrap { max-width: 100%; }
           .qz-steps-preview { gap: 12px; }
           .qz-step-pill { border-right: none; }
+          .qz-reassurance-inner { gap: 16px 24px; justify-content: flex-start; }
+          .qz-reassurance-item { width: calc(50% - 12px); font-size: 13px; }
         }
       `}</style>
 
@@ -617,15 +680,15 @@ const Quiz = () => {
             </div>
 
             {/* Reassurance strip */}
-            <div style={{ background: "#fff", borderBottom: "1px solid #ebebf5", padding: "28px 40px" }}>
-              <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", justifyContent: "center", gap: 48, flexWrap: "wrap" }}>
+            <div className="qz-reassurance">
+              <div className="qz-reassurance-inner">
                 {[
                   { icon: "⚡", text: "2 minutes maximum" },
                   { icon: "🎯", text: "Résultat personnalisé" },
                   { icon: "🔒", text: "Sans inscription" },
                 ].map((item, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "#60607a" }}>
-                    <span style={{ fontSize: 18 }}>{item.icon}</span>
+                  <div className="qz-reassurance-item" key={i}>
+                    <span aria-hidden="true">{item.icon}</span>
                     {item.text}
                   </div>
                 ))}
@@ -659,15 +722,17 @@ const Quiz = () => {
             {/* Options */}
             <div className="qz-options">
               {q.options.map((opt) => (
-                <div
+                <button
+                  type="button"
                   key={opt.value}
                   className={`qz-option${selected === opt.value ? " active" : ""}`}
                   onClick={() => handleSelect(opt.value)}
+                  aria-pressed={selected === opt.value}
                 >
                   <span className="qz-option-icon">{opt.icon}</span>
                   <span className="qz-option-label">{opt.label}</span>
                   <span className="qz-option-sub">{opt.sub}</span>
-                </div>
+                </button>
               ))}
             </div>
 

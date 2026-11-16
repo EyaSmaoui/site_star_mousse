@@ -66,6 +66,8 @@ const orderSchema = new mongoose.Schema({
     enum: ['en attente', 'en cours', 'expédié', 'livré', 'annulé'],
     index: true,
   },
+  stockRestoredAt: Date,
+  stockReservedAt: Date,
   createdAt: {
     type: Date,
     default: Date.now,

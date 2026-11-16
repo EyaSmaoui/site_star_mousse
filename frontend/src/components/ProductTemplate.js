@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import OrderCheckout from "./OrderCheckout";
 import { getProductBySlug } from "../data/products";
+import { getCatalogProductBySlug } from "../services/productCatalog";
 import { addCartItem } from "../utils/cartUtils";
 import { getToken } from "../utils/authUtils";
 
@@ -11,7 +12,7 @@ import formatPrice from '../utils/formatPrice';
 function ProductTemplate({ product: fallbackProduct }) {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const product = fallbackProduct || getProductBySlug(slug);
+  const [product, setProduct] = useState(() => fallbackProduct || getProductBySlug(slug));
 
   const [selectedSize, setSelectedSize] = useState(() => {
     if (!product) return undefined;
@@ -33,6 +34,14 @@ function ProductTemplate({ product: fallbackProduct }) {
   });
   const [loading, setLoading] = useState(false);
   const observerRef = useRef(null);
+
+  useEffect(() => {
+    let active = true;
+    getCatalogProductBySlug(slug).then((catalogProduct) => {
+      if (active && catalogProduct.name !== "Produit Star Mousse") setProduct(catalogProduct);
+    });
+    return () => { active = false; };
+  }, [slug]);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -131,7 +140,7 @@ function ProductTemplate({ product: fallbackProduct }) {
       customerEmail: form.email.trim(),
       phone: form.phone.trim(),
       address: form.address.trim(),
-      products: [{ name: productLabel, quantity: qty, price: unitPrice ?? 0 }],
+      products: [{ productId: product._id || product.productId || slug, name: productLabel, quantity: qty, price: unitPrice ?? 0 }],
       total,
     };
 
@@ -163,6 +172,7 @@ function ProductTemplate({ product: fallbackProduct }) {
     if (!product) return;
 
     addCartItem({
+      productId: product._id || product.productId || slug,
       name: product.name,
       size: hasSizes ? selectedSize?.label : "",
       image: product.images?.[activeImg] || product.images?.[0] || "",
@@ -227,7 +237,7 @@ function ProductTemplate({ product: fallbackProduct }) {
         }
       `}</style>
 
-      <div className="ssn-page">
+      <div className="ssn-page bs-ecommerce-page">
         <div className="ssn-container">
           <div className="ssn-grid">
             <div className="ssn-gallery ssn-fade">
@@ -349,4 +359,3 @@ function ProductTemplate({ product: fallbackProduct }) {
 }
 
 export default ProductTemplate;
-

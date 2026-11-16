@@ -14,7 +14,7 @@ const transformJsxInJs = () => ({
 })
 
 export default defineConfig({
-  root: __dirname,
+  root: import.meta.dirname,
   plugins: [
     transformJsxInJs(),
     react({
@@ -23,7 +23,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   optimizeDeps: {
-    entries: [path.resolve(__dirname, 'index.html')],
+    entries: [path.resolve(import.meta.dirname, 'index.html')],
     rolldownOptions: {
       moduleTypes: {
         '.js': 'jsx',
@@ -45,12 +45,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@pages': path.resolve(__dirname, './src/pages'),
-      '@services': path.resolve(__dirname, './src/services'),
-      '@utils': path.resolve(__dirname, './src/utils'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@': path.resolve(import.meta.dirname, './src'),
+      '@components': path.resolve(import.meta.dirname, './src/components'),
+      '@pages': path.resolve(import.meta.dirname, './src/pages'),
+      '@services': path.resolve(import.meta.dirname, './src/services'),
+      '@utils': path.resolve(import.meta.dirname, './src/utils'),
+      '@hooks': path.resolve(import.meta.dirname, './src/hooks'),
     },
   },
   build: {

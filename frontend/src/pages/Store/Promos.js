@@ -4,10 +4,12 @@ const Promos = () => {
   const observerRef = useRef(null);
 
   useEffect(() => {
-    // Force fond blanc sur body et root
+    const previousBodyBackground = document.body.style.background;
+    const previousBodyBackgroundColor = document.body.style.backgroundColor;
     document.body.style.background = "#ffffff";
     document.body.style.backgroundColor = "#ffffff";
     const root = document.getElementById("root");
+    const previousRootBackground = root?.style.background || "";
     if (root) root.style.background = "#ffffff";
 
     observerRef.current = new IntersectionObserver(
@@ -22,6 +24,9 @@ const Promos = () => {
 
     return () => {
       observerRef.current?.disconnect();
+      document.body.style.background = previousBodyBackground;
+      document.body.style.backgroundColor = previousBodyBackgroundColor;
+      if (root) root.style.background = previousRootBackground;
     };
   }, []);
 
@@ -415,7 +420,7 @@ const Promos = () => {
         }
       `}</style>
 
-      <div className="ssn-page">
+      <div className="ssn-page bs-ecommerce-page">
 
         {/* ── HERO ── */}
         <div className="ssn-promo-hero ssn-fade">
@@ -425,7 +430,7 @@ const Promos = () => {
           </h1>
           <p className="ssn-hero-desc">
             Des remises exceptionnelles sur une sélection de produits pour une durée limitée.
-            Premier arrivé, premier servi dans votre showroom Super Siesta !
+            Premier arrivé, premier servi dans votre showroom Star Mousse !
           </p>
         </div>
 
@@ -519,4 +524,3 @@ const Promos = () => {
 };
 
 export default Promos;
-

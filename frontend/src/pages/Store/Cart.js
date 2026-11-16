@@ -8,6 +8,7 @@ import {
   updateCartItemQuantity,
 } from "../../utils/cartUtils";
 import { submitOrder } from "../../services/orderService";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 
 const emptyForm = { name: "", phone: "", address: "", email: "" };
 
@@ -93,7 +94,7 @@ export default function Cart() {
   };
 
   return (
-    <div className="sm-cart-page">
+    <div className="sm-cart-page bs-ecommerce-page">
       <style>{`
         .sm-cart-page { min-height: 100vh; background: #fafaf8; color: #0a0a0a; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
         .sm-cart-shell { max-width: 1180px; margin: 0 auto; padding: 42px 20px 64px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 30px; align-items: start; }
@@ -183,7 +184,7 @@ export default function Cart() {
       <main className="sm-cart-shell">
         <div className="sm-cart-head">
           <div>
-            <h1>Panier</h1>
+            <h1><ShoppingBag aria-hidden="true" /> Panier</h1>
             <p>{items.length ? `${items.length} produit(s) pret(s) a commander` : "Votre panier est vide pour le moment."}</p>
           </div>
           <Link to="/products">Continuer mes achats</Link>
@@ -208,11 +209,11 @@ export default function Cart() {
                   </div>
                   <div className="sm-cart-actions">
                     <div className="sm-stepper" aria-label="Quantite">
-                      <button type="button" onClick={() => setQuantity(item.key, item.quantity - 1)}>-</button>
+                      <button type="button" aria-label="Diminuer la quantité" onClick={() => setQuantity(item.key, item.quantity - 1)}><Minus size={16} aria-hidden="true" /></button>
                       <span>{item.quantity}</span>
-                      <button type="button" onClick={() => setQuantity(item.key, item.quantity + 1)}>+</button>
+                      <button type="button" aria-label="Augmenter la quantité" onClick={() => setQuantity(item.key, item.quantity + 1)}><Plus size={16} aria-hidden="true" /></button>
                     </div>
-                    <button className="sm-remove" type="button" onClick={() => removeItem(item.key)}>Retirer</button>
+                    <button className="sm-remove" type="button" onClick={() => removeItem(item.key)}><Trash2 size={15} aria-hidden="true" /> Retirer</button>
                   </div>
                 </article>
               ))}
@@ -243,7 +244,7 @@ export default function Cart() {
             <strong>{formatMoney(subtotal)}</strong>
           </div>
           <button className="sm-submit" disabled={loading || !items.length}>
-            {loading ? "Envoi..." : "Commander le panier"}
+            <ShoppingBag size={17} aria-hidden="true" /> {loading ? "Envoi..." : "Commander le panier"}
           </button>
         </form>
       </main>

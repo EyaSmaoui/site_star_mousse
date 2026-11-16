@@ -1,11 +1,5 @@
 import React from "react";
-
-const Ico = ({ d, size = 16, color = "currentColor", sw = 2 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
-    {(Array.isArray(d) ? d : [d]).map((p, i) => <path key={i} d={p} />)}
-  </svg>
-);
+import { Search, X } from "lucide-react";
 
 export default function SearchBar({ placeholder, value, onChange, minWidth: _minWidth, onSubmit, isForm = false }) {
   const handleChange = (e) => {
@@ -18,7 +12,7 @@ export default function SearchBar({ placeholder, value, onChange, minWidth: _min
 
   const content = (
     <>
-      <Ico d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" size={15} color="#9ca3af" />
+      <Search size={16} color="#9ca3af" aria-hidden="true" />
       <input
         style={styles.searchInput}
         placeholder={placeholder}
@@ -33,7 +27,7 @@ export default function SearchBar({ placeholder, value, onChange, minWidth: _min
           aria-label="Effacer la recherche"
           type="button"
         >
-          ×
+          <X size={15} aria-hidden="true" />
         </button>
       )}
     </>
@@ -88,4 +82,3 @@ const styles = {
     justifyContent: "center",
   },
 };
-

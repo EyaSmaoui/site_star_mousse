@@ -7,7 +7,7 @@ import { getMyReviews } from "../../services/apiReview";
 import { getProfile } from "../../services/apiAuth";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { subscribeToProfileChanges } from "../../services/profileSyncService";
-import "./ClientDashboard.css";
+import { getDiceBearAvatar } from "../../utils/dicebear";
 
 export default function ClientReviews() {
   const navigate = useNavigate();
@@ -97,7 +97,7 @@ export default function ClientReviews() {
           </div>
           <div style={S.topbarRight}>
             <div style={S.clock}>{formatDate(new Date())}</div>
-            <div style={S.avatar}>{avatarLetters}</div>
+            <img style={S.avatar} src={getDiceBearAvatar(profile.username || avatarLetters, "personas")} alt={`Avatar de ${profile.username || "client"}`} />
           </div>
         </div>
 

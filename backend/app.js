@@ -12,12 +12,14 @@ const http = require('http');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const { RedisStore } = require('connect-redis');
 const mongoose = require('mongoose');
 const { connectToMongoDB } = require('./config/mongo.connection');
 const { globalSanitization } = require('./middleware/inputValidation');
 const { globalLimiter } = require('./middleware/rateLimiters');
 const errorHandler = require('./middleware/errorHandler');
 const { performanceMetricsMiddleware } = require('./middleware/performanceMetrics');
+const { createRedisClient, isRedisReady } = require('./config/redis.config');
 
 var app = express();
 
@@ -73,7 +75,14 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev', { stream: logger.stream }));
 }
 // Keep API payloads small; file uploads use dedicated multer routes.
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({
+  limit: '1mb',
+  verify: (req, res, buffer) => {
+    if (req.originalUrl?.split('?')[0] === '/api/payments/webhook') {
+      req.rawBody = Buffer.from(buffer);
+    }
+  },
+}));
 app.use(express.urlencoded({ extended: false, limit: '1mb' }));
 // Input sanitization and validation middleware (MUST come after express.json)
 app.use(globalSanitization);
@@ -83,7 +92,7 @@ if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
 }
 
 app.use(cookieParser());
-app.use(session({
+const sessionOptions = {
   secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -94,7 +103,14 @@ app.use(session({
     sameSite: 'lax',
     maxAge: Number(process.env.SESSION_MAX_AGE_MS || 1000 * 60 * 60 * 24 * 14),
   },
-}));
+};
+
+if (process.env.NODE_ENV === 'production' && !process.env.REDIS_URL) {
+  throw new Error('REDIS_URL is required in production for persistent sessions.');
+}
+
+let sessionMiddleware = session(sessionOptions);
+app.use((req, res, next) => sessionMiddleware(req, res, next));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTES
@@ -116,12 +132,30 @@ app.get('/api/health', (req, res) => {
   const dbStates = ['disconnected', 'connected', 'connecting', 'disconnecting'];
   res.json({
     ok: true,
-    message: 'API Star Mousse opérationnelle',
+    message: 'Star Mousse API operational',
     db: dbStates[mongoose.connection.readyState] || 'unknown',
     timestamp: new Date().toISOString(),
   });
 });
 
+app.get('/api/health/live', (req, res) => {
+  res.status(200).json({ ok: true, status: 'live', timestamp: new Date().toISOString() });
+});
+
+app.get('/api/health/ready', (req, res) => {
+  const dbReady = mongoose.connection.readyState === 1;
+  const redisRequired = process.env.NODE_ENV === 'production' || Boolean(process.env.REDIS_URL);
+  const redisReady = !redisRequired || isRedisReady();
+  const ready = dbReady && redisReady;
+
+  res.status(ready ? 200 : 503).json({
+    ok: ready,
+    status: ready ? 'ready' : 'not_ready',
+    db: dbReady ? 'connected' : 'disconnected',
+    redis: redisRequired ? (redisReady ? 'connected' : 'disconnected') : 'not_required',
+    timestamp: new Date().toISOString(),
+  });
+});
 // Frontend React: serve the built app whenever it exists, so direct links work.
 const distPath = process.env.FRONTEND_BUILD_PATH
   ? path.resolve(process.env.FRONTEND_BUILD_PATH)
@@ -173,6 +207,16 @@ const ensureMongoConnection = async () => {
 };
 
 const startServer = async () => {
+  if (process.env.REDIS_URL) {
+    const redisClient = await createRedisClient();
+    if (!redisClient && process.env.NODE_ENV === 'production') {
+      throw new Error('Redis is unavailable; refusing to start production with memory sessions.');
+    }
+    if (redisClient) {
+      sessionMiddleware = session({ ...sessionOptions, store: new RedisStore({ client: redisClient }) });
+    }
+  }
+
   await ensureMongoConnection().catch(() => {});
   if (mongoose.connection.readyState !== 1 && !mongoRetryTimer) {
     mongoRetryTimer = setInterval(ensureMongoConnection, 30000);

@@ -8,6 +8,7 @@ import { hasAccess, ROLES } from "../../utils/authUtils";
 import { subscribeToProfileChanges } from "../../services/profileSyncService";
 import { PRODUCTS } from "../../data/products";
 import formatPrice from "../../utils/formatPrice";
+import { getDiceBearAvatar } from "../../utils/dicebear";
 
 const normalizeName = (value = "") =>
   String(value)
@@ -138,7 +139,7 @@ export default function ClientRecommendations() {
           </div>
           <div style={S.topbarRight}>
             <div style={S.clock}>{new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}</div>
-            <div style={S.avatar}>{avatarLetters}</div>
+            <img style={S.avatar} src={getDiceBearAvatar(profile.username || avatarLetters, "personas")} alt={`Avatar de ${profile.username || "client"}`} />
           </div>
         </div>
 

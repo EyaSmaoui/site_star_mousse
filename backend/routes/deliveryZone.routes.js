@@ -37,3 +37,4 @@ router.get('/:region', (req, res) => {
 });
 
 module.exports = router;
+module.exports.deliveryZones = deliveryZones;

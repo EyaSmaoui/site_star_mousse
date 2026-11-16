@@ -10,7 +10,14 @@ const buildStarMousseFilter = (filter = {}) => ({
     {
       $or: [
         { brand: { $exists: true, $nin: EXCLUDED_BRANDS } },
-        { brand: { $exists: false }, name: { $not: competitorBrandRegex } },
+        {
+          brand: { $exists: false },
+          $nor: [
+            { name: competitorBrandRegex },
+            { description: competitorBrandRegex },
+            { category: competitorBrandRegex },
+          ],
+        },
       ],
     },
   ],
@@ -21,7 +28,7 @@ exports.getAllProducts = async (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit) || 100, 1), 500);
     const skip = Math.max(Number(req.query.skip) || 0, 0);
     const products = await Product.find(buildStarMousseFilter({ isActive: true }))
-      .select('productId name description price category stock warranty image brand color size averageRating reviewCount isRecommended note_coeur sentimentScore recommendationRank lastRecommendationUpdate createdAt updatedAt')
+      .select('productId name description price basePrice category stock warranty image images variants dimensions brand color size averageRating reviewCount isRecommended note_coeur sentimentScore recommendationRank lastRecommendationUpdate createdAt updatedAt')
       .sort({ isRecommended: -1, averageRating: -1, reviewCount: -1, name: 1 })
       .skip(skip)
       .limit(limit)
@@ -43,9 +50,24 @@ exports.getProductById = async (req, res) => {
   }
 };
 
+exports.getProductBySlug = async (req, res) => {
+  try {
+    const slug = String(req.params.slug || '').trim().toLowerCase();
+    const product = await Product.findOne({
+      isActive: true,
+      $or: [{ productId: slug }, { slug }],
+    });
+    if (!product) return res.status(404).json({ message: 'Produit introuvable.' });
+    return res.status(200).json(withProductImage(product));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getRecommendedProducts = async (req, res) => {
   try {
-    const limit = Math.min(Number(req.query.limit) || 6, 12);
+    const parsedLimit = Number(req.query.limit);
+    const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), 12) : 6;
     const q = String(req.query.q || '').trim();
     const products = await getProductRecommendations({ q, limit });
     const cleanedProducts = products.map(({ _id, ...rest }) => rest);
@@ -57,12 +79,13 @@ exports.getRecommendedProducts = async (req, res) => {
 
 exports.addProduct = async (req, res) => {
   try {
-    const { productId, name, description, price, category, stock, warranty, color, size, brand = 'Star Mousse', isActive = true } = req.body;
+    const { productId, name, description, price, basePrice = price, category, stock, warranty, color, size, brand = 'Star Mousse', isActive = true } = req.body;
     const image = req.file ? `/images/${req.file.filename}` : (req.body.image || inferProductImage(name));
     const newProduct = new Product({
       productId,
       name,
       description,
+      basePrice,
       price,
       category,
       stock,
@@ -82,12 +105,13 @@ exports.addProduct = async (req, res) => {
 
 exports.addProductWithImage = async (req, res) => {
   try {
-    const { productId, name, description, price, category, stock, warranty, color, size, brand = 'Star Mousse', isActive = true } = req.body;
+    const { productId, name, description, price, basePrice = price, category, stock, warranty, color, size, brand = 'Star Mousse', isActive = true } = req.body;
     const image = req.file ? `/images/${req.file.filename}` : null;
     const newProduct = new Product({
       productId,
       name,
       description,
+      basePrice,
       price,
       category,
       stock,

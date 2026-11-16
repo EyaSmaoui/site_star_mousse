@@ -5,7 +5,6 @@ import { submitPendingOrder } from "../../services/orderService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { redirectByRole } from "../../utils/authUtils";
-import "../../App.css";
 
 /* ─── Particle canvas background for left panel ─── */
 const ParticleCanvas = () => {

@@ -324,7 +324,7 @@ function Matelas() {
         }
       `}</style>
 
-      <div className="matelas-page">
+      <div className="matelas-page bs-ecommerce-page">
 
         {/* HERO */}
         <section className="matelas-hero">
@@ -440,4 +440,3 @@ function Matelas() {
 }
 
 export default Matelas;
-

@@ -6,6 +6,7 @@ import { getMyOrders } from "../../services/orderService";
 import { getProfile } from "../../services/apiAuth";
 import { hasAccess, ROLES } from "../../utils/authUtils";
 import { getCachedProfile, subscribeToProfileChanges } from "../../services/profileSyncService";
+import { getDiceBearAvatar } from "../../utils/dicebear";
 
 const applyProfileToOrders = (orders, profile) => {
   if (!Array.isArray(orders)) return [];
@@ -134,7 +135,7 @@ export default function ClientMyOrders() {
           </div>
           <div style={S.topbarRight}>
             <div style={S.clock}>{formatDate(new Date())}</div>
-            <div style={S.avatar}>{avatarLetters}</div>
+            <img style={S.avatar} src={getDiceBearAvatar(profile.username || avatarLetters, "personas")} alt={`Avatar de ${profile.username || "client"}`} />
           </div>
         </div>
 

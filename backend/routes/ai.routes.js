@@ -6,15 +6,20 @@ const Product = require('../models/product.model');
 const Order = require('../models/order.model');
 const Review = require('../models/review.model');
 const logger = require('../logger');
+const { requireAuthUser, requireEmployeeOrAdmin } = require('../middleware/authMiddlewares');
+const { aiLimiter } = require('../middleware/rateLimiters');
 
 /**
  * GET /api/ai/recommendations/:userId
  * Obtenir recommandations personnalisées
  */
-router.get('/recommendations/:userId', async (req, res) => {
+router.get('/recommendations/:userId', requireAuthUser, aiLimiter, async (req, res) => {
   try {
     const { userId } = req.params;
-    const { count = 5 } = req.query;
+    if (String(req.user._id) !== String(userId)) {
+      return res.status(403).json({ error: 'Accès refusé.' });
+    }
+    const count = Math.min(Math.max(Number.parseInt(req.query.count, 10) || 5, 1), 20);
 
     // Récupérer les commandes passées de l'utilisateur
     const userOrders = await Order.find({ userId }).populate('products.product');
@@ -28,7 +33,7 @@ router.get('/recommendations/:userId', async (req, res) => {
       userId,
       userHistory,
       products,
-      parseInt(count)
+      count
     );
 
     // Enrichir avec détails produits
@@ -57,11 +62,11 @@ router.get('/recommendations/:userId', async (req, res) => {
  * POST /api/ai/search
  * Recherche sémantique intelligente
  */
-router.post('/search', async (req, res) => {
+router.post('/search', aiLimiter, async (req, res) => {
   try {
     const { query } = req.body;
 
-    if (!query) {
+    if (!query || typeof query !== 'string' || query.trim().length > 200) {
       return res.status(400).json({ error: 'Query manquante' });
     }
 
@@ -113,11 +118,11 @@ router.post('/search', async (req, res) => {
  * POST /api/ai/chatbot
  * Chat avec l'assistant IA
  */
-router.post('/chatbot', async (req, res) => {
+router.post('/chatbot', aiLimiter, async (req, res) => {
   try {
     const { message, context = {} } = req.body;
 
-    if (!message) {
+    if (!message || typeof message !== 'string' || message.trim().length > 2000) {
       return res.status(400).json({ error: 'Message manquant' });
     }
 
@@ -140,7 +145,7 @@ router.post('/chatbot', async (req, res) => {
  * POST /api/ai/analyze-review
  * Analyser sentiment d'un avis
  */
-router.post('/analyze-review', async (req, res) => {
+router.post('/analyze-review', requireEmployeeOrAdmin, aiLimiter, async (req, res) => {
   try {
     const { reviewText } = req.body;
 
@@ -164,7 +169,7 @@ router.post('/analyze-review', async (req, res) => {
  * GET /api/ai/product-recommendations/:productId
  * Produits similaires basés sur embeddings
  */
-router.get('/product-recommendations/:productId', async (req, res) => {
+router.get('/product-recommendations/:productId', aiLimiter, async (req, res) => {
   try {
     const { productId } = req.params;
 
@@ -223,7 +228,7 @@ router.get('/product-recommendations/:productId', async (req, res) => {
  * GET /api/ai/dynamic-price/:productId
  * Calculer prix dynamique
  */
-router.get('/dynamic-price/:productId', async (req, res) => {
+router.get('/dynamic-price/:productId', requireEmployeeOrAdmin, aiLimiter, async (req, res) => {
   try {
     const { productId } = req.params;
 
@@ -266,10 +271,10 @@ router.get('/dynamic-price/:productId', async (req, res) => {
  * GET /api/ai/stock-prediction/:productId
  * Prédire stock nécessaire
  */
-router.get('/stock-prediction/:productId', async (req, res) => {
+router.get('/stock-prediction/:productId', requireEmployeeOrAdmin, aiLimiter, async (req, res) => {
   try {
     const { productId } = req.params;
-    const { days = 30 } = req.query;
+    const days = Math.min(Math.max(Number.parseInt(req.query.days, 10) || 30, 1), 365);
 
     const product = await Product.findById(productId);
     if (!product) {
@@ -303,7 +308,7 @@ router.get('/stock-prediction/:productId', async (req, res) => {
     const prediction = aiService.predictStockNeeded(
       dailySales || [1], // fallback si pas de données
       product.stock,
-      parseInt(days)
+      days
     );
 
     res.json({

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import httpClient from '../services/httpClient';
 import { FaCheckCircle, FaBox, FaClock } from 'react-icons/fa';
 import { trackEvent } from '../utils/analyticsEvents';
 
@@ -17,7 +17,7 @@ export default function OrderConfirmation() {
       if (email) {
         params.set('email', email);
       }
-      const response = await axios.get(`/api/orders/${orderId}${params.toString() ? `?${params.toString()}` : ''}`);
+      const response = await httpClient.get(`/api/orders/${orderId}`, { params: Object.fromEntries(params.entries()) });
       setOrder(response.data);
       localStorage.removeItem('cart');
       trackEvent('order_confirmation_view', {
