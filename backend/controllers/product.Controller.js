@@ -85,21 +85,7 @@ exports.addProduct = async (req, res) => {
   try {
     const { productId, name, description, price, basePrice = price, category, stock, warranty, color, size, brand = 'Star Mousse', isActive = true } = req.body;
     const image = req.file ? `/images/${req.file.filename}` : (req.body.image || inferProductImage(name));
-    const newProduct = new Product({
-      productId,
-      name,
-      description,
-      basePrice,
-      price,
-      category,
-      stock,
-      warranty,
-      image,
-      color,
-      size,
-      brand,
-      isActive,
-    });
+    const newProduct = new Product({ productId, name, description, basePrice, price, category, stock, warranty, image, color, size, brand, isActive });
     await newProduct.save();
     return res.status(201).json(newProduct);
   } catch (error) {
@@ -111,21 +97,7 @@ exports.addProductWithImage = async (req, res) => {
   try {
     const { productId, name, description, price, basePrice = price, category, stock, warranty, color, size, brand = 'Star Mousse', isActive = true } = req.body;
     const image = req.file ? `/images/${req.file.filename}` : null;
-    const newProduct = new Product({
-      productId,
-      name,
-      description,
-      basePrice,
-      price,
-      category,
-      stock,
-      warranty,
-      image,
-      color,
-      size,
-      brand,
-      isActive,
-    });
+    const newProduct = new Product({ productId, name, description, basePrice, price, category, stock, warranty, image, color, size, brand, isActive });
     await newProduct.save();
     return res.status(201).json(newProduct);
   } catch (error) {
@@ -135,11 +107,7 @@ exports.addProductWithImage = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   try {
-    const updated = await Product.findOneAndUpdate(
-      { _id: req.params.id },
-      { ...req.body, updatedAt: new Date() },
-      { new: true, runValidators: true }
-    );
+    const updated = await Product.findOneAndUpdate({ _id: req.params.id }, { ...req.body, updatedAt: new Date() }, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ message: 'Produit introuvable.' });
     return res.status(200).json(updated);
   } catch (error) {
@@ -160,9 +128,7 @@ exports.deleteProduct = async (req, res) => {
 exports.searchProductByName = async (req, res) => {
   try {
     const name = String(req.query.name || '').trim();
-    const products = await Product.find(buildStarMousseFilter({ isActive: true, name: { $regex: new RegExp(name, 'i') } }))
-      .limit(50)
-      .lean();
+    const products = await Product.find(buildStarMousseFilter({ isActive: true, name: { $regex: new RegExp(name, 'i') } })).limit(50).lean();
     return res.status(200).json(products.map(withProductImage));
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -180,10 +146,7 @@ exports.filterProducts = async (req, res) => {
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
-    const products = await Product.find(buildStarMousseFilter(filter))
-      .sort({ averageRating: -1, reviewCount: -1 })
-      .limit(100)
-      .lean();
+    const products = await Product.find(buildStarMousseFilter(filter)).sort({ averageRating: -1, reviewCount: -1 }).limit(100).lean();
     return res.status(200).json(products.map(withProductImage));
   } catch (error) {
     res.status(500).json({ error: error.message });
