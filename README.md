@@ -34,6 +34,22 @@ Le backend est controle par `/api/health/live`. Le chatbot est controle par
 `/health`. Les deux services utilisent automatiquement le port `PORT` fourni
 par Railway.
 
+## Deploiement Docker autonome
+
+Pour supprimer toute dependance a GitHub Actions et a un fournisseur PaaS,
+utilisez `docker-compose.production.yml` sur un VPS, Coolify ou DigitalOcean :
+
+```bash
+cp deploy/production.env.example deploy/production.env
+# Editez deploy/production.env avec l'URI MongoDB et le secret de session
+docker compose -f docker-compose.production.yml up -d --build
+docker compose -f docker-compose.production.yml ps
+```
+
+Le backend est expose sur le port `10000`, le chatbot reste prive sur le
+reseau Docker et Redis utilise un volume persistant. Le frontend Vercel doit
+pointer vers l'URL HTTPS du backend.
+
 ## Structure
 
 ```text

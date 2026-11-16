@@ -1,0 +1,56 @@
+services:
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chatbot:
+    build:
+      context: ./backend/chatbot
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 5001
+      WEB_CONCURRENCY: 2
+      GUNICORN_THREADS: 4
+    expose:
+      - "5001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5001/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./deploy/production.env
+    environment:
+      PORT: 10000
+      REDIS_URL: redis://redis:6379
+      FLASK_CHATBOT_URL: http://chatbot:5001
+    depends_on:
+      redis:
+        condition: service_healthy
+      chatbot:
+        condition: service_healthy
+    ports:
+      - "10000:10000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:10000/api/health/live', response => process.exit(response.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redis-data:
