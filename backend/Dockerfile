@@ -1,15 +1,13 @@
-FROM node:18-slim
+FROM node:24-slim
 
 WORKDIR /usr/src/app
 
-# Install app dependencies
 COPY package*.json ./
-RUN npm ci --only=production || npm install --only=production
+RUN npm ci --omit=dev
 
-# Copy app source
 COPY . .
 
-ENV PORT=3000
-EXPOSE 3000
+ENV NODE_ENV=production
+EXPOSE 10000
 
-CMD ["node", "app.js"]
+CMD ["npm", "start"]

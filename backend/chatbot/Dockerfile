@@ -1,7 +1,7 @@
 # Dockerfile for Chatbot Flask microservice
 # Uses slim Python base and runs gunicorn
 
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -30,5 +30,4 @@ COPY . /app
 ENV PORT=5001
 EXPOSE 5001
 
-# Use gunicorn as the production server
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5001", "--workers", "2", "--threads", "4"]
+CMD ["sh", "-c", "gunicorn app:app --bind 0.0.0.0:${PORT:-5001} --workers ${WEB_CONCURRENCY:-2} --threads ${GUNICORN_THREADS:-4}"]

@@ -23,6 +23,12 @@ PRIX_CATALOGUE = {
 
 user_sessions = {}
 
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"ok": True, "status": "live"})
+
+
 CATEGORY_KEYWORDS = {
     "gamme_orthomedical": ["medico", "orthomedical", "orthomedicale"],
     "gamme_orthopedique": ["orthopedique", "ortho", "soft", "venise", "dhar", "dos"],

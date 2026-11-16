@@ -9,6 +9,31 @@ Application e-commerce full-stack pour Star Mousse: catalogue produits, panier, 
 - IA chatbot: service Python Flask dans `backend/chatbot`
 - Deploiement: Vercel pour le frontend, Render/Docker pour le backend selon la configuration existante
 
+## Deploiement Railway + Docker
+
+Le frontend reste deploye sur Vercel. Pour eviter une dependance aux secrets
+GitHub Actions/Render, deployez les deux services backend dans Railway :
+
+1. Creez un projet Railway depuis ce depot.
+2. Ajoutez un service Docker avec `Root Directory` = `backend`.
+3. Ajoutez un second service Docker avec `Root Directory` = `backend/chatbot`.
+4. Configurez MongoDB Atlas et Redis, puis ajoutez les variables ci-dessous.
+
+Backend Node :
+
+```text
+NODE_ENV=production
+MONGODB_URI=mongodb+srv://...
+REDIS_URL=redis://...
+SESSION_SECRET=<secret-long-et-aleatoire>
+FRONTEND_URL=https://site-star-mousse.vercel.app
+CORS_ORIGINS=https://site-star-mousse.vercel.app
+```
+
+Le backend est controle par `/api/health/live`. Le chatbot est controle par
+`/health`. Les deux services utilisent automatiquement le port `PORT` fourni
+par Railway.
+
 ## Structure
 
 ```text
