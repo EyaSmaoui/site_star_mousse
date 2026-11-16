@@ -38,8 +38,14 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          : "${RENDER_API_KEY:?GitHub secret RENDER_API_KEY is missing}"
-          : "${RENDER_SERVICE_ID:?GitHub secret RENDER_BACKEND_SERVICE_ID is missing}"
+          if [[ -z "${RENDER_API_KEY:-}" ]]; then
+            echo "::error title=Render deployment::GitHub secret RENDER_API_KEY is missing."
+            exit 1
+          fi
+          if [[ -z "${RENDER_SERVICE_ID:-}" ]]; then
+            echo "::error title=Render deployment::GitHub secret RENDER_BACKEND_SERVICE_ID is missing."
+            exit 1
+          fi
 
           response_file=$(mktemp)
           trap 'rm -f "${response_file}"' EXIT
@@ -52,14 +58,14 @@ jobs:
             --write-out '%{http_code}' \
             "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys")
           if [[ "${http_code}" != 201 && "${http_code}" != 202 ]]; then
-            echo "Render rejected the deployment request (HTTP ${http_code})."
-            jq -r '.message // .error // .code // "No additional details"' "${response_file}"
+            details=$(jq -r '.message // .error // .code // "No additional details"' "${response_file}")
+            echo "::error title=Render deployment::Render rejected the request (HTTP ${http_code}): ${details}"
             exit 1
           fi
           response=$(cat "${response_file}")
           deploy_id=$(jq -r '.id // empty' <<<"${response}")
           if [[ -z "${deploy_id}" ]]; then
-            echo "Render did not return a deployment ID."
+            echo "::error title=Render deployment::Render returned no deployment ID."
             exit 1
           fi
 
