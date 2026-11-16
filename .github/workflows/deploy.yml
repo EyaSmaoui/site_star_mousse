@@ -38,12 +38,25 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          response=$(curl --fail --silent --show-error \
+          : "${RENDER_API_KEY:?GitHub secret RENDER_API_KEY is missing}"
+          : "${RENDER_SERVICE_ID:?GitHub secret RENDER_BACKEND_SERVICE_ID is missing}"
+
+          response_file=$(mktemp)
+          trap 'rm -f "${response_file}"' EXIT
+          http_code=$(curl --silent --show-error \
             --request POST \
             --header "Authorization: Bearer ${RENDER_API_KEY}" \
             --header "Content-Type: application/json" \
             --data "{\"commitId\":\"${COMMIT_SHA}\"}" \
+            --output "${response_file}" \
+            --write-out '%{http_code}' \
             "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys")
+          if [[ "${http_code}" != 201 && "${http_code}" != 202 ]]; then
+            echo "Render rejected the deployment request (HTTP ${http_code})."
+            jq -r '.message // .error // .code // "No additional details"' "${response_file}"
+            exit 1
+          fi
+          response=$(cat "${response_file}")
           deploy_id=$(jq -r '.id // empty' <<<"${response}")
           if [[ -z "${deploy_id}" ]]; then
             echo "Render did not return a deployment ID."
