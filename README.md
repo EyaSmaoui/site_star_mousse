@@ -7,12 +7,13 @@ Application e-commerce full-stack pour Star Mousse: catalogue produits, panier, 
 - Frontend: React, Vite, React Router, React Query
 - Backend: Node.js, Express, MongoDB/Mongoose
 - IA chatbot: service Python Flask dans `backend/chatbot`
-- Deploiement: Vercel pour le frontend, Render/Docker pour le backend selon la configuration existante
+- Deploiement: Vercel pour le frontend, Railway + Docker pour les services backend
 
 ## Deploiement Railway + Docker
 
-Le frontend reste deploye sur Vercel. Pour eviter une dependance aux secrets
-GitHub Actions/Render, deployez les deux services backend dans Railway :
+Le frontend reste deploye sur Vercel. Les services backend sont deployes dans
+Railway avec Docker et le redeploiement automatique est active par le lien
+GitHub du projet Railway :
 
 1. Creez un projet Railway depuis ce depot.
 2. Ajoutez un service Docker avec `Root Directory` = `backend`.
@@ -58,7 +59,7 @@ pointer vers l'URL HTTPS du backend.
 |-- frontend/             Application React/Vite
 |-- scripts/              Scripts locaux de demarrage et de test
 |-- docs/                 Documentation technique du projet
-|-- render.yaml           Configuration Render
+|-- backend/railway.json  Configuration Railway de l'API
 |-- vercel.json           Configuration Vercel racine
 |-- package.json          Commandes racine pour piloter tout le projet
 ```

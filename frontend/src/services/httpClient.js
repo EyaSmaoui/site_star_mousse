@@ -1,15 +1,13 @@
 import axios from 'axios';
-import { API_URL, IS_DEV } from '../utils/env';
+import { API_URL } from '../utils/env';
 
-const fallbackProductionApi = 'https://starmousse-backend.onrender.com';
-const defaultApi = fallbackProductionApi;
 const localApiCandidates = ['', 'http://localhost:5000', 'http://127.0.0.1:5000'];
 
 const normalizeApiUrl = (url) => {
   const value = String(url || '').trim().replace(/\/$/, '');
 
   if (!value || value === '/api') {
-    return IS_DEV ? '' : defaultApi;
+    return '';
   }
 
   return value.replace(/\/api$/, '');
@@ -35,7 +33,6 @@ const httpClient = axios.create({
 });
 
 const shouldRetryWithFallback = (error) => {
-  if (baseURL === fallbackProductionApi) return false;
   if (error.config?.__retriedWithFallback) return false;
   if (!isLocalApiBase(baseURL)) return false;
 
@@ -86,10 +83,10 @@ httpClient.interceptors.response.use(
     if (shouldRetryWithFallback(error)) {
       const retryConfig = {
         ...error.config,
-        baseURL: fallbackProductionApi,
+        baseURL: '',
         __retriedWithFallback: true,
       };
-      console.warn('Retrying API request with hosted backend fallback', {
+      console.warn('Retrying API request against the configured API base URL', {
         url: error.config?.url,
         status: error.response?.status,
         code: error.code,

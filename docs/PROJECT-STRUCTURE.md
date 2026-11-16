@@ -53,6 +53,6 @@ Le dépôt est un monorepo léger : le frontend et le backend ont chacun leur
 ## Déploiement
 
 - Vercel utilise la configuration racine et construit `frontend/`.
-- Render utilise `render.yaml` et démarre `backend/`.
+- Railway utilise `backend/railway.json` et démarre l'image Docker de `backend/`.
 - `frontend/vercel.json` reste disponible pour un déploiement depuis le
   dossier frontend, mais la configuration racine est la référence du dépôt.
